@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.EmployeeMapper">
+    <select id="getAll" resultType="com.platform.vo.EmployeeDisplayVo">
+        select
+            e.id,
+            e.name,
+            e.grade,
+            e.gender,
+            e.education,
+            e.email,
+            e.phone,
+            f.name factoryName,
+            d.name departmentName,
+            l.name locationName,
+            e.create_time,
+            e.update_time,
+            e.create_user,
+            e.update_user
+        from employee e
+        left join factory f on e.factory_id=f.id
+        left join department d on e.department_id=d.id
+        left join location l on e.location_id=l.id
+    </select>
+</mapper>

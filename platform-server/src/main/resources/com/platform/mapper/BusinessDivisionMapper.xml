@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.BusinessDivisionMapper">
+    
+    <resultMap id="businessDivision" type="com.platform.entity.BusinessDivision">
+        <id property="buId" column="bu_id"/>
+        <result property="buName" column="bu_name"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUser" column="update_user"/>
+        <collection property="factories" ofType="com.platform.entity.Factory">
+            <id property="id" column="id"/>
+            <result property="name" column="name"/>
+            <result property="level" column="level"/>
+            <result property="createTime" column="create_time"/>
+            <result property="createUser" column="create_user"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="updateUser" column="update_user"/>
+        </collection>
+    </resultMap>
+
+    <insert id="add">
+        insert into `BusinessDivision` (bu_name, create_time, create_user)
+        VALUES (#{buName},#{createTime},#{createUser})
+    </insert>
+
+    <select id="selectById" resultMap="businessDivision">
+        select * from BusinessDivision bu
+        left join factory f on bu.bu_id=f.bu_id
+        where bu.bu_id=#{buId}
+    </select>
+
+    <select id="getBUPageByQuery" parameterType="com.platform.dto.BusinessDivisionPageQueryDTO" resultMap="businessDivision">
+        select * from BusinessDivision bu
+        left join factory f on bu.bu_id=f.bu_id
+        <where>
+            <if test="buId!=null">and bu.bu_id=#{buId}</if>
+            <if test="buName!=null and buName!=''">and bu.bu_name like concat('%',#{buName},'%')</if>
+        </where>
+    </select>
+
+    <delete id="deleteByBuId">
+        delete from BusinessDivision where bu_id=#{buId}
+    </delete>
+
+    <update id="update">
+        update BusinessDivision
+        <set>
+            <if test="buName!=null and buName!=''">bu_name=#{buName},</if>
+            <if test="updateTime!=null">update_time=#{updateTime},</if>
+            <if test="updateUser!=null">update_user=#{updateUser},</if>
+        </set>
+        where bu_id=#{buId}
+    </update>
+
+</mapper>

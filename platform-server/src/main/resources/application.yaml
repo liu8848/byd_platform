@@ -1,0 +1,54 @@
+server:
+  port: 8020
+
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://localhost:3306/byd_platform
+      username: root
+      password: sudalu929
+
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+    enabled: true
+  api-docs:
+    path: /v3/api-docs
+    enabled: true
+  group-configs:
+    - group: 'default'
+      paths-to-match:
+        - '/**'
+      packages-to-scan:
+        - com.platform.controller
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类列表
+    enable-dynamic-parameter: true
+
+
+pagehelper:
+  #  params: pageNum=pageNumKey;pageSize=pageSizeKey;
+  helper-dialect: mysql
+  reasonable: true
+  support-methods-arguments: true
+
+sky:
+  jwt:
+    admin-secret-key: itcast
+    admin-ttl: 7200000
+    admin-token-name: token
+

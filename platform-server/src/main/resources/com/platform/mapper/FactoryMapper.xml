@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.FactoryMapper">
+    <resultMap id="factory" type="com.platform.entity.Factory">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="level" column="level"/>
+        <result property="createTime" column="create_time"/>
+        <result property="createUser" column="create_user"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="updateUser" column="update_user"/>
+        <association property="bu" javaType="com.platform.entity.BusinessDivision">
+            <id property="buId" column="bu_id"/>
+            <result property="buName" column="bu_name"/>
+            <result property="createTime" column="create_time"/>
+            <result property="createUser" column="create_user"/>
+            <result property="updateTime" column="update_time"/>
+            <result property="updateUser" column="update_user"/>
+        </association>
+    </resultMap>
+
+    <select id="countFactoryByBuId" resultType="long">
+        select count(bu_id) from factory f where f.bu_id=#{buId}
+    </select>
+
+    <select id="getFactoryById" resultMap="factory">
+        select * from factory f
+        left join BusinessDivision bu on f.bu_id=bu.bu_id
+        where f.id=#{id}
+    </select>
+</mapper>

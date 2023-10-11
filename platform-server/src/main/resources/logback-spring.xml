@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration debug="false">
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) --- %yellow([%15.15(%thread)]) %cyan(%-40.40(%logger{40})):%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <appender name="info_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
+<!--            <level>ERROR</level>-->
+<!--            <onMatch>DENY</onMatch>-->
+<!--            <onMisMatch>ACCEPT</onMisMatch>-->
+<!--        </filter>-->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>/home/qzliu/文档/java_project/byd_platform/byd_platform/platform-server/src/main/resources/logs/byd_platform.%d.%i.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>20GB</totalSizeCap>
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level --- [%15.15(%thread)] %-40.40(%logger{40}):%msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.ibatis" level="DEBUG">
+        <appender-ref ref="info_log"/>
+    </logger>
+    <logger name="java.sql" level="DEBUG">
+        <appender-ref ref="info_log"/>
+    </logger>
+
+    <root level="info">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="info_log"/>
+    </root>
+</configuration>

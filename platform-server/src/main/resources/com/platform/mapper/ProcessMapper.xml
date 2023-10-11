@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.ProcessMapper">
+
+    <select id="getByApplicantId" resultType="com.platform.entity.Process">
+        select * from process where applicant_id=#{applicantId}
+    </select>
+
+    <select id="queryPageApplicant" resultType="com.platform.vo.ProcessApplicantVO">
+        select
+            p.name,
+            e.name approver,
+            p.status,
+            p.create_time,
+            p.id
+        from process p
+        left join employee e on p.approver_id=e.id
+        <where>
+            <if test="applicantId!=null">and p.applicant_id=#{applicantId}</if>
+            <if test="name!=null and name!=''">and p.name like concat('%',#{name},'%')</if>
+            <if test="status!=null and status!=''">and p.status=#{status}</if>
+        </where>
+    </select>
+    
+    <select id="getMaxProcessId" resultType="string">
+        select substr(max(id),9,6)
+        from process
+        where id like concat(#{prefix},'%')
+    </select>
+
+    <insert id="insert">
+        insert into process(id, name, applicant_id, create_time, approver_id, approve_time, update_time, update_user, status)
+        VALUES(#{id},#{name},#{applicantId},#{createTime},#{approverId},#{approveTime},#{updateTime},#{updateUser},#{status})
+    </insert>
+
+    <select id="selectProcessById" resultType="com.platform.entity.Process">
+        select * from process where id=#{processId}
+    </select>
+    
+    <delete id="deleteByProcessId">
+        delete from process where id=#{processId}
+    </delete>
+
+    <update id="update" parameterType="com.platform.entity.Process">
+        update process
+        <set>
+            <if test="name!=null and name!=''">name=#{name},</if>
+            <if test="approverId!=null">approver_id=#{approverId},</if>
+            <if test="status!=null">status=#{status},</if>
+            <if test="updateTime!=null">update_time=#{updateTime},</if>
+            <if test="updateUser!=null">update_user=#{updateUser},</if>
+        </set>
+        where id=#{id}
+    </update>
+
+</mapper>
