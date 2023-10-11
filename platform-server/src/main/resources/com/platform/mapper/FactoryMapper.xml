@@ -20,6 +20,7 @@
         </association>
     </resultMap>
 
+
     <select id="countFactoryByBuId" resultType="long">
         select count(bu_id) from factory f where f.bu_id=#{buId}
     </select>
@@ -29,4 +30,24 @@
         left join BusinessDivision bu on f.bu_id=bu.bu_id
         where f.id=#{id}
     </select>
+
+    <select id="getFactoryPageByQuery" resultType="com.platform.vo.FactoryDisplayVO">
+        select
+            f.id factoryId,
+            bu.bu_name buName,
+            f.name factoryName,
+            f.level,
+            concat(e.name,'(',concat(e.id,')')) createUser,
+            f.create_time createTime
+        from factory f
+        left join BusinessDivision bu on f.bu_id=bu.bu_id
+        left join employee e on f.create_user=e.id
+        <where>
+            <if test="buId!=null">and f.bu_id=#{buId}</if>
+            <if test="name!=null and name!=''">and f.name like concat('%',#{name},'%')</if>
+            <if test="level!=null">and f.level=#{level}</if>
+        </where>
+    </select>
+
+
 </mapper>

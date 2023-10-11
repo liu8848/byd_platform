@@ -4,6 +4,7 @@ import com.platform.constant.MessageConstant;
 import com.platform.dto.BusinessDivisionCreateDTO;
 import com.platform.dto.BusinessDivisionPageQueryDTO;
 import com.platform.dto.BusinessDivisionUpdateDTO;
+import com.platform.dto.FactoryPageQueryDTO;
 import com.platform.entity.BusinessDivision;
 import com.platform.entity.Factory;
 import com.platform.exception.BaseException;
@@ -12,6 +13,7 @@ import com.platform.result.PageResult;
 import com.platform.result.Result;
 import com.platform.service.BusinessDivisionService;
 import com.platform.service.FactoryService;
+import com.platform.vo.FactoryDisplayVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
@@ -85,6 +87,15 @@ public class BasicDataController {
     public Result<Factory> getFactoryById(@PathVariable Long id){
         Factory factory = factoryService.getFactoryById(id);
         return Result.success(factory);
+    }
+
+    @GetMapping("/factory")
+    @Operation(summary = "分页查询搜索备案工厂信息")
+    @Parameter(name = "factoryPageQueryDTO",description = "分页查询备案工厂数据模型",in = ParameterIn.QUERY)
+    public Result<PageResult<FactoryDisplayVO>> getFactoryPageByQuery(FactoryPageQueryDTO factoryPageQueryDTO){
+        PageResult<FactoryDisplayVO> result = factoryService.getFactoryPageByQuery(factoryPageQueryDTO);
+
+        return Result.success(result);
     }
 
 }
