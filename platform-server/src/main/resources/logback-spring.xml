@@ -9,13 +9,8 @@
 
     <appender name="info_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <append>true</append>
-<!--        <filter class="ch.qos.logback.classic.filter.LevelFilter">-->
-<!--            <level>ERROR</level>-->
-<!--            <onMatch>DENY</onMatch>-->
-<!--            <onMisMatch>ACCEPT</onMisMatch>-->
-<!--        </filter>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>/home/qzliu/文档/java_project/byd_platform/byd_platform/platform-server/src/main/resources/logs/byd_platform.%d.%i.log</fileNamePattern>
+            <fileNamePattern>/home/qzliu/文档/java_project/byd_platform/byd_platform/platform-server/src/main/resources/logs/commonLogs/byd_platform.%d.%i.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>20GB</totalSizeCap>
             <maxFileSize>10MB</maxFileSize>
@@ -26,11 +21,33 @@
         </encoder>
     </appender>
 
-    <logger name="org.apache.ibatis" level="DEBUG">
-        <appender-ref ref="info_log"/>
-    </logger>
-    <logger name="java.sql" level="DEBUG">
-        <appender-ref ref="info_log"/>
+    <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>/home/qzliu/文档/java_project/byd_platform/byd_platform/platform-server/src/main/resources/logs/sqlLogs/sql_log.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50}:  %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+        <triggeringPolicy class="ch.qos.logback.core.rolling.SizeBasedTriggeringPolicy">
+            <MaxFileSize>10MB</MaxFileSize>
+        </triggeringPolicy>
+        <!-- 过滤掉非debug的日志,即此日志文件中只会输出debug日志 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <!-- 过滤的级别 -->
+            <level>DEBUG</level>
+            <!-- 匹配时的操作：接收（记录） -->
+            <onMatch>ACCEPT</onMatch>
+            <!-- 不匹配时的操作：拒绝（不记录） -->
+            <onMismatch>DENY</onMismatch>>
+        </filter>
+    </appender>
+
+    <logger name="com.platform.mapper" level="DEBUG" additivity="false">
+        <appender-ref ref="SQL_FILE"/>
+        <appender-ref ref="STDOUT"/>
     </logger>
 
     <root level="info">

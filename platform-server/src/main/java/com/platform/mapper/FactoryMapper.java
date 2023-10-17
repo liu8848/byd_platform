@@ -6,6 +6,8 @@ import com.platform.entity.Factory;
 import com.platform.vo.FactoryDisplayVO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface FactoryMapper {
 
@@ -14,4 +16,12 @@ public interface FactoryMapper {
     Factory getFactoryById(long id);
 
     Page<FactoryDisplayVO> getFactoryPageByQuery(FactoryPageQueryDTO factoryPageQueryDTO);
+
+    void addFactory(Factory factory);
+
+    long deleteFactoryById(Long id);
+
+    void addFactoryByCollection(List<Factory> factories);
+
+    void update(Factory factory);
 }

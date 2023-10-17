@@ -14,4 +14,6 @@ public class MessageConstant {
     public static final String NO_AUTHORITY_UPDATE="无修改权限";
 
     public static final String BUSINESSDIVISION_NOT_EXIST="事业部不存在";
+
+    public static final String FACTORY_NOT_EXIST="工厂不存在";
 }

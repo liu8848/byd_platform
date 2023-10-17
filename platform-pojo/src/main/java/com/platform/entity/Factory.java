@@ -25,6 +25,9 @@ public class Factory implements Serializable {
     @Schema(description = "工厂星级")
     private String level;
 
+    @Schema(description = "工厂所属事业部编号")
+    private Long buId;
+
     @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private LocalDateTime createTime;

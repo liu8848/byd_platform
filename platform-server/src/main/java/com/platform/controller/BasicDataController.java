@@ -1,27 +1,28 @@
 package com.platform.controller;
 
 import com.platform.constant.MessageConstant;
-import com.platform.dto.BusinessDivisionCreateDTO;
-import com.platform.dto.BusinessDivisionPageQueryDTO;
-import com.platform.dto.BusinessDivisionUpdateDTO;
-import com.platform.dto.FactoryPageQueryDTO;
+import com.platform.dto.*;
 import com.platform.entity.BusinessDivision;
 import com.platform.entity.Factory;
 import com.platform.exception.BaseException;
 import com.platform.exception.BusinessDivisionNotExistException;
 import com.platform.result.PageResult;
 import com.platform.result.Result;
+import com.platform.result.UpdateResult;
 import com.platform.service.BusinessDivisionService;
 import com.platform.service.FactoryService;
 import com.platform.vo.FactoryDisplayVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/basicData")
@@ -96,6 +97,43 @@ public class BasicDataController {
         PageResult<FactoryDisplayVO> result = factoryService.getFactoryPageByQuery(factoryPageQueryDTO);
 
         return Result.success(result);
+    }
+
+    @PostMapping("/factory")
+    @Operation(summary = "创建备案工厂")
+    public Result<Factory> createFactory(@RequestBody FactoryCreateDTO factoryCreateDTO){
+        Factory factory= factoryService.addFactory(factoryCreateDTO);
+        return Result.success(factory);
+    }
+
+    @DeleteMapping("/factory/{id}")
+    @Operation(summary = "通过工厂编号删除备案工厂")
+    public Result<Long> deleteFactoryById(@PathVariable Long id){
+        long row = factoryService.deleteFactoryById(id);
+        return Result.success(row);
+    }
+
+    @PostMapping("/factory/collection")
+    @Operation(summary = "批量导入备案工厂")
+    public Result<List<Factory>> createFactoryByCollection(@RequestBody List<FactoryCreateDTO> factories){
+        List<Factory> factoryList = factoryService.addFactoryByCollection(factories);
+        return Result.success(factoryList);
+    }
+
+    @PutMapping("/factory/{id}")
+    @Operation(summary = "修改备案工厂信息")
+    public Result<UpdateResult<Factory>> updateFactory(@PathVariable @Schema(description = "备案工厂编号") Long id,
+                                        @RequestBody FactoryUpdateDTO factoryUpdateDTO) throws IllegalAccessException {
+        Factory factory = Factory.builder()
+                .id(id)
+                .name(factoryUpdateDTO.getName())
+                .buId(factoryUpdateDTO.getBuId())
+                .level(factoryUpdateDTO.getLevel())
+                .build();
+
+        UpdateResult<Factory> updateResult = factoryService.updateFactory(factory);
+
+        return Result.success(updateResult);
     }
 
 }

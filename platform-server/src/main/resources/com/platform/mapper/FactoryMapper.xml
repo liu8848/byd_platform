@@ -49,5 +49,34 @@
         </where>
     </select>
 
+    <insert id="addFactory" parameterType="com.platform.entity.Factory" keyProperty="id" useGeneratedKeys="true">
+        insert into factory( name, create_time, create_user, bu_id, level)
+        VALUES (#{name},#{createTime},#{createUser},#{buId},#{level})
+    </insert>
+
+    <delete id="deleteFactoryById">
+        delete from factory where id=#{id}
+    </delete>
+    
+    <insert id="addFactoryByCollection" useGeneratedKeys="true" keyProperty="id">
+        insert into factory( name, create_time, create_user, bu_id, level)
+        values
+            <foreach collection="factories" item="factory" separator=",">
+                (#{factory.name},#{factory.createTime},#{factory.createUser},#{factory.buId},#{factory.level})
+            </foreach>
+    </insert>
+
+    <update id="update">
+        update factory
+        <set>
+            <if test="name!=null and name!=''">name=#{name},</if>
+            <if test="buId!=null">bu_id=#{buId},</if>
+            <if test="level!=null and level!=''">level=#{level},</if>
+            <if test="updateTime!=null">update_time=#{updateTime},</if>
+            <if test="updateUser!=null">update_user=#{updateUser},</if>
+        </set>
+        where id=#{id}
+    </update>
+
 
 </mapper>
