@@ -2,6 +2,37 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.platform.mapper.EmployeeMapper">
+    <resultMap id="employee" type="com.platform.entity.Employee">
+        <id column="id" property="id"/>
+        <result column="name" property="name"/>
+        <result column="grade" property="grade"/>
+        <result column="gender" property="gender"/>
+        <result column="education" property="education"/>
+        <result column="email" property="email"/>
+        <result column="phone" property="phone"/>
+        <result column="factory_id" property="factoryId"/>
+        <result column="department_id" property="departmentId"/>
+        <result column="location_id" property="locationId"/>
+        <result column="create_time" property="createTime"/>
+        <result column="create_user" property="createUser"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="update_user" property="updateUser"/>
+        <association property="department" javaType="com.platform.entity.Department">
+            <id column="d_id" property="id"/>
+            <result column="d_name" property="name"/>
+            <association property="factory" javaType="com.platform.entity.Factory">
+                <id column="f_id" property="id"/>
+                <result column="f_name" property="name"/>
+                <result column="f_level" property="level"/>
+                <association property="bu" javaType="com.platform.entity.BusinessDivision">
+                    <id column="bu_id" property="buId"/>
+                    <result column="bu_name" property="buName"/>
+                </association>
+            </association>
+        </association>
+    </resultMap>
+
+
     <select id="getAll" resultType="com.platform.vo.EmployeeDisplayVo">
         select
             e.id,
@@ -22,5 +53,21 @@
         left join factory f on e.factory_id=f.id
         left join department d on e.department_id=d.id
         left join location l on e.location_id=l.id
+    </select>
+
+    <select id="getById" resultMap="employee">
+        select e.*,
+               d.id d_id,
+               d.name d_name,
+               f.id f_id,
+               f.name f_name,
+               f.level f_level,
+               bu.bu_id,
+               bu.bu_name
+        from employee e
+        left join department d on e.department_id=d.id
+        left join factory f on d.factory_id=f.id
+        left join BusinessDivision bu on f.bu_id=bu.bu_id
+        where e.id=#{id}
     </select>
 </mapper>

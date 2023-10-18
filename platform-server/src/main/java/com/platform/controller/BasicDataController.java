@@ -4,6 +4,7 @@ import com.platform.constant.MessageConstant;
 import com.platform.dto.*;
 import com.platform.entity.BusinessDivision;
 import com.platform.entity.Factory;
+import com.platform.entity.ProfessionInspection;
 import com.platform.exception.BaseException;
 import com.platform.exception.BusinessDivisionNotExistException;
 import com.platform.result.PageResult;
@@ -11,6 +12,7 @@ import com.platform.result.Result;
 import com.platform.result.UpdateResult;
 import com.platform.service.BusinessDivisionService;
 import com.platform.service.FactoryService;
+import com.platform.service.ProfessionInspectionService;
 import com.platform.vo.FactoryDisplayVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -34,6 +36,8 @@ public class BasicDataController {
     private BusinessDivisionService businessDivisionService;
     @Autowired
     private FactoryService factoryService;
+    @Autowired
+    private ProfessionInspectionService professionInspectionService;
 
     @PostMapping("/businessDivision")
     @Operation(summary = "添加事业部")
@@ -134,6 +138,51 @@ public class BasicDataController {
         UpdateResult<Factory> updateResult = factoryService.updateFactory(factory);
 
         return Result.success(updateResult);
+    }
+
+    @GetMapping("/inspection/{id}")
+    @Operation(summary = "根据专业检查id查询专业检查信息")
+    public Result<ProfessionInspection> getInspectionById(@PathVariable Long id){
+        return Result.success(professionInspectionService.getById(id));
+    }
+
+    @GetMapping("/inspection")
+    @Operation(summary = "分页条件检索专业检查信息")
+    public Result<PageResult<ProfessionInspection>> getInspectionPageByQuery(ProfessionInspectionPageQueryDTO queryDTO){
+        PageResult<ProfessionInspection> page=professionInspectionService.getPageByQuery(queryDTO);
+        return Result.success(page);
+    }
+
+    @PostMapping("/inspection")
+    @Operation(summary = "创建专业检索")
+    public Result<ProfessionInspection> addProfessionInspection(@RequestBody ProfessionInspectionCreateDTO createDTO){
+        ProfessionInspection professionInspection=professionInspectionService.insert(createDTO);
+        return Result.success(professionInspection);
+    }
+
+    @PutMapping("/inspection/{id}")
+    @Operation(summary = "修改专业检查信息")
+    public Result<UpdateResult<ProfessionInspection>> updateProfessionInspection(@PathVariable Long id,
+                                                                                 @RequestBody ProfessionInspectionUpdateDTO updateDTO) throws IllegalAccessException {
+        ProfessionInspection professionInspection = ProfessionInspection.builder()
+                .id(id)
+                .name(updateDTO.getName()).build();
+        UpdateResult<ProfessionInspection> updateResult=professionInspectionService.update(professionInspection);
+        return Result.success(updateResult);
+    }
+
+    @DeleteMapping("/inspection/{id}")
+    @Operation(summary = "删除专业检查")
+    public Result<String> deleteProfessionInspection(@PathVariable Long id){
+        int row=professionInspectionService.delete(id);
+        return Result.success(String.format("成功删除%d条专业检查",row));
+    }
+
+    @PostMapping("/inspection/collection")
+    @Operation(summary = "批量导入专业检查")
+    public Result<List<ProfessionInspection>> addProfessionInspectionByCollection(@RequestBody List<ProfessionInspectionCreateDTO> createDTOList){
+        List<ProfessionInspection> professionInspectionList=professionInspectionService.insertByCollection(createDTOList);
+        return Result.success(professionInspectionList);
     }
 
 }

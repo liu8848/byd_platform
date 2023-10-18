@@ -11,30 +11,21 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
-public class Employee implements Serializable {
-    private static final long serialVersionUID=1L;
-
+@AllArgsConstructor
+@NoArgsConstructor
+@Schema(description = "部门数据模型")
+public class Department implements Serializable {
     private Long id;
     private String name;
-    private String grade;
-    private String gender;
-    private String education;
-    private String email;
-    private String phone;
     private Long factoryId;
-    private Long departmentId;
-    private Long locationId;
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date createTime;
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     private Date updateTime;
     private Long createUser;
     private Long updateUser;
-    private int workStatus;
 
-    @Schema(description = "所属部门名称")
-    private Department department;
+    @Schema(description = "所属工厂信息")
+    private Factory factory;
 }

@@ -29,4 +29,9 @@ public class EmployeeController {
         List<EmployeeDisplayVo> employees = employeeMapper.getAll();
         return Result.success(employees);
     }
+
+    @GetMapping("/{id}")
+    public Result<Employee> getById(@PathVariable Long id){
+        return Result.success(employeeMapper.getById(id));
+    }
 }

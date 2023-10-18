@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.ProfessionInspectionMapper">
+    <resultMap id="professionInspection" type="com.platform.entity.ProfessionInspection">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="createUserId" column="create_user"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateUser" column="update_user"/>
+        <result property="updateTime" column="update_time"/>
+        <association property="createUser" javaType="com.platform.entity.Employee">
+            <id property="id" column="id"/>
+            <result property="name" column="username"/>
+            <result property="grade" column="grade"/>
+            <result property="gender" column="gender"/>
+            <result property="education" column="education"/>
+            <result property="email" column="email"/>
+            <result property="phone" column="phone"/>
+        </association>
+    </resultMap>
+
+    <select id="getById" resultMap="professionInspection">
+        select * from ProfessionInspection p
+        left join  employee e on p.create_user=e.id
+        where p.id=#{id}
+    </select>
+
+    <select id="getPageByQuery" resultMap="professionInspection">
+        select p.*,
+               e.name username, e.id, e.grade, e.gender, e.education, e.email,
+               e.phone, e.status, e.factory_id, e.department_id, e.location_id,
+               e.create_time, e.update_time, e.create_user, e.update_user
+        from ProfessionInspection p
+        left join employee e on p.create_user=e.id
+        <where>
+            <if test="name!=null and name!=''">and p.name like concat('%',#{name},'%')</if>
+            <if test="createUserId!=null">and p.create_user=#{createUserId}</if>
+            <if test="createUserName!=null and createUserName!=''">and e.name like concat('%',#{createUserName},'%')</if>
+        </where>
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into ProfessionInspection(name, create_user, create_time)
+        VALUES (#{name},#{createUserId},#{createTime})
+    </insert>
+
+    <update id="update">
+        update ProfessionInspection
+        <set>
+            <if test="name!=null and name!=''">name=#{name},</if>
+            <if test="updateUser!=null">update_user=#{updateUser},</if>
+            <if test="updateTime!=null">update_time=#{updateTime}</if>
+        </set>
+        where id=#{id}
+    </update>
+
+    <delete id="delete">
+        delete from ProfessionInspection
+        where id=#{id}
+    </delete>
+
+    <insert id="insertByCollection" useGeneratedKeys="true" keyProperty="id">
+        insert into ProfessionInspection(name,create_time,create_user)
+        VALUES
+            <foreach collection="professionInspectionList" item="item" separator=",">
+                (#{item.name},#{item.createTime},#{item.createUserId})
+            </foreach>
+    </insert>
+</mapper>
