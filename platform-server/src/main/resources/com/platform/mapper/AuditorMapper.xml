@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.AuditorMapper">
+    <resultMap id="auditor" type="com.platform.entity.Auditor">
+        <id column="id" property="id"/>
+        <result column="employee_id" property="employeeId"/>
+        <result column="record_factory_id" property="recordFactoryId"/>
+        <result column="education" property="education"/>
+        <result column="auditor_level" property="auditorLevel"/>
+        <result column="phone" property="phone"/>
+        <result column="registration_number" property="registrationNumber"/>
+        <result column="technology" property="technology"/>
+        <result column="type" property="type"/>
+        <association property="employee" javaType="com.platform.entity.Employee">
+            <id column="e_id" property="id"/>
+            <result column="name" property="name"/>
+            <result column="grade" property="grade"/>
+            <result column="gender" property="gender"/>
+            <result column="education" property="education"/>
+            <result column="email" property="email"/>
+            <result column="phone" property="phone"/>
+            <result column="factory_id" property="factoryId"/>
+            <result column="department_id" property="departmentId"/>
+            <result column="location_id" property="locationId"/>
+            <association property="department" javaType="com.platform.entity.Department">
+                <id column="d_id" property="id"/>
+                <result column="d_name" property="name"/>
+                <association property="factory" javaType="com.platform.entity.Factory">
+                    <id column="f_id" property="id"/>
+                    <result column="f_name" property="name"/>
+                    <result column="f_level" property="level"/>
+                    <association property="bu" javaType="com.platform.entity.BusinessDivision">
+                        <id column="bu_id" property="buId"/>
+                        <result column="bu_name" property="buName"/>
+                    </association>
+                </association>
+            </association>
+        </association>
+    </resultMap>
+
+
+    <select id="getAuditor" resultMap="auditor">
+        select
+            a.*,
+            e.*,
+            d.id d_id,
+            d.name d_name,
+            f.id f_id,
+            f.name f_name,
+            f.level f_level,
+            bu.bu_id,
+            bu.bu_name
+        from auditor a
+        left join employee e on a.employee_id = e.id
+        left join department d on e.department_id = d.id
+        left join factory f on d.factory_id=f.id
+        left join BusinessDivision bu on bu.bu_id=f.bu_id
+        left join location l on e.location_id=l.id
+    </select>
+</mapper>
