@@ -10,5 +10,6 @@ import java.util.List;
 public interface EmployeeMapper {
 
     List<EmployeeDisplayVo> getAll();
+
     Employee getById(Long id);
 }

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.platform.mapper.BusinessDivisionMapper">
-    
+
     <resultMap id="businessDivision" type="com.platform.entity.BusinessDivision">
         <id property="buId" column="bu_id"/>
         <result property="buName" column="bu_name"/>
@@ -23,16 +23,18 @@
 
     <insert id="add">
         insert into `BusinessDivision` (bu_name, create_time, create_user)
-        VALUES (#{buName},#{createTime},#{createUser})
+        VALUES (#{buName}, #{createTime}, #{createUser})
     </insert>
 
     <select id="selectById" resultMap="businessDivision">
-        select * from BusinessDivision bu
-        left join factory f on bu.bu_id=f.bu_id
-        where bu.bu_id=#{buId}
+        select *
+        from BusinessDivision bu
+                 left join factory f on bu.bu_id = f.bu_id
+        where bu.bu_id = #{buId}
     </select>
 
-    <select id="getBUPageByQuery" parameterType="com.platform.dto.BusinessDivisionPageQueryDTO" resultMap="businessDivision">
+    <select id="getBUPageByQuery" parameterType="com.platform.dto.BusinessDivisionPageQueryDTO"
+            resultMap="businessDivision">
         select * from BusinessDivision bu
         left join factory f on bu.bu_id=f.bu_id
         <where>
@@ -42,7 +44,9 @@
     </select>
 
     <delete id="deleteByBuId">
-        delete from BusinessDivision where bu_id=#{buId}
+        delete
+        from BusinessDivision
+        where bu_id = #{buId}
     </delete>
 
     <update id="update">

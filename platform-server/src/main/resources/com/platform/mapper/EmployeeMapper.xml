@@ -34,40 +34,39 @@
 
 
     <select id="getAll" resultType="com.platform.vo.EmployeeDisplayVo">
-        select
-            e.id,
-            e.name,
-            e.grade,
-            e.gender,
-            e.education,
-            e.email,
-            e.phone,
-            f.name factoryName,
-            d.name departmentName,
-            l.name locationName,
-            e.create_time,
-            e.update_time,
-            e.create_user,
-            e.update_user
+        select e.id,
+               e.name,
+               e.grade,
+               e.gender,
+               e.education,
+               e.email,
+               e.phone,
+               f.name factoryName,
+               d.name departmentName,
+               l.name locationName,
+               e.create_time,
+               e.update_time,
+               e.create_user,
+               e.update_user
         from employee e
-        left join factory f on e.factory_id=f.id
-        left join department d on e.department_id=d.id
-        left join location l on e.location_id=l.id
+                 left join factory f on e.factory_id = f.id
+                 left join department d on e.department_id = d.id
+                 left join location l on e.location_id = l.id
     </select>
 
     <select id="getById" resultMap="employee">
         select e.*,
-               d.id d_id,
-               d.name d_name,
-               f.id f_id,
-               f.name f_name,
+               d.id    d_id,
+               d.name  d_name,
+               f.id    f_id,
+               f.name  f_name,
                f.level f_level,
                bu.bu_id,
                bu.bu_name
         from employee e
-        left join department d on e.department_id=d.id
-        left join factory f on d.factory_id=f.id
-        left join BusinessDivision bu on f.bu_id=bu.bu_id
-        where e.id=#{id}
+                 left join department d on e.department_id = d.id
+                 left join factory f on d.factory_id = f.id
+                 left join BusinessDivision bu on f.bu_id = bu.bu_id
+        where e.id = #{id}
     </select>
 </mapper>

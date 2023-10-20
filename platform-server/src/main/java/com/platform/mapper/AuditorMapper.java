@@ -8,4 +8,6 @@ import java.util.List;
 @Mapper
 public interface AuditorMapper {
     List<Auditor> getAuditor();
+
+    void insert(Auditor auditor);
 }

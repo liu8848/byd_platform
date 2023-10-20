@@ -22,23 +22,26 @@
 
 
     <select id="countFactoryByBuId" resultType="long">
-        select count(bu_id) from factory f where f.bu_id=#{buId}
+        select count(bu_id)
+        from factory f
+        where f.bu_id = #{buId}
     </select>
 
     <select id="getFactoryById" resultMap="factory">
-        select * from factory f
-        left join BusinessDivision bu on f.bu_id=bu.bu_id
-        where f.id=#{id}
+        select *
+        from factory f
+                 left join BusinessDivision bu on f.bu_id = bu.bu_id
+        where f.id = #{id}
     </select>
 
     <select id="getFactoryPageByQuery" resultType="com.platform.vo.FactoryDisplayVO">
         select
-            f.id factoryId,
-            bu.bu_name buName,
-            f.name factoryName,
-            f.level,
-            concat(e.name,'(',concat(e.id,')')) createUser,
-            f.create_time createTime
+        f.id factoryId,
+        bu.bu_name buName,
+        f.name factoryName,
+        f.level,
+        concat(e.name,'(',concat(e.id,')')) createUser,
+        f.create_time createTime
         from factory f
         left join BusinessDivision bu on f.bu_id=bu.bu_id
         left join employee e on f.create_user=e.id
@@ -50,20 +53,22 @@
     </select>
 
     <insert id="addFactory" parameterType="com.platform.entity.Factory" keyProperty="id" useGeneratedKeys="true">
-        insert into factory( name, create_time, create_user, bu_id, level)
-        VALUES (#{name},#{createTime},#{createUser},#{buId},#{level})
+        insert into factory(name, create_time, create_user, bu_id, level)
+        VALUES (#{name}, #{createTime}, #{createUser}, #{buId}, #{level})
     </insert>
 
     <delete id="deleteFactoryById">
-        delete from factory where id=#{id}
+        delete
+        from factory
+        where id = #{id}
     </delete>
-    
+
     <insert id="addFactoryByCollection" useGeneratedKeys="true" keyProperty="id">
         insert into factory( name, create_time, create_user, bu_id, level)
         values
-            <foreach collection="factories" item="factory" separator=",">
-                (#{factory.name},#{factory.createTime},#{factory.createUser},#{factory.buId},#{factory.level})
-            </foreach>
+        <foreach collection="factories" item="factory" separator=",">
+            (#{factory.name},#{factory.createTime},#{factory.createUser},#{factory.buId},#{factory.level})
+        </foreach>
     </insert>
 
     <update id="update">
@@ -76,6 +81,10 @@
             <if test="updateUser!=null">update_user=#{updateUser},</if>
         </set>
         where id=#{id}
+    </update>
+
+    <update id="updateWarnTime">
+        update factory set warn_time=#{time} where id=#{factoryId}
     </update>
 
 

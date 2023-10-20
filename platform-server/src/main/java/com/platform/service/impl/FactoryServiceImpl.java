@@ -45,18 +45,18 @@ public class FactoryServiceImpl implements FactoryService {
 
     @Override
     public PageResult<FactoryDisplayVO> getFactoryPageByQuery(FactoryPageQueryDTO factoryPageQueryDTO) {
-        PageHelper.startPage(factoryPageQueryDTO.getPage(),factoryPageQueryDTO.getSize());
+        PageHelper.startPage(factoryPageQueryDTO.getPage(), factoryPageQueryDTO.getSize());
         Page<FactoryDisplayVO> page = factoryMapper.getFactoryPageByQuery(factoryPageQueryDTO);
-        long total=page.getTotal();
-        List<FactoryDisplayVO> records=page.getResult();
-        return new PageResult<>(total,records);
+        long total = page.getTotal();
+        List<FactoryDisplayVO> records = page.getResult();
+        return new PageResult<>(total, records);
     }
 
     @Override
     public Factory addFactory(FactoryCreateDTO factoryCreateDTO) {
         BusinessDivision businessDivision = businessDivisionMapper.selectById(factoryCreateDTO.getBuId());
-        if(businessDivision==null){
-            throw new BusinessDivisionNotExistException("事业部编号:"+factoryCreateDTO.getBuId()+"不存在");
+        if (businessDivision == null) {
+            throw new BusinessDivisionNotExistException("事业部编号:" + factoryCreateDTO.getBuId() + "不存在");
         }
         Factory factory = Factory.builder().name(factoryCreateDTO.getName())
                 .level(factoryCreateDTO.getLevel())
@@ -69,8 +69,8 @@ public class FactoryServiceImpl implements FactoryService {
 
     @Override
     public long deleteFactoryById(Long id) {
-        long row=factoryMapper.deleteFactoryById(id);
-        if(row==0){
+        long row = factoryMapper.deleteFactoryById(id);
+        if (row == 0) {
             throw new FactoryNotExistException(MessageConstant.FACTORY_NOT_EXIST);
         }
         return row;
@@ -78,7 +78,7 @@ public class FactoryServiceImpl implements FactoryService {
 
     @Override
     public List<Factory> addFactoryByCollection(List<FactoryCreateDTO> factories) {
-        List<Factory> factoryList=new ArrayList<>();
+        List<Factory> factoryList = new ArrayList<>();
         for (FactoryCreateDTO factoryCreateDTO : factories) {
             Factory factory = Factory.builder().name(factoryCreateDTO.getName())
                     .level(factoryCreateDTO.getLevel())
@@ -94,15 +94,15 @@ public class FactoryServiceImpl implements FactoryService {
     @Override
     public UpdateResult<Factory> updateFactory(Factory factory) throws IllegalAccessException {
         Factory oldFactory = factoryMapper.getFactoryById(factory.getId());
-        if(oldFactory==null){
+        if (oldFactory == null) {
             throw new FactoryNotExistException(MessageConstant.FACTORY_NOT_EXIST);
         }
         factory.setUpdateTime(LocalDateTime.now());
         factory.setUpdateUser(BaseContext.getCurrentId().getEmployeeId());
         factoryMapper.update(factory);
 
-        log.info("修改备案工厂信息: 旧：{}  -->  新：{}",oldFactory,factory);
+        log.info("修改备案工厂信息: 旧：{}  -->  新：{}", oldFactory, factory);
 
-        return UpdateResult.getUpdateContent(factory,oldFactory);
+        return UpdateResult.getUpdateContent(factory, oldFactory);
     }
 }

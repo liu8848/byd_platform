@@ -25,13 +25,13 @@ public class EmployeeController {
 
     @GetMapping
     @Operation(summary = "获取员工列表")
-    public Result<List<EmployeeDisplayVo>> getAll(){
+    public Result<List<EmployeeDisplayVo>> getAll() {
         List<EmployeeDisplayVo> employees = employeeMapper.getAll();
         return Result.success(employees);
     }
 
     @GetMapping("/{id}")
-    public Result<Employee> getById(@PathVariable Long id){
+    public Result<Employee> getById(@PathVariable Long id) {
         return Result.success(employeeMapper.getById(id));
     }
 }

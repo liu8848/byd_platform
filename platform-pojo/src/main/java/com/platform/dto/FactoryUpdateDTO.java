@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
@@ -19,5 +20,7 @@ public class FactoryUpdateDTO implements Serializable {
     @Schema(description = "所属事业部编号")
     private Long buId;
     @Schema(description = "星级")
-    private String level;
+    private int level;
+    @Schema(description = "预警时间")
+    private LocalDateTime warnTime;
 }

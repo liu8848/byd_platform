@@ -19,5 +19,5 @@ public class FactoryCreateDTO implements Serializable {
     @Schema(description = "事业部编号")
     private Long buId;
     @Schema(description = "星级")
-    private String level;
+    private int level;
 }

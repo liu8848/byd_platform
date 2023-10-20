@@ -6,6 +6,7 @@ import com.platform.entity.Factory;
 import com.platform.vo.FactoryDisplayVO;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -24,4 +25,6 @@ public interface FactoryMapper {
     void addFactoryByCollection(List<Factory> factories);
 
     void update(Factory factory);
+
+    void updateWarnTime(LocalDateTime time,Long factoryId);
 }

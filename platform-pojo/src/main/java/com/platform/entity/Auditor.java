@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -15,7 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @Builder
 @Schema(description = "审核员")
-public class Auditor implements Serializable {
+public class Auditor implements Serializable{
     @Schema(description = "主键")
     private Long id;
     @Schema(description = "工号")
@@ -24,6 +25,7 @@ public class Auditor implements Serializable {
     private Long recordFactoryId;
     @Schema(description = "学历代码")
     private int education;
+    private String educationName;
     @Schema(description = "审核员等级")
     private String auditorLevel;
     @Schema(description = "手机号码")
@@ -36,9 +38,9 @@ public class Auditor implements Serializable {
     private int type;
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date createTime;
+    private LocalDateTime createTime;
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date updateTime;
+    private LocalDateTime updateTime;
     private Long createUser;
     private Long updateUser;
 

@@ -19,7 +19,7 @@ public class FactoryPageQueryDTO implements Serializable {
     @Schema(description = "备案工厂名称")
     private String name;
     @Schema(description = "备案工厂星级")
-    private String level;
+    private int level;
 
     @Schema(description = "页码")
     private int page;

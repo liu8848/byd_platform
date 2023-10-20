@@ -7,6 +7,7 @@ import com.platform.result.PageResult;
 
 public interface BusinessDivisionService {
     void add(BusinessDivisionCreateDTO businessDivisionCreateDTO);
+
     BusinessDivision getByBuId(Long buId);
 
     PageResult<BusinessDivision> getBUPageByQuery(BusinessDivisionPageQueryDTO businessDivisionPageQueryDTO);

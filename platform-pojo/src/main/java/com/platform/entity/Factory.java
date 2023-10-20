@@ -23,10 +23,13 @@ public class Factory implements Serializable {
     private String name;
 
     @Schema(description = "工厂星级")
-    private String level;
+    private int level;
 
     @Schema(description = "工厂所属事业部编号")
     private Long buId;
+
+    @Schema(description = "预警时间")
+    private LocalDateTime warnTime;
 
     @Schema(description = "创建时间")
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
@@ -44,4 +47,6 @@ public class Factory implements Serializable {
 
     @Schema(description = "工厂的所属事业部")
     private BusinessDivision bu;
+
+
 }

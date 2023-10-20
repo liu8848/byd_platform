@@ -40,11 +40,11 @@ public class BusinessDivisionServiceImpl implements BusinessDivisionService {
 
     @Override
     public PageResult<BusinessDivision> getBUPageByQuery(BusinessDivisionPageQueryDTO businessDivisionPageQueryDTO) {
-        PageHelper.startPage(businessDivisionPageQueryDTO.getPage(),businessDivisionPageQueryDTO.getSize());
-        Page<BusinessDivision> page=businessDivisionMapper.getBUPageByQuery(businessDivisionPageQueryDTO);
-        long total=page.getTotal();
-        List<BusinessDivision> buList=page.getResult();
-        return new PageResult<>(total,buList);
+        PageHelper.startPage(businessDivisionPageQueryDTO.getPage(), businessDivisionPageQueryDTO.getSize());
+        Page<BusinessDivision> page = businessDivisionMapper.getBUPageByQuery(businessDivisionPageQueryDTO);
+        long total = page.getTotal();
+        List<BusinessDivision> buList = page.getResult();
+        return new PageResult<>(total, buList);
     }
 
     @Override

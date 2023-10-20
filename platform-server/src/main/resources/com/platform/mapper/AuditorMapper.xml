@@ -41,21 +41,25 @@
 
 
     <select id="getAuditor" resultMap="auditor">
-        select
-            a.*,
-            e.*,
-            d.id d_id,
-            d.name d_name,
-            f.id f_id,
-            f.name f_name,
-            f.level f_level,
-            bu.bu_id,
-            bu.bu_name
+        select a.*,
+               e.*,
+               d.id    d_id,
+               d.name  d_name,
+               f.id    f_id,
+               f.name  f_name,
+               f.level f_level,
+               bu.bu_id,
+               bu.bu_name
         from auditor a
-        left join employee e on a.employee_id = e.id
-        left join department d on e.department_id = d.id
-        left join factory f on d.factory_id=f.id
-        left join BusinessDivision bu on bu.bu_id=f.bu_id
-        left join location l on e.location_id=l.id
+                 left join employee e on a.employee_id = e.id
+                 left join department d on e.department_id = d.id
+                 left join factory f on d.factory_id = f.id
+                 left join BusinessDivision bu on bu.bu_id = f.bu_id
+                 left join location l on e.location_id = l.id
     </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into auditor(employee_id, record_factory_id, education, auditor_level, phone, registration_number, technology, create_user, create_time)
+        VALUES (#{employeeId},#{recordFactoryId},#{education},#{auditorLevel},#{phone},#{registrationNumber},#{technology},#{createUser},#{createTime})
+    </insert>
 </mapper>

@@ -41,7 +41,7 @@ public class BasicDataController {
 
     @PostMapping("/businessDivision")
     @Operation(summary = "添加事业部")
-    public Result<String> addBusinessDivision(@RequestBody BusinessDivisionCreateDTO businessDivisionCreateDTO){
+    public Result<String> addBusinessDivision(@RequestBody BusinessDivisionCreateDTO businessDivisionCreateDTO) {
 
         businessDivisionService.add(businessDivisionCreateDTO);
 
@@ -50,54 +50,54 @@ public class BasicDataController {
 
     @GetMapping("/businessDivision/{buId}")
     @Operation(summary = "根据事业部编号获取事业部信息")
-    public Result<BusinessDivision> getByBuId(@PathVariable Long buId){
+    public Result<BusinessDivision> getByBuId(@PathVariable Long buId) {
         BusinessDivision bu = businessDivisionService.getByBuId(buId);
         return Result.success(bu);
     }
 
     @GetMapping("/businessDivision")
     @Operation(summary = "根据搜索条件分页获取事业部信息")
-    @Parameter(name = "businessDivisionPageQueryDTO",description = "事业部分页搜索模型",in = ParameterIn.QUERY)
-    public Result<PageResult<BusinessDivision>> getBUPageByQuery(BusinessDivisionPageQueryDTO businessDivisionPageQueryDTO){
+    @Parameter(name = "businessDivisionPageQueryDTO", description = "事业部分页搜索模型", in = ParameterIn.QUERY)
+    public Result<PageResult<BusinessDivision>> getBUPageByQuery(BusinessDivisionPageQueryDTO businessDivisionPageQueryDTO) {
         PageResult<BusinessDivision> buPage = businessDivisionService.getBUPageByQuery(businessDivisionPageQueryDTO);
         return Result.success(buPage);
     }
 
     @DeleteMapping("/businessDivision/{buId}")
     @Operation(summary = "根据事业部编号删除")
-    public Result<String> deleteBUByBuId(@PathVariable long buId){
+    public Result<String> deleteBUByBuId(@PathVariable long buId) {
         BusinessDivision bu = businessDivisionService.getByBuId(buId);
-        if(bu==null)
+        if (bu == null)
             throw new BusinessDivisionNotExistException(MessageConstant.BUSINESSDIVISION_NOT_EXIST);
-        long factoryCnt=factoryService.countFactoryByBuId(buId);
-        if(factoryCnt>0)
+        long factoryCnt = factoryService.countFactoryByBuId(buId);
+        if (factoryCnt > 0)
             throw new BaseException("事业部中存在工厂，无法删除！");
 
         businessDivisionService.deleteByBuId(buId);
-        return Result.success("事业部："+bu.getBuName()+"  删除成功！");
+        return Result.success("事业部：" + bu.getBuName() + "  删除成功！");
     }
 
     @PutMapping("/businessDivision/{buId}")
     @Operation(summary = "修改事业部信息")
     public Result<String> updateBU(@PathVariable long buId,
-            @RequestBody BusinessDivisionUpdateDTO businessDivisionUpdateDTO){
+                                   @RequestBody BusinessDivisionUpdateDTO businessDivisionUpdateDTO) {
         BusinessDivision businessDivision = BusinessDivision.builder().buId(buId).build();
-        BeanUtils.copyProperties(businessDivisionUpdateDTO,businessDivision);
+        BeanUtils.copyProperties(businessDivisionUpdateDTO, businessDivision);
         businessDivisionService.updateBU(businessDivision);
         return Result.success("修改成功");
     }
 
     @GetMapping("/factory/{id}")
     @Operation(summary = "通过工厂编号获取工厂信息")
-    public Result<Factory> getFactoryById(@PathVariable Long id){
+    public Result<Factory> getFactoryById(@PathVariable Long id) {
         Factory factory = factoryService.getFactoryById(id);
         return Result.success(factory);
     }
 
     @GetMapping("/factory")
     @Operation(summary = "分页查询搜索备案工厂信息")
-    @Parameter(name = "factoryPageQueryDTO",description = "分页查询备案工厂数据模型",in = ParameterIn.QUERY)
-    public Result<PageResult<FactoryDisplayVO>> getFactoryPageByQuery(FactoryPageQueryDTO factoryPageQueryDTO){
+    @Parameter(name = "factoryPageQueryDTO", description = "分页查询备案工厂数据模型", in = ParameterIn.QUERY)
+    public Result<PageResult<FactoryDisplayVO>> getFactoryPageByQuery(FactoryPageQueryDTO factoryPageQueryDTO) {
         PageResult<FactoryDisplayVO> result = factoryService.getFactoryPageByQuery(factoryPageQueryDTO);
 
         return Result.success(result);
@@ -105,21 +105,21 @@ public class BasicDataController {
 
     @PostMapping("/factory")
     @Operation(summary = "创建备案工厂")
-    public Result<Factory> createFactory(@RequestBody FactoryCreateDTO factoryCreateDTO){
-        Factory factory= factoryService.addFactory(factoryCreateDTO);
+    public Result<Factory> createFactory(@RequestBody FactoryCreateDTO factoryCreateDTO) {
+        Factory factory = factoryService.addFactory(factoryCreateDTO);
         return Result.success(factory);
     }
 
     @DeleteMapping("/factory/{id}")
     @Operation(summary = "通过工厂编号删除备案工厂")
-    public Result<Long> deleteFactoryById(@PathVariable Long id){
+    public Result<Long> deleteFactoryById(@PathVariable Long id) {
         long row = factoryService.deleteFactoryById(id);
         return Result.success(row);
     }
 
     @PostMapping("/factory/collection")
     @Operation(summary = "批量导入备案工厂")
-    public Result<List<Factory>> createFactoryByCollection(@RequestBody List<FactoryCreateDTO> factories){
+    public Result<List<Factory>> createFactoryByCollection(@RequestBody List<FactoryCreateDTO> factories) {
         List<Factory> factoryList = factoryService.addFactoryByCollection(factories);
         return Result.success(factoryList);
     }
@@ -127,7 +127,7 @@ public class BasicDataController {
     @PutMapping("/factory/{id}")
     @Operation(summary = "修改备案工厂信息")
     public Result<UpdateResult<Factory>> updateFactory(@PathVariable @Schema(description = "备案工厂编号") Long id,
-                                        @RequestBody FactoryUpdateDTO factoryUpdateDTO) throws IllegalAccessException {
+                                                       @RequestBody FactoryUpdateDTO factoryUpdateDTO) throws IllegalAccessException {
         Factory factory = Factory.builder()
                 .id(id)
                 .name(factoryUpdateDTO.getName())
@@ -142,21 +142,21 @@ public class BasicDataController {
 
     @GetMapping("/inspection/{id}")
     @Operation(summary = "根据专业检查id查询专业检查信息")
-    public Result<ProfessionInspection> getInspectionById(@PathVariable Long id){
+    public Result<ProfessionInspection> getInspectionById(@PathVariable Long id) {
         return Result.success(professionInspectionService.getById(id));
     }
 
     @GetMapping("/inspection")
     @Operation(summary = "分页条件检索专业检查信息")
-    public Result<PageResult<ProfessionInspection>> getInspectionPageByQuery(ProfessionInspectionPageQueryDTO queryDTO){
-        PageResult<ProfessionInspection> page=professionInspectionService.getPageByQuery(queryDTO);
+    public Result<PageResult<ProfessionInspection>> getInspectionPageByQuery(ProfessionInspectionPageQueryDTO queryDTO) {
+        PageResult<ProfessionInspection> page = professionInspectionService.getPageByQuery(queryDTO);
         return Result.success(page);
     }
 
     @PostMapping("/inspection")
     @Operation(summary = "创建专业检索")
-    public Result<ProfessionInspection> addProfessionInspection(@RequestBody ProfessionInspectionCreateDTO createDTO){
-        ProfessionInspection professionInspection=professionInspectionService.insert(createDTO);
+    public Result<ProfessionInspection> addProfessionInspection(@RequestBody ProfessionInspectionCreateDTO createDTO) {
+        ProfessionInspection professionInspection = professionInspectionService.insert(createDTO);
         return Result.success(professionInspection);
     }
 
@@ -167,21 +167,21 @@ public class BasicDataController {
         ProfessionInspection professionInspection = ProfessionInspection.builder()
                 .id(id)
                 .name(updateDTO.getName()).build();
-        UpdateResult<ProfessionInspection> updateResult=professionInspectionService.update(professionInspection);
+        UpdateResult<ProfessionInspection> updateResult = professionInspectionService.update(professionInspection);
         return Result.success(updateResult);
     }
 
     @DeleteMapping("/inspection/{id}")
     @Operation(summary = "删除专业检查")
-    public Result<String> deleteProfessionInspection(@PathVariable Long id){
-        int row=professionInspectionService.delete(id);
-        return Result.success(String.format("成功删除%d条专业检查",row));
+    public Result<String> deleteProfessionInspection(@PathVariable Long id) {
+        int row = professionInspectionService.delete(id);
+        return Result.success(String.format("成功删除%d条专业检查", row));
     }
 
     @PostMapping("/inspection/collection")
     @Operation(summary = "批量导入专业检查")
-    public Result<List<ProfessionInspection>> addProfessionInspectionByCollection(@RequestBody List<ProfessionInspectionCreateDTO> createDTOList){
-        List<ProfessionInspection> professionInspectionList=professionInspectionService.insertByCollection(createDTOList);
+    public Result<List<ProfessionInspection>> addProfessionInspectionByCollection(@RequestBody List<ProfessionInspectionCreateDTO> createDTOList) {
+        List<ProfessionInspection> professionInspectionList = professionInspectionService.insertByCollection(createDTOList);
         return Result.success(professionInspectionList);
     }
 

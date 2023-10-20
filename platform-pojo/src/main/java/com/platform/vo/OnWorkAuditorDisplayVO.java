@@ -27,5 +27,33 @@ public class OnWorkAuditorDisplayVO implements Serializable {
     private List<AuditorDisplayVO> auditorVOList;
     private Map<String,Long> auditorLevelCnt;
 
+    public static boolean match(Map<String, Long> cntMap,int level){
 
+
+        switch (level){
+            case 5:
+                if((cntMap.getOrDefault("SA",0L)>=2)
+                &&(cntMap.getOrDefault("A",0L)+cntMap.getOrDefault("PA",0L)>=7))
+                    return true;
+                break;
+            case 4:
+                if((cntMap.getOrDefault("SA",0L)>=1)
+                        &&(cntMap.getOrDefault("A",0L)+cntMap.getOrDefault("PA",0L)>=5))
+                    return true;
+                break;
+            case 3:
+                if(cntMap.getOrDefault("SA",0L)+cntMap.getOrDefault("A",0L)>=4)
+                    return true;
+                break;
+            case 2, 1:
+                if((cntMap.getOrDefault("SA",0L)+cntMap.getOrDefault("A",0L)>=2)
+                        &&(cntMap.getOrDefault("A",0L)+cntMap.getOrDefault("PA",0L)
+                        +cntMap.getOrDefault("PA",0L)>=4))
+                    return true;
+                break;
+            default:
+                return true;
+        }
+        return false;
+    }
 }
