@@ -1,7 +1,7 @@
 package com.platform.controller;
 
 import com.platform.constant.JwtClaimsConstant;
-import com.platform.dto.EmployeeLoginDTO;
+import com.platform.dto.employees.EmployeeLoginDTO;
 import com.platform.properties.JwtProperties;
 import com.platform.result.Result;
 import com.platform.service.UserService;
@@ -29,17 +29,17 @@ public class UserController {
     private JwtProperties jwtProperties;
 
     @PostMapping("/login")
-    public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO){
-        log.info("用户登录:{}",employeeLoginDTO);
-        EmployeeLoginVO vo=userService.login(employeeLoginDTO);
+    public Result<EmployeeLoginVO> login(@RequestBody EmployeeLoginDTO employeeLoginDTO) {
+        log.info("用户登录:{}", employeeLoginDTO);
+        EmployeeLoginVO vo = userService.login(employeeLoginDTO);
 
-        Map<String,Object> claims=new HashMap<>();
-        claims.put(JwtClaimsConstant.USER_ID,vo.getId());
-        claims.put(JwtClaimsConstant.EMP_ID,vo.getEmployeeId());
-        claims.put(JwtClaimsConstant.USERNAME,vo.getUsername());
-        claims.put(JwtClaimsConstant.NAME,vo.getName());
+        Map<String, Object> claims = new HashMap<>();
+        claims.put(JwtClaimsConstant.USER_ID, vo.getId());
+        claims.put(JwtClaimsConstant.EMP_ID, vo.getEmployeeId());
+        claims.put(JwtClaimsConstant.USERNAME, vo.getUsername());
+        claims.put(JwtClaimsConstant.NAME, vo.getName());
 
-        String token= JwtUtil.createJWT(jwtProperties.getAdminSecretKey(),
+        String token = JwtUtil.createJWT(jwtProperties.getAdminSecretKey(),
                 jwtProperties.getAdminTtl(), claims);
 
         vo.setToken(token);

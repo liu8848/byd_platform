@@ -1,4 +1,4 @@
-package com.platform.dto;
+package com.platform.dto.professionInspections;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -10,10 +10,10 @@ import java.io.Serializable;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-@Schema(description = "创建专业检查数据模型")
-public class ProfessionInspectionCreateDTO implements Serializable {
-    @Schema(description = "专业检查名称")
+@NoArgsConstructor
+@Schema(description = "修改专业检查数据模型")
+public class ProfessionInspectionUpdateDTO implements Serializable {
     private String name;
+
 }

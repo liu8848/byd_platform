@@ -33,7 +33,7 @@
         where bu.bu_id = #{buId}
     </select>
 
-    <select id="getBUPageByQuery" parameterType="com.platform.dto.BusinessDivisionPageQueryDTO"
+    <select id="getBUPageByQuery" parameterType="com.platform.dto.businessdivisions.BusinessDivisionPageQueryDTO"
             resultMap="businessDivision">
         select * from BusinessDivision bu
         left join factory f on bu.bu_id=f.bu_id

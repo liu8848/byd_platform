@@ -25,27 +25,26 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request,
                              HttpServletResponse response,
-                             Object handler) throws Exception
-    {
-        if(!(handler instanceof HandlerMethod)){
+                             Object handler) throws Exception {
+        if (!(handler instanceof HandlerMethod)) {
             return true;
         }
 
-        String token= request.getHeader(jwtProperties.getAdminTokenName());
-        try{
-            log.info("jwt校验:{}",token);
-            Claims claims= JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(),token);
+        String token = request.getHeader(jwtProperties.getAdminTokenName());
+        try {
+            log.info("jwt校验:{}", token);
+            Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
             EmployeeLoginVO vo = EmployeeLoginVO.builder()
                     .id(claims.get(JwtClaimsConstant.USER_ID, Long.class))
                     .employeeId(claims.get(JwtClaimsConstant.EMP_ID, Long.class))
                     .name(claims.get(JwtClaimsConstant.NAME, String.class))
                     .username(claims.get(JwtClaimsConstant.USERNAME, String.class))
                     .token(claims.get(JwtClaimsConstant.JWT, String.class)).build();
-            log.info("当前登陆员工信息：{}",vo);
+            log.info("当前登陆员工信息：{}", vo);
 
             BaseContext.setThreadLocal(vo);
             return true;
-        }catch(Exception ex){
+        } catch (Exception ex) {
             throw new BaseException(ex.getMessage());
         }
     }

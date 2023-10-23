@@ -21,28 +21,30 @@
     </resultMap>
 
     <select id="getById" resultMap="professionInspection">
-        select * from ProfessionInspection p
-        left join  employee e on p.create_user=e.id
-        where p.id=#{id}
+        select *
+        from ProfessionInspection p
+                 left join employee e on p.create_user = e.id
+        where p.id = #{id}
     </select>
 
     <select id="getPageByQuery" resultMap="professionInspection">
         select p.*,
-               e.name username, e.id, e.grade, e.gender, e.education, e.email,
-               e.phone, e.status, e.factory_id, e.department_id, e.location_id,
-               e.create_time, e.update_time, e.create_user, e.update_user
+        e.name username, e.id, e.grade, e.gender, e.education, e.email,
+        e.phone, e.status, e.factory_id, e.department_id, e.location_id,
+        e.create_time, e.update_time, e.create_user, e.update_user
         from ProfessionInspection p
         left join employee e on p.create_user=e.id
         <where>
             <if test="name!=null and name!=''">and p.name like concat('%',#{name},'%')</if>
             <if test="createUserId!=null">and p.create_user=#{createUserId}</if>
-            <if test="createUserName!=null and createUserName!=''">and e.name like concat('%',#{createUserName},'%')</if>
+            <if test="createUserName!=null and createUserName!=''">and e.name like concat('%',#{createUserName},'%')
+            </if>
         </where>
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
         insert into ProfessionInspection(name, create_user, create_time)
-        VALUES (#{name},#{createUserId},#{createTime})
+        VALUES (#{name}, #{createUserId}, #{createTime})
     </insert>
 
     <update id="update">
@@ -56,15 +58,16 @@
     </update>
 
     <delete id="delete">
-        delete from ProfessionInspection
-        where id=#{id}
+        delete
+        from ProfessionInspection
+        where id = #{id}
     </delete>
 
     <insert id="insertByCollection" useGeneratedKeys="true" keyProperty="id">
         insert into ProfessionInspection(name,create_time,create_user)
         VALUES
-            <foreach collection="professionInspectionList" item="item" separator=",">
-                (#{item.name},#{item.createTime},#{item.createUserId})
-            </foreach>
+        <foreach collection="professionInspectionList" item="item" separator=",">
+            (#{item.name},#{item.createTime},#{item.createUserId})
+        </foreach>
     </insert>
 </mapper>

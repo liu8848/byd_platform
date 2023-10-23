@@ -1,7 +1,7 @@
 package com.platform.mapper;
 
 import com.github.pagehelper.Page;
-import com.platform.dto.ProfessionInspectionPageQueryDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionPageQueryDTO;
 import com.platform.entity.ProfessionInspection;
 import org.apache.ibatis.annotations.Mapper;
 

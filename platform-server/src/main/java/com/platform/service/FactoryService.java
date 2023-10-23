@@ -1,7 +1,7 @@
 package com.platform.service;
 
-import com.platform.dto.FactoryCreateDTO;
-import com.platform.dto.FactoryPageQueryDTO;
+import com.platform.dto.factories.FactoryCreateDTO;
+import com.platform.dto.factories.FactoryPageQueryDTO;
 import com.platform.entity.Factory;
 import com.platform.result.PageResult;
 import com.platform.result.UpdateResult;

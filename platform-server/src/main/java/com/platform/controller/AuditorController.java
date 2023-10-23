@@ -1,14 +1,13 @@
 package com.platform.controller;
 
 import com.platform.constant.MessageConstant;
-import com.platform.dto.AuditorCreateDTO;
+import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.entity.Auditor;
 import com.platform.entity.Employee;
 import com.platform.entity.Factory;
 import com.platform.exception.AccountNotFoundException;
 import com.platform.exception.FactoryNotExistException;
 import com.platform.mapper.EmployeeMapper;
-import com.platform.mapper.FactoryMapper;
 import com.platform.result.Result;
 import com.platform.service.AuditorService;
 import com.platform.service.FactoryService;

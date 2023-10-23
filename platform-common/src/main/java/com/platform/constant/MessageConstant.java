@@ -16,4 +16,6 @@ public class MessageConstant {
     public static final String BUSINESSDIVISION_NOT_EXIST="事业部不存在";
 
     public static final String FACTORY_NOT_EXIST="工厂不存在";
+
+    public static final String GENDER_ILLEGAL="性别参数不存在";
 }

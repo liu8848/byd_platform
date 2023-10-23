@@ -1,7 +1,7 @@
 package com.platform.service;
 
-import com.platform.dto.BusinessDivisionCreateDTO;
-import com.platform.dto.BusinessDivisionPageQueryDTO;
+import com.platform.dto.businessdivisions.BusinessDivisionCreateDTO;
+import com.platform.dto.businessdivisions.BusinessDivisionPageQueryDTO;
 import com.platform.entity.BusinessDivision;
 import com.platform.result.PageResult;
 

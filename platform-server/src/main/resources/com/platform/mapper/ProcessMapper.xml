@@ -4,16 +4,18 @@
 <mapper namespace="com.platform.mapper.ProcessMapper">
 
     <select id="getByApplicantId" resultType="com.platform.entity.Process">
-        select * from process where applicant_id=#{applicantId}
+        select *
+        from process
+        where applicant_id = #{applicantId}
     </select>
 
     <select id="queryPageApplicant" resultType="com.platform.vo.ProcessApplicantVO">
         select
-            p.name,
-            e.name approver,
-            p.status,
-            p.create_time,
-            p.id
+        p.name,
+        e.name approver,
+        p.status,
+        p.create_time,
+        p.id
         from process p
         left join employee e on p.approver_id=e.id
         <where>
@@ -22,24 +24,30 @@
             <if test="status!=null and status!=''">and p.status=#{status}</if>
         </where>
     </select>
-    
+
     <select id="getMaxProcessId" resultType="string">
-        select substr(max(id),9,6)
+        select substr(max(id), 9, 6)
         from process
-        where id like concat(#{prefix},'%')
+        where id like concat(#{prefix}, '%')
     </select>
 
     <insert id="insert">
-        insert into process(id, name, applicant_id, create_time, approver_id, approve_time, update_time, update_user, status)
-        VALUES(#{id},#{name},#{applicantId},#{createTime},#{approverId},#{approveTime},#{updateTime},#{updateUser},#{status})
+        insert into process(id, name, applicant_id, create_time, approver_id, approve_time, update_time, update_user,
+                            status)
+        VALUES (#{id}, #{name}, #{applicantId}, #{createTime}, #{approverId}, #{approveTime}, #{updateTime},
+                #{updateUser}, #{status})
     </insert>
 
     <select id="selectProcessById" resultType="com.platform.entity.Process">
-        select * from process where id=#{processId}
+        select *
+        from process
+        where id = #{processId}
     </select>
-    
+
     <delete id="deleteByProcessId">
-        delete from process where id=#{processId}
+        delete
+        from process
+        where id = #{processId}
     </delete>
 
     <update id="update" parameterType="com.platform.entity.Process">

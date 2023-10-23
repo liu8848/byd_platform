@@ -1,7 +1,7 @@
 package com.platform.mapper;
 
 import com.github.pagehelper.Page;
-import com.platform.dto.ProcessPageQueryDTO;
+import com.platform.dto.processes.ProcessPageQueryDTO;
 import com.platform.entity.Process;
 import com.platform.vo.ProcessApplicantVO;
 import org.apache.ibatis.annotations.Mapper;

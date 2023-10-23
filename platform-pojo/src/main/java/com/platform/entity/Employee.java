@@ -2,39 +2,36 @@ package com.platform.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
+import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class Employee implements Serializable {
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
+public class Employee extends BaseEntity implements Serializable {
+    @Serial
     private static final long serialVersionUID=1L;
 
     private Long id;
     private String name;
     private String grade;
-    private String gender;
-    private String education;
+    private int gender;
+    private int education;
     private String email;
     private String phone;
     private Long factoryId;
     private Long departmentId;
     private Long locationId;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date createTime;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date updateTime;
-    private Long createUser;
-    private Long updateUser;
     private int workStatus;
 
-    @Schema(description = "所属部门名称")
+    @Schema(description = "所属部门")
     private Department department;
+
 }

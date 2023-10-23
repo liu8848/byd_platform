@@ -2,10 +2,8 @@ package com.platform.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,9 +12,10 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@SuperBuilder
+@EqualsAndHashCode(callSuper = true)
 @Schema(description = "审核员")
-public class Auditor implements Serializable{
+public class Auditor extends BaseEntity implements Serializable{
     @Schema(description = "主键")
     private Long id;
     @Schema(description = "工号")
@@ -36,13 +35,6 @@ public class Auditor implements Serializable{
     private String technology;
     @Schema(description = "类型代码")
     private int type;
-
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private LocalDateTime createTime;
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private LocalDateTime updateTime;
-    private Long createUser;
-    private Long updateUser;
 
     @Schema(description = "关联人员信息")
     private Employee employee;

@@ -1,4 +1,4 @@
-package com.platform.dto;
+package com.platform.dto.auditors;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

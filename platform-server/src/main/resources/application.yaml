@@ -9,6 +9,10 @@ spring:
       username: root
       password: sudalu929
 
+  data:
+    redis:
+      host: localhost
+      port: 3679
 mybatis:
   configuration:
     map-underscore-to-camel-case: true
@@ -41,7 +45,6 @@ knife4j:
 
 
 pagehelper:
-  #  params: pageNum=pageNumKey;pageSize=pageSizeKey;
   helper-dialect: mysql
   reasonable: true
   support-methods-arguments: true
@@ -51,4 +54,3 @@ sky:
     admin-secret-key: itcast
     admin-ttl: 7200000
     admin-token-name: token
-

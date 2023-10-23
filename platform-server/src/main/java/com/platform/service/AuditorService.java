@@ -1,8 +1,7 @@
 package com.platform.service;
 
-import com.platform.dto.AuditorCreateDTO;
+import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.entity.Auditor;
-import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.OnWorkAuditorDisplayVO;
 
 import java.util.List;

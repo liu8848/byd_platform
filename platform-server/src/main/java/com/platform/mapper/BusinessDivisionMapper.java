@@ -1,7 +1,7 @@
 package com.platform.mapper;
 
 import com.github.pagehelper.Page;
-import com.platform.dto.BusinessDivisionPageQueryDTO;
+import com.platform.dto.businessdivisions.BusinessDivisionPageQueryDTO;
 import com.platform.entity.BusinessDivision;
 import org.apache.ibatis.annotations.Mapper;
 

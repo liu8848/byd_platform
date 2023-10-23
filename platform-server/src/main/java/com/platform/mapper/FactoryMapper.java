@@ -1,7 +1,7 @@
 package com.platform.mapper;
 
 import com.github.pagehelper.Page;
-import com.platform.dto.FactoryPageQueryDTO;
+import com.platform.dto.factories.FactoryPageQueryDTO;
 import com.platform.entity.Factory;
 import com.platform.vo.FactoryDisplayVO;
 import org.apache.ibatis.annotations.Mapper;

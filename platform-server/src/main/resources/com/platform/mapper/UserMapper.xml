@@ -10,7 +10,7 @@
             u.password,
             e.name
         from user u
-        left join employee e on e.id=u.employee_id
-        where u.username=#{username}
+                 left join employee e on e.id = u.employee_id
+        where u.username = #{username}
     </select>
 </mapper>

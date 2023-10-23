@@ -1,7 +1,7 @@
 package com.platform.service;
 
-import com.platform.dto.ProfessionInspectionCreateDTO;
-import com.platform.dto.ProfessionInspectionPageQueryDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionCreateDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionPageQueryDTO;
 import com.platform.entity.ProfessionInspection;
 import com.platform.result.PageResult;
 import com.platform.result.UpdateResult;

@@ -1,11 +1,12 @@
 package com.platform.controller;
 
-import com.platform.dto.EmployeeLoginDTO;
+import com.platform.annotaionExtend.OperationLog;
+import com.platform.dto.employees.EmployeeCreateDTO;
 import com.platform.entity.Employee;
 import com.platform.mapper.EmployeeMapper;
 import com.platform.result.Result;
+import com.platform.service.employee.EmployeeService;
 import com.platform.vo.EmployeeDisplayVo;
-import com.platform.vo.EmployeeLoginVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -21,9 +22,12 @@ import java.util.List;
 public class EmployeeController {
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Autowired
+    private EmployeeService employeeService;
 
 
     @GetMapping
+    @OperationLog
     @Operation(summary = "获取员工列表")
     public Result<List<EmployeeDisplayVo>> getAll() {
         List<EmployeeDisplayVo> employees = employeeMapper.getAll();
@@ -33,5 +37,12 @@ public class EmployeeController {
     @GetMapping("/{id}")
     public Result<Employee> getById(@PathVariable Long id) {
         return Result.success(employeeMapper.getById(id));
+    }
+
+    @PostMapping
+    @Operation(summary = "添加员工")
+    public Result<Employee> insert(@RequestBody EmployeeCreateDTO createDTO){
+        Employee result = employeeService.insert(createDTO);
+        return Result.success(result);
     }
 }

@@ -3,9 +3,8 @@ package com.platform.service.impl;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.platform.context.BaseContext;
-import com.platform.dto.ProfessionInspectionCreateDTO;
-import com.platform.dto.ProfessionInspectionPageQueryDTO;
-import com.platform.dto.ProfessionInspectionUpdateDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionCreateDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionPageQueryDTO;
 import com.platform.entity.ProfessionInspection;
 import com.platform.exception.BaseException;
 import com.platform.mapper.ProfessionInspectionMapper;
@@ -32,10 +31,10 @@ public class ProfessionInspectionImpl implements ProfessionInspectionService {
     @Override
     public PageResult<ProfessionInspection> getPageByQuery(ProfessionInspectionPageQueryDTO queryDTO) {
         PageHelper.startPage(queryDTO.getPage(), queryDTO.getSize());
-        Page<ProfessionInspection> page=professionInspectionMapper.getPageByQuery(queryDTO);
-        long total= page.getTotal();
-        List<ProfessionInspection> records=page.getResult();
-        return new PageResult<>(total,records);
+        Page<ProfessionInspection> page = professionInspectionMapper.getPageByQuery(queryDTO);
+        long total = page.getTotal();
+        List<ProfessionInspection> records = page.getResult();
+        return new PageResult<>(total, records);
     }
 
     @Override
@@ -52,26 +51,26 @@ public class ProfessionInspectionImpl implements ProfessionInspectionService {
     @Override
     public UpdateResult<ProfessionInspection> update(ProfessionInspection newDTO) throws IllegalAccessException {
         ProfessionInspection oldDTO = professionInspectionMapper.getById(newDTO.getId());
-        if(oldDTO==null){
+        if (oldDTO == null) {
             throw new BaseException("专业检查不存在");
         }
         newDTO.setUpdateTime(LocalDateTime.now());
         newDTO.setUpdateUser(BaseContext.getCurrentId().getEmployeeId());
         professionInspectionMapper.update(newDTO);
 
-        return UpdateResult.getUpdateContent(newDTO,oldDTO);
+        return UpdateResult.getUpdateContent(newDTO, oldDTO);
     }
 
     @Override
     public int delete(Long id) {
-        int row=professionInspectionMapper.delete(id);
+        int row = professionInspectionMapper.delete(id);
         return row;
     }
 
     @Override
     public List<ProfessionInspection> insertByCollection(List<ProfessionInspectionCreateDTO> createDTOList) {
-        List<ProfessionInspection> professionInspectionList=new ArrayList<>();
-        for (ProfessionInspectionCreateDTO createDTO:createDTOList) {
+        List<ProfessionInspection> professionInspectionList = new ArrayList<>();
+        for (ProfessionInspectionCreateDTO createDTO : createDTOList) {
             ProfessionInspection professionInspection = ProfessionInspection.builder()
                     .name(createDTO.getName())
                     .createTime(LocalDateTime.now())

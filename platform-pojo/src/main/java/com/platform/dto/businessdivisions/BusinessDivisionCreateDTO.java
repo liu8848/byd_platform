@@ -1,4 +1,4 @@
-package com.platform.dto;
+package com.platform.dto.businessdivisions;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,8 +12,8 @@ import java.io.Serializable;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@Schema(description = "事业部修改数据模型")
-public class BusinessDivisionUpdateDTO implements Serializable {
+@Schema(description = "事业部创建数据模型")
+public class BusinessDivisionCreateDTO implements Serializable {
     @Schema(description = "事业部名称")
-    private String buName;
+    private String bu_name;
 }

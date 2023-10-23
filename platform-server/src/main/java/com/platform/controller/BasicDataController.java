@@ -1,7 +1,15 @@
 package com.platform.controller;
 
 import com.platform.constant.MessageConstant;
-import com.platform.dto.*;
+import com.platform.dto.businessdivisions.BusinessDivisionCreateDTO;
+import com.platform.dto.businessdivisions.BusinessDivisionPageQueryDTO;
+import com.platform.dto.businessdivisions.BusinessDivisionUpdateDTO;
+import com.platform.dto.factories.FactoryCreateDTO;
+import com.platform.dto.factories.FactoryPageQueryDTO;
+import com.platform.dto.factories.FactoryUpdateDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionCreateDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionPageQueryDTO;
+import com.platform.dto.professionInspections.ProfessionInspectionUpdateDTO;
 import com.platform.entity.BusinessDivision;
 import com.platform.entity.Factory;
 import com.platform.entity.ProfessionInspection;

@@ -1,8 +1,8 @@
 package com.platform.service.impl;
 
-import com.platform.context.BaseContext;
-import com.platform.dto.AuditorCreateDTO;
+import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.entity.Auditor;
+import com.platform.enums.Gender;
 import com.platform.mapper.AuditorMapper;
 import com.platform.mapper.FactoryMapper;
 import com.platform.service.AuditorService;
@@ -42,7 +42,7 @@ public class AuditorServiceImpl implements AuditorService {
                             .employeeName(a.getEmployee().getName())
                             .employeeId(a.getEmployeeId())
                             .grade(a.getEmployee().getGrade())
-                            .gender(a.getEmployee().getGender())
+                            .gender(Gender.fromValue(a.getEmployee().getGender()).toString())
                             .education(a.getEducation())
                             .auditorLevel(a.getAuditorLevel())
                             .email(a.getEmployee().getEmail())
@@ -90,9 +90,7 @@ public class AuditorServiceImpl implements AuditorService {
                 .auditorLevel(auditorCreateDTO.getAuditorLevel())
                 .phone(auditorCreateDTO.getPhone())
                 .registrationNumber(auditorCreateDTO.getRegistrationNumber())
-                .technology(auditorCreateDTO.getTechnology())
-                .createTime(LocalDateTime.now())
-                .createUser(BaseContext.getCurrentId().getEmployeeId()).build();
+                .technology(auditorCreateDTO.getTechnology()).build();
 
         auditorMapper.insert(auditor);
         return auditor;
