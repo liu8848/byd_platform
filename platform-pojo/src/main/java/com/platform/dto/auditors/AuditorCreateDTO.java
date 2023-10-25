@@ -1,5 +1,8 @@
 package com.platform.dto.auditors;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.platform.enums.AuditorLevel;
+import com.platform.enums.Education;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +17,10 @@ import java.io.Serializable;
 public class AuditorCreateDTO implements Serializable {
     private Long employeeId;
     private Long recordFactoryId;
-    private int education;
-    private String auditorLevel;
+    @JsonProperty("education")
+    private Education education;
+    @JsonProperty("auditorLevel")
+    private AuditorLevel auditorLevel;
     private String phone;
     private String registrationNumber;
     private String technology;

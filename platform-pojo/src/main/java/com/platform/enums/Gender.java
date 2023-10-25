@@ -1,16 +1,20 @@
 package com.platform.enums;
 
 
+import com.baomidou.mybatisplus.annotation.EnumValue;
+import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.platform.Constant.PojoMessageConstant;
 import lombok.Getter;
 
 @Getter
 public enum Gender {
+    @JsonEnumDefaultValue
     MALE(1,"男"),
     FEMALE(0,"女");
 
     @JsonValue
+    @EnumValue
     private final int value;
     private final String str;
     Gender(int val,String str){

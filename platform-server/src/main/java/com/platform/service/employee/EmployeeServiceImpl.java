@@ -1,5 +1,8 @@
 package com.platform.service.employee;
 
+import com.platform.annotaionExtend.DictHelper;
+import com.platform.annotaionExtend.DictParam;
+import com.platform.constant.RedisKeyConstant;
 import com.platform.dto.employees.EmployeeCreateDTO;
 import com.platform.entity.Employee;
 import com.platform.mapper.EmployeeMapper;
@@ -18,8 +21,8 @@ public class EmployeeServiceImpl implements EmployeeService{
         Employee employee = Employee.builder()
                 .name(createDTO.getName())
                 .grade(createDTO.getGrade())
-                .gender(createDTO.getGender().getValue())
-                .education(createDTO.getEducation().getValue())
+                .gender(createDTO.getGender())
+                .education(createDTO.getEducation())
                 .email(createDTO.getEmail())
                 .phone(createDTO.getPhone())
                 .factoryId(createDTO.getFactoryId())
@@ -29,6 +32,15 @@ public class EmployeeServiceImpl implements EmployeeService{
                 .build();
 
         employeeMapper.insert(employee);
+        return employee;
+    }
+
+    @Override
+    @DictHelper(value = {
+            @DictParam(targetField = "factoryName",field = "factoryId",dictType = RedisKeyConstant.FACTORY)
+    })
+    public Employee getById(Long id) {
+        Employee employee = employeeMapper.getById(id);
         return employee;
     }
 }

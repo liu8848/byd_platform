@@ -5,4 +5,6 @@ import com.platform.entity.Employee;
 
 public interface EmployeeService {
     Employee insert(EmployeeCreateDTO createDTO);
+
+    Employee getById(Long id);
 }

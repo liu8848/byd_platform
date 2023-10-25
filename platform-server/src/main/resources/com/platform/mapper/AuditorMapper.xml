@@ -10,7 +10,6 @@
         <result column="auditor_level" property="auditorLevel"/>
         <result column="phone" property="phone"/>
         <result column="registration_number" property="registrationNumber"/>
-        <result column="technology" property="technology"/>
         <result column="type" property="type"/>
         <association property="employee" javaType="com.platform.entity.Employee">
             <id column="e_id" property="id"/>
@@ -37,8 +36,33 @@
                 </association>
             </association>
         </association>
+        <collection property="technologyList" ofType="com.platform.vo.ProfessionInspectionVO">
+            <id column="inspection_id" property="id"/>
+            <result column="inspection_name" property="name"/>
+        </collection>
     </resultMap>
 
+    <resultMap id="auditorStandingBookInWork" type="com.platform.entity.AuditorStandingBookInWork">
+        <id column="id" property="id"/>
+        <result property="buId" column="bu_id"/>
+        <result property="recordFactoryId" column="record_factory_id"/>
+        <result property="levelMatch" column="level_match"/>
+        <result property="level" column="level"/>
+        <result property="sa" column="sa"/>
+        <result property="a" column="a"/>
+        <result property="pa" column="pa"/>
+        <result property="warnTime" column="warn_time"/>
+        <collection property="auditors" ofType="com.platform.vo.AuditorDisplayVO">
+            <id property="employeeId" column="employeeId"/>
+            <result property="factoryName"  column="factoryName"/>
+        </collection>
+    </resultMap>
+
+
+    <select id="countAuditorById">
+        select count(employee_id)
+        from auditor where employee_id=#{employeeId}
+    </select>
 
     <select id="getAuditor" resultMap="auditor">
         select a.*,
@@ -49,12 +73,16 @@
                f.name  f_name,
                f.level f_level,
                bu.bu_id,
-               bu.bu_name
+               bu.bu_name,
+               inspection_id,
+               pi.name inspection_name
         from auditor a
                  left join employee e on a.employee_id = e.id
                  left join department d on e.department_id = d.id
                  left join factory f on d.factory_id = f.id
                  left join BusinessDivision bu on bu.bu_id = f.bu_id
+                 left join auditor_inspection ai on a.employee_id=ai.employee_id
+                 left join ProfessionInspection pi on pi.id=ai.inspection_id
                  left join location l on e.location_id = l.id
     </select>
 
@@ -62,4 +90,79 @@
         insert into auditor(employee_id, record_factory_id, education, auditor_level, phone, registration_number, technology, create_user, create_time)
         VALUES (#{employeeId},#{recordFactoryId},#{education},#{auditorLevel},#{phone},#{registrationNumber},#{technology},#{createUser},#{createTime})
     </insert>
+
+    <delete id="deleteAuditorInspectionByEmployeeId">
+        delete from auditor_inspection where employee_id=#{employeeId}
+    </delete>
+
+    <insert id="insertAuditorInspection" useGeneratedKeys="true">
+        insert into auditor_inspection(employee_id, inspection_id)
+        value 
+        <foreach collection="inspectionList" item="inspection" separator=",">
+            (#{inspection.employeeId},#{inspection.inspectionId})
+        </foreach>
+    </insert>
+
+    <select id="getStandingBookInWorkByRecordFactoryId" resultType="com.platform.entity.AuditorStandingBookInWork">
+        select *
+        from auditor_standing_book_in_work asbiw
+    </select>
+
+    <select id="getAuditorByRecordFactoryId" resultMap="auditor">
+        select a.*,
+               e.*,
+               d.id    d_id,
+               d.name  d_name,
+               f.id    f_id,
+               f.name  f_name,
+               f.level f_level,
+               bu.bu_id,
+               bu.bu_name,
+               inspection_id,
+               pi.name inspection_name
+        from auditor a
+                 left join employee e on a.employee_id = e.id
+                 left join department d on e.department_id = d.id
+                 left join factory f on d.factory_id = f.id
+                 left join BusinessDivision bu on bu.bu_id = f.bu_id
+                 left join auditor_inspection ai on a.employee_id=ai.employee_id
+                 left join ProfessionInspection pi on pi.id=ai.inspection_id
+                 left join location l on e.location_id = l.id
+        where a.record_factory_id=#{recordFactoryId}
+    </select>
+
+    <insert id="insertAuditorStandingBook" parameterType="com.platform.entity.AuditorStandingBookInWork" useGeneratedKeys="true" keyProperty="id">
+        insert into auditor_standing_book_in_work(bu_id, record_factory_id, level_match, level, sa, a, pa, warn_time)
+        VALUES (#{buId},#{recordFactoryId},#{levelMatch},#{level},#{sa},#{a},#{pa},#{warnTime})
+    </insert>
+
+    <update id="updateAuditorStandingBook">
+        update auditor_standing_book_in_work
+        set level_match=#{levelMatch},sa=#{sa},a=#{a},pa=#{pa},warn_time=#{warnTime}
+        where id=#{id}
+    </update>
+
+    <select id="getStandingBookInWork" resultMap="auditorStandingBookInWork">
+        select
+            asbiw.*,
+            f.name factoryName,
+            d.name departmentName,
+            e.name employeeName,
+            e.id employeeId,
+            e.grade,
+            e.gender,
+            e.education,
+            a.auditor_level,
+            e.email,
+            e.phone,
+            a.registration_number,
+            l.name locationName
+        from auditor_standing_book_in_work asbiw
+        left join auditor a on asbiw.record_factory_id=a.record_factory_id
+        left join employee e on a.employee_id=e.id
+        left join factory f on a.record_factory_id=f.id
+        left join department d on e.department_id=d.id
+        left join BusinessDivision bu on f.bu_id=bu.bu_id
+        left join location l on e.location_id=l.id
+    </select>
 </mapper>

@@ -59,7 +59,7 @@
                d.id    d_id,
                d.name  d_name,
                f.id    f_id,
-               f.name  f_name,
+--                f.name  f_name,
                f.level f_level,
                bu.bu_id,
                bu.bu_name

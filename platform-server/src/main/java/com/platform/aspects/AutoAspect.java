@@ -3,7 +3,6 @@ package com.platform.aspects;
 import com.platform.annotaionExtend.AutoFill;
 import com.platform.constant.AutoFillConstant;
 import com.platform.context.BaseContext;
-import com.platform.entity.Employee;
 import com.platform.enums.OperationType;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

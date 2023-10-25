@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.DictionaryMapper">
+    <select id="getDictMap" resultType="com.platform.entity.Dictionary">
+        select * from dictionary
+    </select>
+
+    <select id="getFactory" resultType="com.platform.entity.Dictionary">
+        select
+            'FACTORY' dictId,
+            id dictValue,
+            name dictName
+        from factory
+    </select>
+
+    <select id="getBusinessdivision" resultType="com.platform.entity.Dictionary">
+        select
+            'BUSINESSDIVISION' dictId,
+            bu_id dictValue,
+            bu_name dictName
+        from BusinessDivision
+    </select>
+
+    <select id="getDepartment" resultType="com.platform.entity.Dictionary">
+        select
+            'DEPARTMENT' dictId,
+            id dictValue,
+            name dictName
+        from department
+    </select>
+
+    <select id="getLocation" resultType="com.platform.entity.Dictionary">
+        select
+            'LOCATION' dictId,
+            id dictValue,
+            name dictName
+        from location
+    </select>
+</mapper>

@@ -36,7 +36,8 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public Result<Employee> getById(@PathVariable Long id) {
-        return Result.success(employeeMapper.getById(id));
+        Employee employee=employeeService.getById(id);
+        return Result.success(employee);
     }
 
     @PostMapping

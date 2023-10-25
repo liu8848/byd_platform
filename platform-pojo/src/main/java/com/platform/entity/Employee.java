@@ -1,14 +1,16 @@
 package com.platform.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.platform.enums.Education;
+import com.platform.enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 @Data
 @NoArgsConstructor
@@ -22,11 +24,12 @@ public class Employee extends BaseEntity implements Serializable {
     private Long id;
     private String name;
     private String grade;
-    private int gender;
-    private int education;
+    private Gender gender;
+    private Education education;
     private String email;
     private String phone;
     private Long factoryId;
+    private String factoryName;
     private Long departmentId;
     private Long locationId;
     private int workStatus;

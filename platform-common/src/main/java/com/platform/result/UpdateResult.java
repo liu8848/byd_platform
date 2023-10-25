@@ -1,6 +1,5 @@
 package com.platform.result;
 
-import com.alibaba.fastjson2.reader.ObjectReaderImplObject;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

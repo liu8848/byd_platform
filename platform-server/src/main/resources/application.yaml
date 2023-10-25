@@ -9,10 +9,16 @@ spring:
       username: root
       password: sudalu929
 
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      fail-on-ignored-properties: false
+      read-unknown-enum-values-as-null: true
   data:
     redis:
-      host: localhost
-      port: 3679
+      host: 127.0.0.1
+      port: 6379
+
 mybatis:
   configuration:
     map-underscore-to-camel-case: true

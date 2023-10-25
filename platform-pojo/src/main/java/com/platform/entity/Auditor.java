@@ -1,13 +1,16 @@
 package com.platform.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.platform.enums.AuditorLevel;
+import com.platform.enums.Education;
 import io.swagger.v3.oas.annotations.media.Schema;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -23,10 +26,9 @@ public class Auditor extends BaseEntity implements Serializable{
     @Schema(description = "备案工厂编号")
     private Long recordFactoryId;
     @Schema(description = "学历代码")
-    private int education;
-    private String educationName;
+    private Education education;
     @Schema(description = "审核员等级")
-    private String auditorLevel;
+    private AuditorLevel auditorLevel;
     @Schema(description = "手机号码")
     private String phone;
     @Schema(description = "注册编号")
@@ -38,4 +40,8 @@ public class Auditor extends BaseEntity implements Serializable{
 
     @Schema(description = "关联人员信息")
     private Employee employee;
+    @Schema(description = "备案工厂信息")
+    private Factory recordFactory;
+    @Schema(description = "工艺类别列表")
+    private List<ProfessionInspection> technologyList;
 }
