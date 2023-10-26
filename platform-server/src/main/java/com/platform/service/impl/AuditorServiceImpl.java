@@ -1,8 +1,11 @@
 package com.platform.service.impl;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.platform.constant.MessageConstant;
 import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.auditors.AuditorInspectionCreateDTO;
+import com.platform.dto.auditors.AuditorPageQueryDTO;
 import com.platform.entity.*;
 import com.platform.enums.AuditorLevel;
 import com.platform.enums.LevelMatch;
@@ -12,9 +15,12 @@ import com.platform.mapper.AuditorMapper;
 import com.platform.mapper.EmployeeMapper;
 import com.platform.mapper.FactoryMapper;
 import com.platform.mapper.ProfessionInspectionMapper;
+import com.platform.result.PageResult;
 import com.platform.service.AuditorService;
+import com.platform.utils.TransUtil;
 import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.OnWorkAuditorDisplayVO;
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +43,8 @@ public class AuditorServiceImpl implements AuditorService {
     private EmployeeMapper employeeMapper;
     @Autowired
     private ProfessionInspectionMapper inspectionMapper;
+    @Autowired
+    private TransUtil transUtil;
 
     @Override
     public List<OnWorkAuditorDisplayVO> getOnWorkAuditor(){
@@ -55,9 +63,9 @@ public class AuditorServiceImpl implements AuditorService {
                             .employeeName(a.getEmployee().getName())
                             .employeeId(a.getEmployeeId())
                             .grade(a.getEmployee().getGrade())
-                            .gender(a.getEmployee().getGender().getStr())
-                            .education(a.getEducation().getValue())
-                            .auditorLevel(a.getAuditorLevel().getValue())
+                            .gender(a.getEmployee().getGender())
+                            .education(a.getEducation())
+                            .auditorLevel(a.getAuditorLevel())
                             .email(a.getEmployee().getEmail())
                             .phone(a.getPhone())
                             .registrationNumber(a.getRegistrationNumber())
@@ -70,7 +78,7 @@ public class AuditorServiceImpl implements AuditorService {
 
             String buName = auditor.get(0).getEmployee().getDepartment().getFactory().getBu().getBuName();
             String name = auditor.get(0).getEmployee().getDepartment().getFactory().getName();
-            Map<String, Long> auditorLevelCnt = list.stream().collect(Collectors.groupingBy(AuditorDisplayVO::getAuditorLevel, Collectors.counting()));
+            Map<AuditorLevel, Long> auditorLevelCnt = list.stream().collect(Collectors.groupingBy(AuditorDisplayVO::getAuditorLevel, Collectors.counting()));
             OnWorkAuditorDisplayVO vo = OnWorkAuditorDisplayVO.builder()
                     .level(item.getValue().get(0).getEmployee().getDepartment().getFactory().getLevel())
                     .isMatch(OnWorkAuditorDisplayVO.match(auditorLevelCnt,item.getValue().get(0).getEmployee().getDepartment().getFactory().getLevel()))
@@ -137,6 +145,7 @@ public class AuditorServiceImpl implements AuditorService {
         auditorMapper.insert(auditor);
         auditorMapper.deleteAuditorInspectionByEmployeeId(auditor.getEmployeeId());
         auditorMapper.insertAuditorInspection(inspectionList);
+        updateOnWorkStandingBook(auditor.getRecordFactoryId());
         return auditor;
     }
 
@@ -190,6 +199,47 @@ public class AuditorServiceImpl implements AuditorService {
         List<AuditorStandingBookInWork> standingBookInWork = auditorMapper.getStandingBookInWork();
         return standingBookInWork;
     }
+
+    @Override
+    public PageResult<AuditorStandingBookInWork> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO) {
+        PageHelper.startPage(pageQueryDTO.getPage(), pageQueryDTO.getSize());
+        Page<AuditorStandingBookInWork>  pageResult = auditorMapper.getPageQueryStandingBookInWork(pageQueryDTO);
+        long total = pageResult.getTotal();
+        List<AuditorStandingBookInWork> records = pageResult.getResult();
+        List<Long> recordFactoryIdList = records.stream().map(AuditorStandingBookInWork::getRecordFactoryId).distinct().toList();
+        List<Auditor> auditor = auditorMapper.getAuditor();
+
+        Stream<Auditor> auditorStream = auditor.stream();
+
+        auditorStream=auditorStream.filter(a->recordFactoryIdList.contains(a.getRecordFactoryId()));
+
+        if(pageQueryDTO.getAuditorLevel()!=null){
+            auditorStream=auditorStream.filter(a->a.getAuditorLevel().equals(pageQueryDTO.getAuditorLevel()));
+        }
+
+        if(!StringUtil.isNullOrEmpty(pageQueryDTO.getEmployeeName())){
+            auditorStream=auditorStream.filter(a->a.getEmployee().getName().contains(pageQueryDTO.getEmployeeName()));
+        }
+
+
+        Map<Long, List<Auditor>> auditorMap = auditorStream.collect(Collectors.groupingBy(Auditor::getRecordFactoryId));
+        records.removeIf(r->!auditorMap.containsKey(r.getRecordFactoryId()));
+
+        records.forEach(r->r.setAuditors(transUtil.auditorListToVOList(auditorMap.get(r.getRecordFactoryId()))));
+        return new PageResult<>(total,records);
+    }
+
+    @Override
+    public List<AuditorDisplayVO> getAuditorAll() {
+        List<Auditor> auditors = auditorMapper.getAuditor();
+        return transUtil.auditorListToVOList(auditors);
+    }
+
+
+
+
+
+
 
 
 }

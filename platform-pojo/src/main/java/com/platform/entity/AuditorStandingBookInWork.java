@@ -1,5 +1,6 @@
 package com.platform.entity;
 
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.platform.enums.AuditorLevel;
 import com.platform.enums.LevelMatch;
@@ -18,6 +19,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@TableName(value = "auditor_standing_book_in_work")
 public class AuditorStandingBookInWork implements Serializable {
     private Long id;
     private Long buId;

@@ -2,7 +2,6 @@ package com.platform.utils;
 
 import com.platform.constant.RedisKeyConstant;
 import com.platform.entity.Dictionary;
-import com.platform.utils.RedisUtil;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -22,6 +21,7 @@ public class DictUtil {
         load(RedisKeyConstant.FACTORY);
         load(RedisKeyConstant.DEPARTMENT);
         load(RedisKeyConstant.BUSINESSDIVISION);
+        load(RedisKeyConstant.LOCATION);
     }
 
     private void load(String key){

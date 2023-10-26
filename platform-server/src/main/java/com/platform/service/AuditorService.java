@@ -1,8 +1,11 @@
 package com.platform.service;
 
 import com.platform.dto.auditors.AuditorCreateDTO;
+import com.platform.dto.auditors.AuditorPageQueryDTO;
 import com.platform.entity.Auditor;
 import com.platform.entity.AuditorStandingBookInWork;
+import com.platform.result.PageResult;
+import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.OnWorkAuditorDisplayVO;
 
 import java.util.List;
@@ -16,4 +19,7 @@ public interface AuditorService {
 
     List<AuditorStandingBookInWork> getStandingBookInWork();
 
+    PageResult<AuditorStandingBookInWork> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO);
+
+    List<AuditorDisplayVO> getAuditorAll();
 }

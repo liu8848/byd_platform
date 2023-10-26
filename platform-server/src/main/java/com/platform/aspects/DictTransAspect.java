@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
 
 @Aspect
@@ -26,6 +27,7 @@ public class DictTransAspect {
     @Around("@annotation(dictHelper)")
     public Object doAround(ProceedingJoinPoint joinPoint,DictHelper dictHelper)throws Throwable{
 
+        log.info("--------开始字典转换------------");
         try{
             Object result=joinPoint.proceed();
 
@@ -33,24 +35,32 @@ public class DictTransAspect {
             if(values == null){
                 return result;
             }
-
-            for(DictParam value:values){
-                Class<?> clazz = result.getClass();
-                Field sourceField = clazz.getDeclaredField(value.field());
-                sourceField.setAccessible(true);
-                Object fieldValue = sourceField.get(result);
-
-                Map<String, String> factoryMap = DictUtil.dictMap.get(value.dictType());
-                String targetValue = factoryMap.getOrDefault(fieldValue.toString(), "");
-
-                Field targetField = clazz.getDeclaredField(value.targetField());
-                targetField.setAccessible(true);
-                targetField.set(result,targetValue);
-            }
+            if(result instanceof List){
+                for (var r:(List<?>)result) {
+                    trans(r,values);
+                }
+            }else
+                trans(result,values);
             return result;
         }catch (Exception ex){
             ex.printStackTrace();
             return null;
+        }
+    }
+
+    private void trans(Object r,DictParam[] values)throws Throwable{
+        for(DictParam value:values){
+            Class<?> clazz = r.getClass();
+            Field sourceField = clazz.getDeclaredField(value.field());
+            sourceField.setAccessible(true);
+            Object fieldValue = sourceField.get(r);
+
+            Map<String, String> factoryMap = DictUtil.dictMap.get(value.dictType());
+            String targetValue = factoryMap.getOrDefault(fieldValue.toString(), "");
+
+            Field targetField = clazz.getDeclaredField(value.targetField());
+            targetField.setAccessible(true);
+            targetField.set(r,targetValue);
         }
     }
 

@@ -7,5 +7,7 @@ public class RedisKeyConstant {
 
     public static final String BUSINESSDIVISION="BUSINESSDIVISION";
 
+    public static final String LOCATION="LOCATION";
+
     public static final String GENDER="GENDER";
 }

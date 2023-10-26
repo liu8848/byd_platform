@@ -52,10 +52,8 @@
         <result property="a" column="a"/>
         <result property="pa" column="pa"/>
         <result property="warnTime" column="warn_time"/>
-        <collection property="auditors" ofType="com.platform.vo.AuditorDisplayVO">
-            <id property="employeeId" column="employeeId"/>
-            <result property="factoryName"  column="factoryName"/>
-        </collection>
+        <collection property="auditors" javaType="ArrayList" column="record_factory_id"
+                    ofType="com.platform.vo.AuditorDisplayVO" select="getAuditorDisplayVO"/>
     </resultMap>
 
 
@@ -64,26 +62,20 @@
         from auditor where employee_id=#{employeeId}
     </select>
 
-    <select id="getAuditor" resultMap="auditor">
-        select a.*,
-               e.*,
-               d.id    d_id,
-               d.name  d_name,
-               f.id    f_id,
-               f.name  f_name,
-               f.level f_level,
-               bu.bu_id,
-               bu.bu_name,
-               inspection_id,
-               pi.name inspection_name
-        from auditor a
-                 left join employee e on a.employee_id = e.id
-                 left join department d on e.department_id = d.id
-                 left join factory f on d.factory_id = f.id
-                 left join BusinessDivision bu on bu.bu_id = f.bu_id
-                 left join auditor_inspection ai on a.employee_id=ai.employee_id
-                 left join ProfessionInspection pi on pi.id=ai.inspection_id
-                 left join location l on e.location_id = l.id
+    <select id="getAuditor" resultType="com.platform.entity.Auditor">
+        select
+            auditor.*,
+            e.id `employee.id`,
+            e.name `employee.name`,
+            e.grade `employee.grade`,
+            e.gender `employee.gender`,
+            e.email `employee.email`,
+            e.phone `employee.phone`,
+            e.factory_id `employee.factoryId`,
+            e.department_id `employee.departmentId`,
+            e.location_id `employee.locationId`
+        from auditor
+        left join employee e on auditor.employee_id = e.id
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -106,6 +98,7 @@
     <select id="getStandingBookInWorkByRecordFactoryId" resultType="com.platform.entity.AuditorStandingBookInWork">
         select *
         from auditor_standing_book_in_work asbiw
+        where record_factory_id=#{recordFactoryId}
     </select>
 
     <select id="getAuditorByRecordFactoryId" resultMap="auditor">
@@ -143,12 +136,15 @@
     </update>
 
     <select id="getStandingBookInWork" resultMap="auditorStandingBookInWork">
+        select * from auditor_standing_book_in_work
+    </select>
+
+    <select id="getAuditorDisplayVO" resultType="com.platform.vo.AuditorDisplayVO">
         select
-            asbiw.*,
-            f.name factoryName,
-            d.name departmentName,
-            e.name employeeName,
-            e.id employeeId,
+            e.factory_id,
+            e.department_id,
+            e.name employee_name,
+            a.employee_id,
             e.grade,
             e.gender,
             e.education,
@@ -156,13 +152,20 @@
             e.email,
             e.phone,
             a.registration_number,
-            l.name locationName
-        from auditor_standing_book_in_work asbiw
-        left join auditor a on asbiw.record_factory_id=a.record_factory_id
+            e.location_id
+        from auditor a
         left join employee e on a.employee_id=e.id
-        left join factory f on a.record_factory_id=f.id
-        left join department d on e.department_id=d.id
-        left join BusinessDivision bu on f.bu_id=bu.bu_id
-        left join location l on e.location_id=l.id
+        where a.record_factory_id=#{record_factory_id}
+    </select>
+
+    <select id="getPageQueryStandingBookInWork" resultType="com.platform.entity.AuditorStandingBookInWork">
+        select *
+        from auditor_standing_book_in_work asbiw
+        <where>
+            <if test="levelMatch!=null">and level_match=#{levelMatch}</if>
+            <if test="level!=null">and level=#{level}</if>
+            <if test="buId!=null">and bu_id=#{buId}</if>
+            <if test="recordFactoryId!=null">and record_factory_id=#{recordFactoryId}</if>
+        </where>
     </select>
 </mapper>

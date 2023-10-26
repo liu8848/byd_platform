@@ -1,5 +1,6 @@
 package com.platform.vo;
 
+import com.platform.enums.AuditorLevel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,30 +24,30 @@ public class OnWorkAuditorDisplayVO implements Serializable {
     private String buName;
     private String recordFactoryName;
     private List<AuditorDisplayVO> auditorVOList;
-    private Map<String,Long> auditorLevelCnt;
+    private Map<AuditorLevel,Long> auditorLevelCnt;
 
-    public static boolean match(Map<String, Long> cntMap,int level){
+    public static boolean match(Map<AuditorLevel, Long> cntMap, int level){
 
 
         switch (level){
             case 5:
-                if((cntMap.getOrDefault("SA",0L)>=2)
-                &&(cntMap.getOrDefault("A",0L)+cntMap.getOrDefault("PA",0L)>=7))
+                if((cntMap.getOrDefault(AuditorLevel.SA,0L)>=2)
+                &&(cntMap.getOrDefault(AuditorLevel.A,0L)+cntMap.getOrDefault(AuditorLevel.PA,0L)>=7))
                     return true;
                 break;
             case 4:
-                if((cntMap.getOrDefault("SA",0L)>=1)
-                        &&(cntMap.getOrDefault("A",0L)+cntMap.getOrDefault("PA",0L)>=5))
+                if((cntMap.getOrDefault(AuditorLevel.SA,0L)>=1)
+                        &&(cntMap.getOrDefault(AuditorLevel.A,0L)+cntMap.getOrDefault(AuditorLevel.PA,0L)>=5))
                     return true;
                 break;
             case 3:
-                if(cntMap.getOrDefault("SA",0L)+cntMap.getOrDefault("A",0L)>=4)
+                if(cntMap.getOrDefault(AuditorLevel.PA,0L)+cntMap.getOrDefault(AuditorLevel.A,0L)>=4)
                     return true;
                 break;
             case 2, 1:
-                if((cntMap.getOrDefault("SA",0L)+cntMap.getOrDefault("A",0L)>=2)
-                        &&(cntMap.getOrDefault("A",0L)+cntMap.getOrDefault("PA",0L)
-                        +cntMap.getOrDefault("PA",0L)>=4))
+                if((cntMap.getOrDefault(AuditorLevel.SA,0L)+cntMap.getOrDefault(AuditorLevel.A,0L)>=2)
+                        &&(cntMap.getOrDefault(AuditorLevel.A,0L)+cntMap.getOrDefault(AuditorLevel.PA,0L)
+                        +cntMap.getOrDefault(AuditorLevel.PA,0L)>=4))
                     return true;
                 break;
             default:

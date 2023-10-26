@@ -1,10 +1,16 @@
 package com.platform.mapper;
 
+import com.github.pagehelper.Page;
 import com.platform.annotaionExtend.AutoFill;
+import com.platform.annotaionExtend.DictHelper;
+import com.platform.annotaionExtend.DictParam;
+import com.platform.constant.RedisKeyConstant;
 import com.platform.dto.auditors.AuditorInspectionCreateDTO;
+import com.platform.dto.auditors.AuditorPageQueryDTO;
 import com.platform.entity.Auditor;
 import com.platform.entity.AuditorStandingBookInWork;
 import com.platform.enums.OperationType;
+import com.platform.vo.AuditorDisplayVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -32,4 +38,12 @@ public interface AuditorMapper {
     void updateAuditorStandingBook(AuditorStandingBookInWork asibw);
 
     List<AuditorStandingBookInWork> getStandingBookInWork();
+
+    @DictHelper(value = {
+            @DictParam(field = "factoryId",targetField = "factoryName",dictType = RedisKeyConstant.FACTORY),
+            @DictParam(field = "departmentId",targetField = "departmentName",dictType = RedisKeyConstant.DEPARTMENT)
+    })
+    List<AuditorDisplayVO> getAuditorDisplayVO(Long record_factory_id);
+
+    Page<AuditorStandingBookInWork> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO);
 }

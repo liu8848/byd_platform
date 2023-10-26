@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ public class DictInitConfiguration {
         load(RedisKeyConstant.FACTORY);
         load(RedisKeyConstant.BUSINESSDIVISION);
         load(RedisKeyConstant.DEPARTMENT);
+        load(RedisKeyConstant.LOCATION);
         log.info("----------------数据字典加载-完成------------------");
     }
 
@@ -43,7 +43,5 @@ public class DictInitConfiguration {
         List<Dictionary> factories= (List<Dictionary>) method.invoke(dictionaryMapper);
         Map<String, Dictionary> collect = factories.stream().collect(Collectors.toMap(f-> f.getDictValue().toString(), f -> f));
         redisUtil.hsetAll(key,collect);
-        Object dictValue = redisUtil.hmget(key);
-
     }
 }

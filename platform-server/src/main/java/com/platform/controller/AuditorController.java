@@ -1,12 +1,13 @@
 package com.platform.controller;
 
-import com.platform.constant.RedisKeyConstant;
 import com.platform.dto.auditors.AuditorCreateDTO;
+import com.platform.dto.auditors.AuditorPageQueryDTO;
 import com.platform.entity.Auditor;
 import com.platform.entity.AuditorStandingBookInWork;
+import com.platform.result.PageResult;
 import com.platform.result.Result;
 import com.platform.service.AuditorService;
-import com.platform.utils.RedisUtil;
+import com.platform.vo.AuditorDisplayVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -32,10 +33,24 @@ public class AuditorController {
         return Result.success(standingBookInWork);
     }
 
+    @GetMapping("/all")
+    @Operation(summary = "获取所有审核员信息")
+    public Result<List<AuditorDisplayVO>>getAllAuditor(){
+        List<AuditorDisplayVO> auditorAll = auditorService.getAuditorAll();
+        return Result.success(auditorAll);
+    }
+
     @PostMapping("/add")
     @Operation(summary = "添加审核员")
     public Result<Auditor> createAuditor(@RequestBody AuditorCreateDTO auditorCreateDTO){
         Auditor auditor=auditorService.insert(auditorCreateDTO);
         return Result.success(auditor);
+    }
+
+    @GetMapping("/pageQuery")
+    @Operation(summary = "在职审核员台账分页查询")
+    public Result<PageResult<AuditorStandingBookInWork>> getPageQueryOnWorkAuditor(AuditorPageQueryDTO pageQueryDTO){
+        PageResult<AuditorStandingBookInWork> result = auditorService.getPageQueryStandingBookInWork(pageQueryDTO);
+        return Result.success(result);
     }
 }
