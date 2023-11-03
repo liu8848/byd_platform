@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Data
@@ -16,20 +17,25 @@ import java.util.Date;
 @AllArgsConstructor
 @Schema(description = "展示用户信息的模型")
 public class EmployeeDisplayVo implements Serializable {
-    private Long id;
-    private String name;
+    private Long employeeId;
+    private String employeeName;
     private String grade;
     private String gender;
     private String education;
     private String email;
     private String phone;
+    private Long buId;
+    private String buName;
+    private Long factoryId;
     private String factoryName;
+    private Long departmentId;
     private String departmentName;
+    private Long locationId;
     private String locationName;
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date createTime;
+    private LocalDateTime createTime;
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
-    private Date updateTime;
+    private LocalDateTime updateTime;
     private Long createUser;
     private Long updateUser;
 }

@@ -7,7 +7,6 @@ import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.auditors.AuditorInspectionCreateDTO;
 import com.platform.dto.auditors.AuditorPageQueryDTO;
 import com.platform.entity.*;
-import com.platform.enums.AuditorLevel;
 import com.platform.enums.LevelMatch;
 import com.platform.exception.BaseException;
 import com.platform.exception.FactoryNotExistException;
@@ -19,7 +18,7 @@ import com.platform.result.PageResult;
 import com.platform.service.AuditorService;
 import com.platform.utils.TransUtil;
 import com.platform.vo.AuditorDisplayVO;
-import com.platform.vo.OnWorkAuditorDisplayVO;
+import com.platform.vo.AuditorStandingBookInWorkVO;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -45,63 +44,6 @@ public class AuditorServiceImpl implements AuditorService {
     private ProfessionInspectionMapper inspectionMapper;
     @Autowired
     private TransUtil transUtil;
-
-    @Override
-    public List<OnWorkAuditorDisplayVO> getOnWorkAuditor(){
-        List<Auditor> auditor = auditorMapper.getAuditor();
-
-        Map<Long, List<Auditor>> result = auditor.stream().collect(
-                Collectors.groupingBy(Auditor::getRecordFactoryId)
-        );
-
-        List<OnWorkAuditorDisplayVO> onWorkAuditorDisplayVOS = new ArrayList<>();
-        for (var item : result.entrySet()) {
-            List<AuditorDisplayVO> list = item.getValue().stream()
-                    .map(a -> AuditorDisplayVO.builder()
-                            .factoryName(a.getEmployee().getDepartment().getFactory().getName())
-                            .departmentName(a.getEmployee().getDepartment().getName())
-                            .employeeName(a.getEmployee().getName())
-                            .employeeId(a.getEmployeeId())
-                            .grade(a.getEmployee().getGrade())
-                            .gender(a.getEmployee().getGender())
-                            .education(a.getEducation())
-                            .auditorLevel(a.getAuditorLevel())
-                            .email(a.getEmployee().getEmail())
-                            .phone(a.getPhone())
-                            .registrationNumber(a.getRegistrationNumber())
-                            .locationName(a.getEmployee().getLocationId().toString())
-                            .technologyName(a.getTechnology())
-                            .workStatus(a.getEmployee().getWorkStatus())
-                            .type(a.getType())
-                            .build()
-                    ).toList();
-
-            String buName = auditor.get(0).getEmployee().getDepartment().getFactory().getBu().getBuName();
-            String name = auditor.get(0).getEmployee().getDepartment().getFactory().getName();
-            Map<AuditorLevel, Long> auditorLevelCnt = list.stream().collect(Collectors.groupingBy(AuditorDisplayVO::getAuditorLevel, Collectors.counting()));
-            OnWorkAuditorDisplayVO vo = OnWorkAuditorDisplayVO.builder()
-                    .level(item.getValue().get(0).getEmployee().getDepartment().getFactory().getLevel())
-                    .isMatch(OnWorkAuditorDisplayVO.match(auditorLevelCnt,item.getValue().get(0).getEmployee().getDepartment().getFactory().getLevel()))
-                    .buName(buName)
-                    .recordFactoryName(name)
-                    .warnTime(item.getValue().get(0).getEmployee().getDepartment().getFactory().getWarnTime())
-                    .auditorVOList(list)
-                    .auditorLevelCnt(auditorLevelCnt)
-                    .build();
-            onWorkAuditorDisplayVOS.add(vo);
-
-            if(!vo.isMatch()){
-                if(vo.getWarnTime()==null){
-                    LocalDateTime now = LocalDateTime.now();
-                    vo.setWarnTime(now);
-                    factoryMapper.updateWarnTime(now,item.getKey());
-                }
-            }
-        }
-
-        return onWorkAuditorDisplayVOS;
-    }
-
 
 
     @Override
@@ -149,6 +91,10 @@ public class AuditorServiceImpl implements AuditorService {
         return auditor;
     }
 
+    /***
+     * 更新在职审核员台账
+     * @param recordFactoryId 备案工厂编号
+     */
     public void updateOnWorkStandingBook(Long recordFactoryId){
         AuditorStandingBookInWork asibw = auditorMapper.getStandingBookInWorkByRecordFactoryId(recordFactoryId);
         Factory factory = factoryMapper.getFactoryById(recordFactoryId);
@@ -160,18 +106,18 @@ public class AuditorServiceImpl implements AuditorService {
                 throw new FactoryNotExistException(MessageConstant.FACTORY_NOT_EXIST);
             }
             asibw.setBuId(factory.getBu().getBuId());
-            asibw.setLevel(factory.getLevel());
         }
-        List<Auditor> auditors= auditorMapper.getAuditorByRecordFactoryId(recordFactoryId);
+        asibw.setLevel(factory.getLevel());
+        List<Auditor> auditors= auditorMapper.getAuditorByRecordFactoryId(recordFactoryId).stream().filter(a->a.getEmployee().getStatus()==1).toList();
 
-        Map<AuditorLevel, Long> collect = auditors.stream()
+        Map<Integer, Long> collect = auditors.stream()
                 .collect(
                         Collectors.groupingBy(Auditor::getAuditorLevel, Collectors.counting())
                 );
 
-        asibw.setSa(collect.getOrDefault(AuditorLevel.SA,0L));
-        asibw.setA(collect.getOrDefault(AuditorLevel.A,0L));
-        asibw.setPa(collect.getOrDefault(AuditorLevel.PA,0L));
+        asibw.setSa(collect.getOrDefault(1,0L));
+        asibw.setA(collect.getOrDefault(2,0L));
+        asibw.setPa(collect.getOrDefault(3,0L));
         asibw.setLevel(factory.getLevel());
 
         if(AuditorStandingBookInWork.match(collect,factory.getLevel())){
@@ -192,12 +138,14 @@ public class AuditorServiceImpl implements AuditorService {
     }
 
     @Override
-    public List<AuditorStandingBookInWork> getStandingBookInWork() {
+    public List<AuditorStandingBookInWorkVO> getStandingBookInWork() {
         List<Auditor> auditors = auditorMapper.getAuditor();
         Stream<Long> recordFactoryIdList = auditors.stream().map(Auditor::getRecordFactoryId).distinct();
         recordFactoryIdList.forEach(this::updateOnWorkStandingBook);
         List<AuditorStandingBookInWork> standingBookInWork = auditorMapper.getStandingBookInWork();
-        return standingBookInWork;
+        Map<Long, List<Auditor>> auditorMap = auditors.stream().collect(Collectors.groupingBy(Auditor::getRecordFactoryId));
+        standingBookInWork.forEach(a->a.setAuditors(transUtil.auditorListToVOList(auditorMap.getOrDefault(a.getRecordFactoryId(),null))));
+        return transUtil.auditorStandingBookInWorkListToVoList(standingBookInWork);
     }
 
     @Override
@@ -214,7 +162,7 @@ public class AuditorServiceImpl implements AuditorService {
         auditorStream=auditorStream.filter(a->recordFactoryIdList.contains(a.getRecordFactoryId()));
 
         if(pageQueryDTO.getAuditorLevel()!=null){
-            auditorStream=auditorStream.filter(a->a.getAuditorLevel().equals(pageQueryDTO.getAuditorLevel()));
+            auditorStream=auditorStream.filter(a->a.getAuditorLevel()==pageQueryDTO.getAuditorLevel());
         }
 
         if(!StringUtil.isNullOrEmpty(pageQueryDTO.getEmployeeName())){
@@ -235,11 +183,37 @@ public class AuditorServiceImpl implements AuditorService {
         return transUtil.auditorListToVOList(auditors);
     }
 
+    @Override
+    public AuditorDisplayVO getAuditorByEmployeeId(Long employeeId) {
+        Auditor auditor=auditorMapper.getAuditorByEmployeeId(employeeId);
 
+        return transUtil.auditorToVO(auditor);
+    }
 
+    @Override
+    public void deleteAuditorByEmployeeId(Long employeeId) {
+        Auditor auditor = auditorMapper.getAuditorByEmployeeId(employeeId);
+        if(auditor==null){
+            throw new BaseException("审核员不存在！");
+        }
+        auditorMapper.deleteByEmployeeId(employeeId);
+    }
 
+    @Override
+    public void updateAuditorArrangement(Long employeeId, Boolean isArrange) {
+        Auditor auditor = auditorMapper.getAuditorByEmployeeId(employeeId);
+        if(auditor==null){
+            throw new BaseException("审核员不存在！");
+        }
 
+        if(!isArrange){
+            auditorMapper.updateAuditorArrangement(employeeId,isArrange);
+            return;
+        }
 
+        AuditorStandingBookInWork standingBook = auditorMapper.getStandingBookInWorkByRecordFactoryId(auditor.getRecordFactoryId());
+        long totalAuditorCnt=standingBook.getA()+ standingBook.getSa()+ standingBook.getPa();
 
-
+        auditorMapper.updateAuditorArrangement(employeeId,isArrange);
+    }
 }

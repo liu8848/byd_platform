@@ -6,6 +6,8 @@ import com.platform.constant.RedisKeyConstant;
 import com.platform.dto.employees.EmployeeCreateDTO;
 import com.platform.entity.Employee;
 import com.platform.mapper.EmployeeMapper;
+import com.platform.utils.TransUtil;
+import com.platform.vo.EmployeeDisplayVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,8 @@ import org.springframework.stereotype.Service;
 public class EmployeeServiceImpl implements EmployeeService{
     @Autowired
     private EmployeeMapper employeeMapper;
+    @Autowired
+    private TransUtil transUtil;
 
     @Override
     public Employee insert(EmployeeCreateDTO createDTO) {
@@ -28,7 +32,7 @@ public class EmployeeServiceImpl implements EmployeeService{
                 .factoryId(createDTO.getFactoryId())
                 .departmentId(createDTO.getDepartmentId())
                 .locationId(createDTO.getLocationId())
-                .workStatus(createDTO.getWorkStatus())
+                .status(createDTO.getWorkStatus())
                 .build();
 
         employeeMapper.insert(employee);
@@ -39,8 +43,8 @@ public class EmployeeServiceImpl implements EmployeeService{
     @DictHelper(value = {
             @DictParam(targetField = "factoryName",field = "factoryId",dictType = RedisKeyConstant.FACTORY)
     })
-    public Employee getById(Long id) {
+    public EmployeeDisplayVo getById(Long id) {
         Employee employee = employeeMapper.getById(id);
-        return employee;
+        return transUtil.employeeToVO(employee);
     }
 }

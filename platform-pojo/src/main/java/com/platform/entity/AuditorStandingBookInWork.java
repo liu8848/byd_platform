@@ -36,7 +36,7 @@ public class AuditorStandingBookInWork implements Serializable {
     private List<AuditorDisplayVO> auditors;
 
 
-    public static boolean match(Map<AuditorLevel, Long> cntMap, int level){
+    public static boolean match(Map<Integer, Long> cntMap, int level){
 
 
         switch (level){

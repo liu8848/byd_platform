@@ -2,15 +2,12 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.platform.mapper.DictionaryMapper">
-    <select id="getDictMap" resultType="com.platform.entity.Dictionary">
-        select * from dictionary
-    </select>
-
     <select id="getFactory" resultType="com.platform.entity.Dictionary">
         select
             'FACTORY' dictId,
             id dictValue,
-            name dictName
+            name dictName,
+            '工厂名称' dictDesc
         from factory
     </select>
 
@@ -18,7 +15,8 @@
         select
             'BUSINESSDIVISION' dictId,
             bu_id dictValue,
-            bu_name dictName
+            bu_name dictName,
+            '事业部名称' dictDesc
         from BusinessDivision
     </select>
 
@@ -26,7 +24,8 @@
         select
             'DEPARTMENT' dictId,
             id dictValue,
-            name dictName
+            name dictName,
+            '部门名称' dictDesc
         from department
     </select>
 
@@ -34,7 +33,30 @@
         select
             'LOCATION' dictId,
             id dictValue,
-            name dictName
+            name dictName,
+            '工作地点名称' dictDesc
         from location
+    </select>
+
+    <select id="getProfessionInspection" resultType="com.platform.entity.Dictionary">
+        select
+            'PROFESSION_INSPECTION' dictId,
+            pi.id dictValue,
+            pi.name dictName,
+            '工艺类别名称' dictDesc
+        from ProfessionInspection pi
+    </select>
+
+    <select id="getTechnologyDict" resultType="com.platform.entity.Dictionary">
+        select
+            'TECHNOLOGY' dictId,
+            pi.id dictValue,
+            pi.name dictName,
+            '工艺类别名称' dictDesc
+        from ProfessionInspection pi
+    </select>
+
+    <select id="getNormalDict" resultType="com.platform.entity.Dictionary">
+        select * from dictionary
     </select>
 </mapper>

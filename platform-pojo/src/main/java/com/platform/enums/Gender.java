@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 public enum Gender {
-    @JsonEnumDefaultValue
+
     MALE(1,"男"),
     FEMALE(0,"女");
 

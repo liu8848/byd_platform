@@ -7,11 +7,15 @@ import java.util.List;
 
 @Mapper
 public interface DictionaryMapper {
-    List<com.platform.entity.Dictionary> getDictMap();
 
     List<Dictionary> getFactory();
 
     List<Dictionary> getBusinessdivision();
     List<Dictionary> getDepartment();
     List<Dictionary> getLocation();
+    List<Dictionary> getProfessionInspection();
+
+    List<Dictionary> getTechnologyDict();
+
+    List<Dictionary> getNormalDict();
 }

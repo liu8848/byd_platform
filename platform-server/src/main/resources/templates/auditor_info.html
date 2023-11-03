@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>审核员信息</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<form action="http://localhost:8020/mvc/auditor/update" method="post">
+<table class="table" th:object="${auditor}" id="userInfo">
+    <thead>
+    <tr>
+        <th>审核员信息</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr>
+        <td>姓名：</td>
+        <td th:text="${auditor.employeeName}"/>
+        <td>工号：</td>
+        <td th:text="${auditor.employeeId}"/>
+    </tr>
+    <tr>
+        <td>工厂：</td>
+        <td th:text="${auditor.factoryName}"/>
+        <td>部门：</td>
+        <td th:text="${auditor.departmentName}"/>
+        <td>工作地：</td>
+        <td th:text="${auditor.locationName}"/>
+    </tr>
+    <tr>
+        <td>级别：</td>
+        <td th:text="${auditor.grade}"/>
+        <td>性别：</td>
+        <td th:text="${auditor.gender}"/>
+        <td>学历：</td>
+        <td>
+            <label>
+                <select class="combos" name="userEducation" >
+                    <option th:each="item : ${educationEnum}"
+                            th:value="${item.value}"
+                            th:text="${item.str}"
+                            th:selected="${auditor.education==item}">
+                    </option>
+                </select>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>审核员等级：</td>
+        <td>
+            <label>
+                <select class="combos" name="auditorLevel">
+                    <option th:each="item:${auditorLevelEnum}"
+                            th:value="${item.value}"
+                            th:text="${item.str}"
+                            th:selected="${auditor.auditorLevel==item}">
+                    </option>
+                </select>
+            </label>
+        </td>
+        <td>电子邮箱：</td>
+        <td th:text="${auditor.email}"/>
+        <td>电话号码：</td>
+        <td>
+            <label>
+                <input th:placeholder="${auditor.phone}"/>
+            </label>
+        </td>
+    </tr>
+    <tr>
+        <td>注册编号：</td>
+        <td>
+            <label>
+                <input type="text" th:placeholder="${auditor.registrationNumber}" />
+            </label>
+        </td>
+        <td>工作地点：</td>
+        <td th:text="${auditor.locationName}"/>
+        <td>工艺类别：</td>
+        <td th:text="${auditor.technologyName}"/>
+    </tr>
+    <tr>
+        <td>
+            <label>
+                <button type="button" th:onclick="'updateUser('+${auditor.employeeId}+')'">
+                    保存
+                </button>
+            </label>
+        </td>
+    </tr>
+    </tbody>
+</table>
+</form>
+
+<script>
+
+</script>
+</body>
+</html>

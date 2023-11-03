@@ -8,6 +8,7 @@ import com.platform.result.PageResult;
 import com.platform.result.Result;
 import com.platform.service.AuditorService;
 import com.platform.vo.AuditorDisplayVO;
+import com.platform.vo.AuditorStandingBookInWorkVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @Slf4j
 @RequestMapping("/api/auditor")
@@ -27,9 +29,8 @@ public class AuditorController {
 
     @GetMapping("/list")
     @Operation(summary = "获取在职审核员台账信息")
-    public Result<List<AuditorStandingBookInWork>> getOnWorkAuditor() throws NoSuchFieldException {
-//        List<OnWorkAuditorDisplayVO> onWorkAuditor = auditorService.getOnWorkAuditor();
-        List<AuditorStandingBookInWork> standingBookInWork = auditorService.getStandingBookInWork();
+    public Result<List<AuditorStandingBookInWorkVO>> getOnWorkAuditor() throws NoSuchFieldException {
+        List<AuditorStandingBookInWorkVO> standingBookInWork = auditorService.getStandingBookInWork();
         return Result.success(standingBookInWork);
     }
 
@@ -52,5 +53,19 @@ public class AuditorController {
     public Result<PageResult<AuditorStandingBookInWork>> getPageQueryOnWorkAuditor(AuditorPageQueryDTO pageQueryDTO){
         PageResult<AuditorStandingBookInWork> result = auditorService.getPageQueryStandingBookInWork(pageQueryDTO);
         return Result.success(result);
+    }
+
+    @DeleteMapping("/{employeeId}")
+    @Operation(summary = "通过工号删除审核员")
+    public Result<String> deleteAuditor(@PathVariable Long employeeId){
+        auditorService.deleteAuditorByEmployeeId(employeeId);
+        return Result.success("删除成功");
+    }
+
+    @PutMapping("/{employeeId}")
+    @Operation(summary = "更新审核员优先安排状态")
+    public Result<String> updateAuditorArrangement(@PathVariable Long employeeId,Boolean isArrange){
+        auditorService.updateAuditorArrangement(employeeId,isArrange);
+        return Result.success();
     }
 }

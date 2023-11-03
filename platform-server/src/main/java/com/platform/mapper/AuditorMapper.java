@@ -37,6 +37,7 @@ public interface AuditorMapper {
 
     void updateAuditorStandingBook(AuditorStandingBookInWork asibw);
 
+
     List<AuditorStandingBookInWork> getStandingBookInWork();
 
     @DictHelper(value = {
@@ -46,4 +47,10 @@ public interface AuditorMapper {
     List<AuditorDisplayVO> getAuditorDisplayVO(Long record_factory_id);
 
     Page<AuditorStandingBookInWork> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO);
+
+    Auditor getAuditorByEmployeeId(Long employeeId);
+
+    void deleteByEmployeeId(Long employeeId);
+
+    void updateAuditorArrangement(Long employeeId, Boolean isArrange);
 }

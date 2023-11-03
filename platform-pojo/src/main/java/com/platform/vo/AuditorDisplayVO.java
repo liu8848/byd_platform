@@ -32,11 +32,11 @@ public class AuditorDisplayVO implements Serializable {
     @Schema(description = "等级")
     private String grade;
     @Schema(description = "性别")
-    private Gender gender;
+    private String gender;
     @Schema(description = "学历")
-    private Education education;
+    private String education;
     @Schema(description = "审核员等级")
-    private AuditorLevel auditorLevel;
+    private String auditorLevel;
     @Schema(description = "电子邮箱")
     private String email;
     @Schema(description = "电话")
@@ -50,7 +50,9 @@ public class AuditorDisplayVO implements Serializable {
     @Schema(description = "工艺类别名称")
     private String technologyName;
     @Schema(description = "在职状态")
-    private int workStatus;
+    private String status;
     @Schema(description = "类别")
-    private int type;
+    private String type;
+    @Schema(description = "优先安排")
+    private Boolean arrangement;
 }

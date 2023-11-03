@@ -22,6 +22,7 @@
             <result column="factory_id" property="factoryId"/>
             <result column="department_id" property="departmentId"/>
             <result column="location_id" property="locationId"/>
+            <result column="status" property="status"/>
             <association property="department" javaType="com.platform.entity.Department">
                 <id column="d_id" property="id"/>
                 <result column="d_name" property="name"/>
@@ -73,9 +74,11 @@
             e.phone `employee.phone`,
             e.factory_id `employee.factoryId`,
             e.department_id `employee.departmentId`,
-            e.location_id `employee.locationId`
+            e.location_id `employee.locationId`,
+            e.status `employee.status`
         from auditor
         left join employee e on auditor.employee_id = e.id
+        where e.status=1
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -112,7 +115,8 @@
                bu.bu_id,
                bu.bu_name,
                inspection_id,
-               pi.name inspection_name
+               pi.name inspection_name,
+               e.status
         from auditor a
                  left join employee e on a.employee_id = e.id
                  left join department d on e.department_id = d.id
@@ -131,11 +135,31 @@
 
     <update id="updateAuditorStandingBook">
         update auditor_standing_book_in_work
-        set level_match=#{levelMatch},sa=#{sa},a=#{a},pa=#{pa},warn_time=#{warnTime}
+        <set>
+            <if test="levelMatch!=null">
+                level_match=#{levelMatch},
+            </if>
+            <if test="sa!=null">
+                sa=#{sa},
+            </if>
+            <if test="pa!=null">
+                pa=#{pa},
+            </if>
+            <if test="a!=null">
+                a=#{a},
+            </if>
+            <if test="level!=null">
+                level=#{level},
+            </if>
+            <if test="warnTime!=null">
+                warn_time=#{warnTime},
+            </if>
+        </set>
         where id=#{id}
     </update>
 
-    <select id="getStandingBookInWork" resultMap="auditorStandingBookInWork">
+
+    <select id="getStandingBookInWork" resultType="com.platform.entity.AuditorStandingBookInWork">
         select * from auditor_standing_book_in_work
     </select>
 
@@ -168,4 +192,29 @@
             <if test="recordFactoryId!=null">and record_factory_id=#{recordFactoryId}</if>
         </where>
     </select>
+
+    <select id="getAuditorByEmployeeId" resultType="com.platform.entity.Auditor">
+        select
+            auditor.*,
+            e.id `employee.id`,
+            e.name `employee.name`,
+            e.grade `employee.grade`,
+            e.gender `employee.gender`,
+            e.email `employee.email`,
+            e.phone `employee.phone`,
+            e.factory_id `employee.factoryId`,
+            e.department_id `employee.departmentId`,
+            e.location_id `employee.locationId`
+        from auditor
+        left join employee e on auditor.employee_id = e.id
+        where auditor.employee_id=#{employeeId}
+    </select>
+
+    <delete id="deleteAuditorByEmployeeId">
+        delete from auditor where employee_id=#{employeeId}
+    </delete>
+
+    <update id="updateAuditorArrangement">
+        update auditor set arrangement=#{isArrange} where employee_id=#{employeeId}
+    </update>
 </mapper>

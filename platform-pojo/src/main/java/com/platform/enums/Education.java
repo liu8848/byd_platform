@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 public enum Education {
-    @JsonEnumDefaultValue
+
     PRIMARY_SCHOOL(1,"小学"),
     JUNIOR_MIDDLE_SCHOOL(2,"中学"),
     HIGH_SCHOOL(3,"高中"),
@@ -17,8 +17,8 @@ public enum Education {
 
     @JsonValue
     @EnumValue
-    private  int value;
-    private  String str;
+    public final int value;
+    public final String str;
 
     Education(int val,String str){
         this.value=val;
@@ -37,6 +37,13 @@ public enum Education {
         };
     }
 
+    public int getValue() {
+        return value;
+    }
+
+    public String getStr() {
+        return str;
+    }
 
     @Override
     public String toString() {

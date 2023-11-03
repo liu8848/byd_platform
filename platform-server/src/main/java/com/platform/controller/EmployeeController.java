@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/employee")
 @Slf4j
@@ -35,8 +36,8 @@ public class EmployeeController {
     }
 
     @GetMapping("/{id}")
-    public Result<Employee> getById(@PathVariable Long id) {
-        Employee employee=employeeService.getById(id);
+    public Result<EmployeeDisplayVo> getById(@PathVariable Long id) {
+        EmployeeDisplayVo employee=employeeService.getById(id);
         return Result.success(employee);
     }
 

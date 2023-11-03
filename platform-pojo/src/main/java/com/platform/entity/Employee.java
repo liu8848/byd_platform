@@ -23,16 +23,16 @@ public class Employee extends BaseEntity implements Serializable {
 
     private Long id;
     private String name;
-    private String grade;
-    private Gender gender;
-    private Education education;
+    private int grade;
+    private int gender;
+    private int education;
     private String email;
     private String phone;
     private Long factoryId;
     private String factoryName;
     private Long departmentId;
     private Long locationId;
-    private int workStatus;
+    private int status;
 
     @Schema(description = "所属部门")
     private Department department;

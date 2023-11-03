@@ -37,11 +37,11 @@ public class Auditor extends BaseEntity implements Serializable{
 
     @Schema(description = "学历代码")
     @TableField("education")
-    private Education education;
+    private int education;
 
     @Schema(description = "审核员等级")
     @TableField("auditor_level")
-    private AuditorLevel auditorLevel;
+    private int auditorLevel;
 
     @Schema(description = "手机号码")
     @TableField("phone")
@@ -57,10 +57,15 @@ public class Auditor extends BaseEntity implements Serializable{
     @Schema(description = "类型代码")
     private int type;
 
+    @Schema(description = "优先安排")
+    private Boolean arrangement;
+
+
     @Schema(description = "关联人员信息")
     private Employee employee;
     @Schema(description = "备案工厂信息")
     private Factory recordFactory;
     @Schema(description = "工艺类别列表")
     private List<ProfessionInspection> technologyList;
+
 }

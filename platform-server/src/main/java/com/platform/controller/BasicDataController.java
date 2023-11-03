@@ -102,6 +102,7 @@ public class BasicDataController {
         return Result.success(factory);
     }
 
+
     @GetMapping("/factory")
     @Operation(summary = "分页查询搜索备案工厂信息")
     @Parameter(name = "factoryPageQueryDTO", description = "分页查询备案工厂数据模型", in = ParameterIn.QUERY)

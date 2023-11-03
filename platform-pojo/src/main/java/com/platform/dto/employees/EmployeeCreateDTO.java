@@ -18,11 +18,11 @@ import java.io.Serializable;
 @Schema(description = "创建员工数据模型")
 public class EmployeeCreateDTO implements Serializable {
     private String name;
-    private String grade;
+    private int grade;
     @JsonProperty("gender")
-    private Gender gender;
+    private int gender;
     @JsonProperty("education")
-    private Education education;
+    private int education;
     private String email;
     private String phone;
     private Long factoryId;

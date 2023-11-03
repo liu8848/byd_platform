@@ -13,10 +13,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class AuditorPageQueryDTO extends BasePageQueryDTO {
-    private LevelMatch levelMatch;
-    private int level;
+    private Integer levelMatch;
+    private Integer level;
     private Long buId;
     private Long recordFactoryId;
     private String employeeName;
-    private AuditorLevel auditorLevel;
+    private Integer auditorLevel;
 }

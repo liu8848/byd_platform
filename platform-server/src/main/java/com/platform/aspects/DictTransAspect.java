@@ -2,6 +2,7 @@ package com.platform.aspects;
 
 import com.platform.annotaionExtend.DictHelper;
 import com.platform.annotaionExtend.DictParam;
+import com.platform.entity.Dictionary;
 import com.platform.utils.DictUtil;
 import com.platform.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -55,8 +56,7 @@ public class DictTransAspect {
             sourceField.setAccessible(true);
             Object fieldValue = sourceField.get(r);
 
-            Map<String, String> factoryMap = DictUtil.dictMap.get(value.dictType());
-            String targetValue = factoryMap.getOrDefault(fieldValue.toString(), "");
+            String targetValue = DictUtil.getDictName(value.dictType(), fieldValue.toString());
 
             Field targetField = clazz.getDeclaredField(value.targetField());
             targetField.setAccessible(true);

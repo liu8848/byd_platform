@@ -18,9 +18,9 @@ public class AuditorCreateDTO implements Serializable {
     private Long employeeId;
     private Long recordFactoryId;
     @JsonProperty("education")
-    private Education education;
+    private int education;
     @JsonProperty("auditorLevel")
-    private AuditorLevel auditorLevel;
+    private int auditorLevel;
     private String phone;
     private String registrationNumber;
     private String technology;
