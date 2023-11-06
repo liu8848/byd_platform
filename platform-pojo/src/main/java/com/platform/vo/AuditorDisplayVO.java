@@ -1,8 +1,5 @@
 package com.platform.vo;
 
-import com.platform.enums.AuditorLevel;
-import com.platform.enums.Education;
-import com.platform.enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

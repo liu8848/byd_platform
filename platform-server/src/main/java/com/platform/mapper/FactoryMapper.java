@@ -26,5 +26,5 @@ public interface FactoryMapper {
 
     void update(Factory factory);
 
-    void updateWarnTime(LocalDateTime time,Long factoryId);
+    void updateWarnTime(LocalDateTime time, Long factoryId);
 }

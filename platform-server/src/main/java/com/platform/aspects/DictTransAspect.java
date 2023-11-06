@@ -2,7 +2,6 @@ package com.platform.aspects;
 
 import com.platform.annotaionExtend.DictHelper;
 import com.platform.annotaionExtend.DictParam;
-import com.platform.entity.Dictionary;
 import com.platform.utils.DictUtil;
 import com.platform.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 
 @Aspect
 @Component
@@ -26,31 +24,31 @@ public class DictTransAspect {
 
 
     @Around("@annotation(dictHelper)")
-    public Object doAround(ProceedingJoinPoint joinPoint,DictHelper dictHelper)throws Throwable{
+    public Object doAround(ProceedingJoinPoint joinPoint, DictHelper dictHelper) throws Throwable {
 
         log.info("--------开始字典转换------------");
-        try{
-            Object result=joinPoint.proceed();
+        try {
+            Object result = joinPoint.proceed();
 
-            DictParam[] values= dictHelper.value();
-            if(values == null){
+            DictParam[] values = dictHelper.value();
+            if (values == null) {
                 return result;
             }
-            if(result instanceof List){
-                for (var r:(List<?>)result) {
-                    trans(r,values);
+            if (result instanceof List) {
+                for (var r : (List<?>) result) {
+                    trans(r, values);
                 }
-            }else
-                trans(result,values);
+            } else
+                trans(result, values);
             return result;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             ex.printStackTrace();
             return null;
         }
     }
 
-    private void trans(Object r,DictParam[] values)throws Throwable{
-        for(DictParam value:values){
+    private void trans(Object r, DictParam[] values) throws Throwable {
+        for (DictParam value : values) {
             Class<?> clazz = r.getClass();
             Field sourceField = clazz.getDeclaredField(value.field());
             sourceField.setAccessible(true);
@@ -60,7 +58,7 @@ public class DictTransAspect {
 
             Field targetField = clazz.getDeclaredField(value.targetField());
             targetField.setAccessible(true);
-            targetField.set(r,targetValue);
+            targetField.set(r, targetValue);
         }
     }
 

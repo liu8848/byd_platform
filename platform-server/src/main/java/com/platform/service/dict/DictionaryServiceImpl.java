@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DictionaryServiceImpl implements DictionaryService{
+public class DictionaryServiceImpl implements DictionaryService {
     @Autowired
     private DictionaryMapper dictionaryMapper;
 

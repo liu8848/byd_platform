@@ -1,8 +1,6 @@
 package com.platform.dto.employees;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.platform.enums.Education;
-import com.platform.enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

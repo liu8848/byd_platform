@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @Slf4j
-public class EmployeeServiceImpl implements EmployeeService{
+public class EmployeeServiceImpl implements EmployeeService {
     @Autowired
     private EmployeeMapper employeeMapper;
     @Autowired
@@ -41,7 +41,7 @@ public class EmployeeServiceImpl implements EmployeeService{
 
     @Override
     @DictHelper(value = {
-            @DictParam(targetField = "factoryName",field = "factoryId",dictType = RedisKeyConstant.FACTORY)
+            @DictParam(targetField = "factoryName", field = "factoryId", dictType = RedisKeyConstant.FACTORY)
     })
     public EmployeeDisplayVo getById(Long id) {
         Employee employee = employeeMapper.getById(id);

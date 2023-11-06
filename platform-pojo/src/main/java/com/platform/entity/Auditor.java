@@ -3,8 +3,6 @@ package com.platform.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.platform.enums.AuditorLevel;
-import com.platform.enums.Education;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,7 +20,7 @@ import java.util.List;
 @EqualsAndHashCode(callSuper = true)
 @Schema(description = "审核员")
 @TableName("auditor")
-public class Auditor extends BaseEntity implements Serializable{
+public class Auditor extends BaseEntity implements Serializable {
     @Schema(description = "主键")
     @TableId
     private Long id;

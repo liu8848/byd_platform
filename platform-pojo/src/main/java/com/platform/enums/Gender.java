@@ -2,7 +2,6 @@ package com.platform.enums;
 
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
-import com.fasterxml.jackson.annotation.JsonEnumDefaultValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.platform.Constant.PojoMessageConstant;
 import lombok.Getter;
@@ -10,18 +9,20 @@ import lombok.Getter;
 @Getter
 public enum Gender {
 
-    MALE(1,"男"),
-    FEMALE(0,"女");
+    MALE(1, "男"),
+    FEMALE(0, "女");
 
     @JsonValue
     @EnumValue
     private final int value;
     private final String str;
-    Gender(int val,String str){
-        this.value=val;
-        this.str=str;
+
+    Gender(int val, String str) {
+        this.value = val;
+        this.str = str;
     }
-    public static Gender fromValue(int val){
+
+    public static Gender fromValue(int val) {
         return switch (val) {
             case 0 -> FEMALE;
             case 1 -> MALE;
@@ -29,7 +30,7 @@ public enum Gender {
         };
     }
 
-    public static Gender fromValue(String str){
+    public static Gender fromValue(String str) {
         return switch (str) {
             case "女" -> FEMALE;
             case "男" -> MALE;

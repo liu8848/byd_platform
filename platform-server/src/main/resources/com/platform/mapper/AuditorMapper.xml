@@ -60,39 +60,43 @@
 
     <select id="countAuditorById">
         select count(employee_id)
-        from auditor where employee_id=#{employeeId}
+        from auditor
+        where employee_id = #{employeeId}
     </select>
 
     <select id="getAuditor" resultType="com.platform.entity.Auditor">
-        select
-            auditor.*,
-            e.id `employee.id`,
-            e.name `employee.name`,
-            e.grade `employee.grade`,
-            e.gender `employee.gender`,
-            e.email `employee.email`,
-            e.phone `employee.phone`,
-            e.factory_id `employee.factoryId`,
-            e.department_id `employee.departmentId`,
-            e.location_id `employee.locationId`,
-            e.status `employee.status`
+        select auditor.*,
+               e.id            `employee.id`,
+               e.name          `employee.name`,
+               e.grade         `employee.grade`,
+               e.gender        `employee.gender`,
+               e.email         `employee.email`,
+               e.phone         `employee.phone`,
+               e.factory_id    `employee.factoryId`,
+               e.department_id `employee.departmentId`,
+               e.location_id   `employee.locationId`,
+               e.status        `employee.status`
         from auditor
-        left join employee e on auditor.employee_id = e.id
-        where e.status=1
+                 left join employee e on auditor.employee_id = e.id
+        where e.status = 1
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
-        insert into auditor(employee_id, record_factory_id, education, auditor_level, phone, registration_number, technology, create_user, create_time)
-        VALUES (#{employeeId},#{recordFactoryId},#{education},#{auditorLevel},#{phone},#{registrationNumber},#{technology},#{createUser},#{createTime})
+        insert into auditor(employee_id, record_factory_id, education, auditor_level, phone, registration_number,
+                            technology, create_user, create_time)
+        VALUES (#{employeeId}, #{recordFactoryId}, #{education}, #{auditorLevel}, #{phone}, #{registrationNumber},
+                #{technology}, #{createUser}, #{createTime})
     </insert>
 
     <delete id="deleteAuditorInspectionByEmployeeId">
-        delete from auditor_inspection where employee_id=#{employeeId}
+        delete
+        from auditor_inspection
+        where employee_id = #{employeeId}
     </delete>
 
     <insert id="insertAuditorInspection" useGeneratedKeys="true">
         insert into auditor_inspection(employee_id, inspection_id)
-        value 
+        value
         <foreach collection="inspectionList" item="inspection" separator=",">
             (#{inspection.employeeId},#{inspection.inspectionId})
         </foreach>
@@ -101,7 +105,7 @@
     <select id="getStandingBookInWorkByRecordFactoryId" resultType="com.platform.entity.AuditorStandingBookInWork">
         select *
         from auditor_standing_book_in_work asbiw
-        where record_factory_id=#{recordFactoryId}
+        where record_factory_id = #{recordFactoryId}
     </select>
 
     <select id="getAuditorByRecordFactoryId" resultMap="auditor">
@@ -122,15 +126,16 @@
                  left join department d on e.department_id = d.id
                  left join factory f on d.factory_id = f.id
                  left join BusinessDivision bu on bu.bu_id = f.bu_id
-                 left join auditor_inspection ai on a.employee_id=ai.employee_id
-                 left join ProfessionInspection pi on pi.id=ai.inspection_id
+                 left join auditor_inspection ai on a.employee_id = ai.employee_id
+                 left join ProfessionInspection pi on pi.id = ai.inspection_id
                  left join location l on e.location_id = l.id
-        where a.record_factory_id=#{recordFactoryId}
+        where a.record_factory_id = #{recordFactoryId}
     </select>
 
-    <insert id="insertAuditorStandingBook" parameterType="com.platform.entity.AuditorStandingBookInWork" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insertAuditorStandingBook" parameterType="com.platform.entity.AuditorStandingBookInWork"
+            useGeneratedKeys="true" keyProperty="id">
         insert into auditor_standing_book_in_work(bu_id, record_factory_id, level_match, level, sa, a, pa, warn_time)
-        VALUES (#{buId},#{recordFactoryId},#{levelMatch},#{level},#{sa},#{a},#{pa},#{warnTime})
+        VALUES (#{buId}, #{recordFactoryId}, #{levelMatch}, #{level}, #{sa}, #{a}, #{pa}, #{warnTime})
     </insert>
 
     <update id="updateAuditorStandingBook">
@@ -160,26 +165,26 @@
 
 
     <select id="getStandingBookInWork" resultType="com.platform.entity.AuditorStandingBookInWork">
-        select * from auditor_standing_book_in_work
+        select *
+        from auditor_standing_book_in_work
     </select>
 
     <select id="getAuditorDisplayVO" resultType="com.platform.vo.AuditorDisplayVO">
-        select
-            e.factory_id,
-            e.department_id,
-            e.name employee_name,
-            a.employee_id,
-            e.grade,
-            e.gender,
-            e.education,
-            a.auditor_level,
-            e.email,
-            e.phone,
-            a.registration_number,
-            e.location_id
+        select e.factory_id,
+               e.department_id,
+               e.name employee_name,
+               a.employee_id,
+               e.grade,
+               e.gender,
+               e.education,
+               a.auditor_level,
+               e.email,
+               e.phone,
+               a.registration_number,
+               e.location_id
         from auditor a
-        left join employee e on a.employee_id=e.id
-        where a.record_factory_id=#{record_factory_id}
+                 left join employee e on a.employee_id = e.id
+        where a.record_factory_id = #{record_factory_id}
     </select>
 
     <select id="getPageQueryStandingBookInWork" resultType="com.platform.entity.AuditorStandingBookInWork">
@@ -194,27 +199,39 @@
     </select>
 
     <select id="getAuditorByEmployeeId" resultType="com.platform.entity.Auditor">
-        select
-            auditor.*,
-            e.id `employee.id`,
-            e.name `employee.name`,
-            e.grade `employee.grade`,
-            e.gender `employee.gender`,
-            e.email `employee.email`,
-            e.phone `employee.phone`,
-            e.factory_id `employee.factoryId`,
-            e.department_id `employee.departmentId`,
-            e.location_id `employee.locationId`
+        select auditor.*,
+               e.id            `employee.id`,
+               e.name          `employee.name`,
+               e.grade         `employee.grade`,
+               e.gender        `employee.gender`,
+               e.email         `employee.email`,
+               e.phone         `employee.phone`,
+               e.factory_id    `employee.factoryId`,
+               e.department_id `employee.departmentId`,
+               e.location_id   `employee.locationId`
         from auditor
-        left join employee e on auditor.employee_id = e.id
-        where auditor.employee_id=#{employeeId}
+                 left join employee e on auditor.employee_id = e.id
+        where auditor.employee_id = #{employeeId}
     </select>
 
     <delete id="deleteAuditorByEmployeeId">
-        delete from auditor where employee_id=#{employeeId}
+        delete
+        from auditor
+        where employee_id = #{employeeId}
     </delete>
 
     <update id="updateAuditorArrangement">
-        update auditor set arrangement=#{isArrange} where employee_id=#{employeeId}
+        update auditor
+        set arrangement=#{isArrange}
+        where employee_id = #{employeeId}
     </update>
+
+    <insert id="importAuditors" keyProperty="id" useGeneratedKeys="true">
+        insert into auditor(employee_id, record_factory_id, education, auditor_level, phone, registration_number, technology, create_user, create_time, update_user, update_time)
+        VALUES
+        <foreach collection="auditors" item="auditor" separator=",">
+            (#{employeeId},#{recordFactoryId},#{education},#{auditorLevel},#{phone},#{registrationNumber},#{technology},#{createUser},#{createTime},#{updateUser},#{updateTime})
+        </foreach>
+
+    </insert>
 </mapper>

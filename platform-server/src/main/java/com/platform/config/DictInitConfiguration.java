@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.Method;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Component
@@ -24,7 +23,7 @@ public class DictInitConfiguration {
     private RedisUtil redisUtil;
 
     @PostConstruct
-    public void initDictionary()throws Throwable{
+    public void initDictionary() throws Throwable {
         log.info("---------------初始化数据字典-开始-----------------");
         load(RedisKeyConstant.NORMAL_DICT);
         load(RedisKeyConstant.FACTORY);
@@ -36,23 +35,23 @@ public class DictInitConfiguration {
     }
 
     private void load(String key) throws Throwable {
-        log.info("-----------------loading   {}  -------------------",key);
-        if(Boolean.TRUE.equals(redisUtil.hasKey(key))){
+        log.info("-----------------loading   {}  -------------------", key);
+        if (Boolean.TRUE.equals(redisUtil.hasKey(key))) {
             redisUtil.del(key);
         }
-        StringBuilder methodName= new StringBuilder();
-        if(key.contains("_")){
-            String[] strs=key.split("_");
+        StringBuilder methodName = new StringBuilder();
+        if (key.contains("_")) {
+            String[] strs = key.split("_");
             methodName.append("get");
-            for(var str:strs){
+            for (var str : strs) {
                 methodName.append(str.charAt(0)).append(str.toLowerCase(), 1, str.length());
             }
-        }else
+        } else
             methodName = new StringBuilder("get" + key.charAt(0) + key.toLowerCase().substring(1, key.length()));
         Method method = dictionaryMapper.getClass().getMethod(methodName.toString());
-        List<Dictionary> dictList= (List<Dictionary>) method.invoke(dictionaryMapper);
+        List<Dictionary> dictList = (List<Dictionary>) method.invoke(dictionaryMapper);
         Map<String, Map<Long, List<Dictionary>>> collect = dictList.stream().collect(Collectors.groupingBy(Dictionary::getDictId, Collectors.groupingBy(Dictionary::getDictValue)));
-        redisUtil.hsetAll(key,collect);
+        redisUtil.hsetAll(key, collect);
 
     }
 }

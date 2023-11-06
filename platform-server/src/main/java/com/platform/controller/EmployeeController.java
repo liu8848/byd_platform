@@ -37,13 +37,13 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     public Result<EmployeeDisplayVo> getById(@PathVariable Long id) {
-        EmployeeDisplayVo employee=employeeService.getById(id);
+        EmployeeDisplayVo employee = employeeService.getById(id);
         return Result.success(employee);
     }
 
     @PostMapping
     @Operation(summary = "添加员工")
-    public Result<Employee> insert(@RequestBody EmployeeCreateDTO createDTO){
+    public Result<Employee> insert(@RequestBody EmployeeCreateDTO createDTO) {
         Employee result = employeeService.insert(createDTO);
         return Result.success(result);
     }

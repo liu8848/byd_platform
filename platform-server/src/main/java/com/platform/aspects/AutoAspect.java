@@ -15,51 +15,62 @@ import org.springframework.stereotype.Component;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Aspect
 @Component
 @Slf4j
 public class AutoAspect {
     @Pointcut("@annotation(com.platform.annotaionExtend.AutoFill)")
-    public void autoFillPointCut(){}
+    public void autoFillPointCut() {
+    }
 
     @Before("autoFillPointCut()")
-    public void autoFill(JoinPoint joinPoint){
+    public void autoFill(JoinPoint joinPoint) {
         log.info("填充公共字段");
-        String name=joinPoint.getSignature().getName();
+        String name = joinPoint.getSignature().getName();
 
-        MethodSignature signature= (MethodSignature) joinPoint.getSignature();
-        AutoFill autoFill=signature.getMethod().getAnnotation(AutoFill.class);
-        OperationType operationType=autoFill.value();
-        Object[] args= joinPoint.getArgs();
-        if(args==null||args.length==0) return;
-        Object entity=args[0];
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        AutoFill autoFill = signature.getMethod().getAnnotation(AutoFill.class);
+        OperationType operationType = autoFill.value();
+        Object[] args = joinPoint.getArgs();
+        if (args == null || args.length == 0) return;
+        Object entity = args[0];
 
-        LocalDateTime now=LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
         Long currentId = BaseContext.getCurrentId().getEmployeeId();
+        if(entity instanceof List<?>){
+            for (var e:(List<?>)entity) {
+                fillField(e,operationType,now);
+            }
+        }else {
+            fillField(entity,operationType,now);
+        }
+    }
 
-        if(operationType==OperationType.INSERT){
-            try{
-                Method setCreateTime=entity.getClass().getMethod(AutoFillConstant.SET_CREATE_TIME,LocalDateTime.class);
-                Method setCreateUser=entity.getClass().getMethod(AutoFillConstant.SET_CREATE_USER, Long.class);
-                Method setUpdateTime=entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
-                Method setUpdateUser=entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_USER,Long.class);
+    private void fillField(Object entity, OperationType operationType, LocalDateTime now) {
+        if (operationType == OperationType.INSERT) {
+            try {
+                Method setCreateTime = entity.getClass().getMethod(AutoFillConstant.SET_CREATE_TIME, LocalDateTime.class);
+                Method setCreateUser = entity.getClass().getMethod(AutoFillConstant.SET_CREATE_USER, Long.class);
+                Method setUpdateTime = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
+                Method setUpdateUser = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
 
-                setCreateTime.invoke(entity,now);
-                setCreateUser.invoke(entity,currentId);
-                setUpdateTime.invoke(entity,now);
-                setUpdateUser.invoke(entity,currentId);
-            }catch (NoSuchMethodException | IllegalAccessException| InvocationTargetException e){
+                setCreateTime.invoke(entity, now);
+                setCreateUser.invoke(entity, BaseContext.getCurrentId().getEmployeeId());
+                setUpdateTime.invoke(entity, now);
+                setUpdateUser.invoke(entity, BaseContext.getCurrentId().getEmployeeId());
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
-        } else if (operationType==OperationType.UPDATE) {
+        } else if (operationType == OperationType.UPDATE) {
             try {
                 Method setUpdateUser = getClass().getMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
-                Method setUpdateTime= getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
+                Method setUpdateTime = getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
 
-                setUpdateTime.invoke(entity,now);
-                setUpdateUser.invoke(entity,currentId);
-            }catch (NoSuchMethodException|IllegalAccessException|InvocationTargetException e){
+                setUpdateTime.invoke(entity, now);
+                setUpdateUser.invoke(entity, BaseContext.getCurrentId().getEmployeeId());
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
                 e.printStackTrace();
             }
         }

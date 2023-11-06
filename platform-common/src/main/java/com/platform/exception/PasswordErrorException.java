@@ -1,7 +1,10 @@
 package com.platform.exception;
 
-public class PasswordErrorException extends BaseException{
-    public PasswordErrorException(){}
+public class PasswordErrorException extends BaseException {
+    public PasswordErrorException() {
+    }
 
-    public PasswordErrorException(String msg){super(msg);}
+    public PasswordErrorException(String msg) {
+        super(msg);
+    }
 }

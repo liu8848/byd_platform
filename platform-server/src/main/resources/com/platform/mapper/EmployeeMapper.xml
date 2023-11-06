@@ -70,7 +70,9 @@
     </select>
 
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into employee(name,grade,gender,education,email,phone,status,factory_id,department_id,location_id,create_time,create_user,update_time,update_user)
-        values (#{name},#{grade},#{gender},#{education},#{email},#{phone},#{workStatus},#{factoryId},#{departmentId},#{locationId},#{createTime},#{createUser},#{updateTime},#{updateUser})
+        insert into employee(name, grade, gender, education, email, phone, status, factory_id, department_id,
+                             location_id, create_time, create_user, update_time, update_user)
+        values (#{name}, #{grade}, #{gender}, #{education}, #{email}, #{phone}, #{workStatus}, #{factoryId},
+                #{departmentId}, #{locationId}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
     </insert>
 </mapper>

@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @Schema(description = "流程的实体模型")
 public class Process implements Serializable {
 
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     @Schema(description = "流程编号")
     private String id;

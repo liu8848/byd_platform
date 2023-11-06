@@ -6,13 +6,13 @@ import lombok.Getter;
 
 @Getter
 public enum AuditorLevel {
-    SA("SA","资深审核员"),
-    A("A","审核员"),
-    PA("PA","实习审核员");
+    SA("SA", "资深审核员"),
+    A("A", "审核员"),
+    PA("PA", "实习审核员");
 
-    AuditorLevel(String val,String str){
-        this.value=val;
-        this.str=str;
+    AuditorLevel(String val, String str) {
+        this.value = val;
+        this.str = str;
     }
 
     @JsonValue

@@ -11,8 +11,11 @@ public interface DictionaryMapper {
     List<Dictionary> getFactory();
 
     List<Dictionary> getBusinessdivision();
+
     List<Dictionary> getDepartment();
+
     List<Dictionary> getLocation();
+
     List<Dictionary> getProfessionInspection();
 
     List<Dictionary> getTechnologyDict();

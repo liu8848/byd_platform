@@ -1,7 +1,6 @@
 package com.platform.vo;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.platform.enums.LevelMatch;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

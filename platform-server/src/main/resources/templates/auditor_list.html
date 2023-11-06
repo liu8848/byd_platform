@@ -1,66 +1,68 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>审核员列表</title>
-  <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
-  <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>审核员列表</title>
+    <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
 </head>
 <body>
-  <table class="table">
+<table class="table">
     <thead>
     <tr style="align-content: center">
-      <th colspan="12">审核员信息</th>
+        <th colspan="12">审核员信息</th>
     </tr>
     <tr>
-      <th>工厂</th>
-      <th>部门</th>
-      <th>姓名</th>
-      <th>工号</th>
-      <th>级别</th>
-      <th>性别</th>
-      <th>学历</th>
-      <th>审核员级别</th>
-      <th>邮箱</th>
-      <th>手机</th>
-      <th>注册编号</th>
-      <th>工作地点</th>
-      <th>操作</th>
+        <th>工厂</th>
+        <th>部门</th>
+        <th>姓名</th>
+        <th>工号</th>
+        <th>级别</th>
+        <th>性别</th>
+        <th>学历</th>
+        <th>审核员级别</th>
+        <th>邮箱</th>
+        <th>手机</th>
+        <th>注册编号</th>
+        <th>工作地点</th>
+        <th>操作</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="auditor : ${auditorList}">
-      <td th:text="${auditor.factoryName}"/>
-      <td th:text="${auditor.departmentName}"/>
-      <td th:text="${auditor.employeeName}"/>
-      <td th:text="${auditor.employeeId}"/>
-      <td th:text="${auditor.grade}"/>
-      <td th:text="${auditor.gender}"/>
-      <td th:text="${auditor.education}"/>
-      <td th:text="${auditor.auditorLevel}"/>
-      <td th:text="${auditor.email}"/>
-      <td th:text="${auditor.phone}"/>
-      <td th:text="${auditor.registrationNumber}"/>
-      <td th:text="${auditor.locationName}"/>
-      <td>
-        <button type="button" class="btn btn-primary" th:onclick="'getAuditorInfo('+${auditor.employeeId}+')'">编辑</button>
-      </td>
+        <td th:text="${auditor.factoryName}"/>
+        <td th:text="${auditor.departmentName}"/>
+        <td th:text="${auditor.employeeName}"/>
+        <td th:text="${auditor.employeeId}"/>
+        <td th:text="${auditor.grade}"/>
+        <td th:text="${auditor.gender}"/>
+        <td th:text="${auditor.education}"/>
+        <td th:text="${auditor.auditorLevel}"/>
+        <td th:text="${auditor.email}"/>
+        <td th:text="${auditor.phone}"/>
+        <td th:text="${auditor.registrationNumber}"/>
+        <td th:text="${auditor.locationName}"/>
+        <td>
+            <button type="button" class="btn btn-primary" th:onclick="'getAuditorInfo('+${auditor.employeeId}+')'">
+                编辑
+            </button>
+        </td>
     </tr>
     </tbody>
-  </table>
-  <div>
+</table>
+<div>
     <button type="button" class="btn-primary" th:onclick="addAuditor()">添加</button>
-  </div>
+</div>
 </body>
 <script type="text/javascript">
-  function getAuditorInfo(employeeId){
-    console.log(employeeId);
-    window.location.href='http://localhost:8020/mvc/auditor/'+employeeId;
-  }
+    function getAuditorInfo(employeeId) {
+        console.log(employeeId);
+        window.location.href = 'http://localhost:8020/mvc/auditor/' + employeeId;
+    }
 
-  function addAuditor(){
-    location.href='[[@{/auditorAdd}]]'
-  }
+    function addAuditor() {
+        location.href = '[[@{/auditorAdd}]]'
+    }
 </script>
 </html>

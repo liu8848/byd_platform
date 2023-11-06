@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler
     public Result exceptionHandler(HttpMessageNotReadableException ex) {
         log.error("异常信息：{}", ex.getMessage());
-        String msg=ex.getMessage();
+        String msg = ex.getMessage();
         return Result.error(ex.getMessage());
     }
 }

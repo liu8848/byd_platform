@@ -17,6 +17,7 @@ import com.platform.mapper.ProfessionInspectionMapper;
 import com.platform.result.PageResult;
 import com.platform.service.AuditorService;
 import com.platform.utils.TransUtil;
+import com.platform.validators.AuditorValidator;
 import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
 import io.netty.util.internal.StringUtil;
@@ -44,33 +45,35 @@ public class AuditorServiceImpl implements AuditorService {
     private ProfessionInspectionMapper inspectionMapper;
     @Autowired
     private TransUtil transUtil;
+    @Autowired
+    private AuditorValidator auditorValidator;
 
 
     @Override
     @Transactional
     public Auditor insert(AuditorCreateDTO auditorCreateDTO) {
         //检查审核员是否存在
-        if(auditorMapper.countAuditorById(auditorCreateDTO.getEmployeeId())>=1){
-            throw new BaseException("审核员工号:"+auditorCreateDTO.getEmployeeId()+" 已存在！");
+        if (auditorMapper.countAuditorById(auditorCreateDTO.getEmployeeId()) >= 1) {
+            throw new BaseException("审核员工号:" + auditorCreateDTO.getEmployeeId() + " 已存在！");
         }
         //检查员工是否存在
-        Employee employee=employeeMapper.getById(auditorCreateDTO.getEmployeeId());
-        if(employee==null){
-            throw new BaseException("员工工号："+auditorCreateDTO.getEmployeeId()+"不存在！");
+        Employee employee = employeeMapper.getById(auditorCreateDTO.getEmployeeId());
+        if (employee == null) {
+            throw new BaseException("员工工号：" + auditorCreateDTO.getEmployeeId() + "不存在！");
         }
         //检查备案工厂是否存在
-        Factory factory=factoryMapper.getFactoryById(auditorCreateDTO.getRecordFactoryId());
-        if(factory==null){
-            throw new BaseException("备案工厂："+auditorCreateDTO.getRecordFactoryId()+"不存在！");
+        Factory factory = factoryMapper.getFactoryById(auditorCreateDTO.getRecordFactoryId());
+        if (factory == null) {
+            throw new BaseException("备案工厂：" + auditorCreateDTO.getRecordFactoryId() + "不存在！");
         }
         //检查工艺类型
-        String[] inspections=auditorCreateDTO.getTechnology().split(",");
-        List<AuditorInspectionCreateDTO> inspectionList=new ArrayList<>();
-        for (String str:inspections) {
-            Long inspectionId=Long.parseLong(str);
+        String[] inspections = auditorCreateDTO.getTechnology().split(",");
+        List<AuditorInspectionCreateDTO> inspectionList = new ArrayList<>();
+        for (String str : inspections) {
+            Long inspectionId = Long.parseLong(str);
             ProfessionInspection inspectionEntity = inspectionMapper.getById(inspectionId);
-            if(inspectionEntity==null){
-                throw new BaseException("工艺编号："+inspectionId+" 不存在");
+            if (inspectionEntity == null) {
+                throw new BaseException("工艺编号：" + inspectionId + " 不存在");
             }
             inspectionList.add(new AuditorInspectionCreateDTO(auditorCreateDTO.getEmployeeId(), inspectionId));
         }
@@ -95,44 +98,43 @@ public class AuditorServiceImpl implements AuditorService {
      * 更新在职审核员台账
      * @param recordFactoryId 备案工厂编号
      */
-    public void updateOnWorkStandingBook(Long recordFactoryId){
+    public void updateOnWorkStandingBook(Long recordFactoryId) {
         AuditorStandingBookInWork asibw = auditorMapper.getStandingBookInWorkByRecordFactoryId(recordFactoryId);
         Factory factory = factoryMapper.getFactoryById(recordFactoryId);
-        if(asibw==null){
-            asibw=new AuditorStandingBookInWork();
+        if (asibw == null) {
+            asibw = new AuditorStandingBookInWork();
             asibw.setRecordFactoryId(recordFactoryId);
 
-            if(factory==null){
+            if (factory == null) {
                 throw new FactoryNotExistException(MessageConstant.FACTORY_NOT_EXIST);
             }
             asibw.setBuId(factory.getBu().getBuId());
         }
         asibw.setLevel(factory.getLevel());
-        List<Auditor> auditors= auditorMapper.getAuditorByRecordFactoryId(recordFactoryId).stream().filter(a->a.getEmployee().getStatus()==1).toList();
+        List<Auditor> auditors = auditorMapper.getAuditorByRecordFactoryId(recordFactoryId).stream().filter(a -> a.getEmployee().getStatus() == 1).toList();
 
         Map<Integer, Long> collect = auditors.stream()
                 .collect(
                         Collectors.groupingBy(Auditor::getAuditorLevel, Collectors.counting())
                 );
 
-        asibw.setSa(collect.getOrDefault(1,0L));
-        asibw.setA(collect.getOrDefault(2,0L));
-        asibw.setPa(collect.getOrDefault(3,0L));
+        asibw.setSa(collect.getOrDefault(1, 0L));
+        asibw.setA(collect.getOrDefault(2, 0L));
+        asibw.setPa(collect.getOrDefault(3, 0L));
         asibw.setLevel(factory.getLevel());
 
-        if(AuditorStandingBookInWork.match(collect,factory.getLevel())){
+        if (AuditorStandingBookInWork.match(collect, factory.getLevel())) {
             asibw.setLevelMatch(LevelMatch.MATCH);
             asibw.setWarnTime(null);
-        }else {
+        } else {
             asibw.setLevelMatch(LevelMatch.NOT_MATCH);
-            LocalDateTime now=LocalDateTime.now();
-            if (asibw.getWarnTime()==null)
+            LocalDateTime now = LocalDateTime.now();
+            if (asibw.getWarnTime() == null)
                 asibw.setWarnTime(now);
         }
-        if(asibw.getId()==null){
+        if (asibw.getId() == null) {
             auditorMapper.insertAuditorStandingBook(asibw);
-        }
-        else
+        } else
             auditorMapper.updateAuditorStandingBook(asibw);
 
     }
@@ -144,14 +146,14 @@ public class AuditorServiceImpl implements AuditorService {
         recordFactoryIdList.forEach(this::updateOnWorkStandingBook);
         List<AuditorStandingBookInWork> standingBookInWork = auditorMapper.getStandingBookInWork();
         Map<Long, List<Auditor>> auditorMap = auditors.stream().collect(Collectors.groupingBy(Auditor::getRecordFactoryId));
-        standingBookInWork.forEach(a->a.setAuditors(transUtil.auditorListToVOList(auditorMap.getOrDefault(a.getRecordFactoryId(),null))));
+        standingBookInWork.forEach(a -> a.setAuditors(transUtil.auditorListToVOList(auditorMap.getOrDefault(a.getRecordFactoryId(), null))));
         return transUtil.auditorStandingBookInWorkListToVoList(standingBookInWork);
     }
 
     @Override
     public PageResult<AuditorStandingBookInWork> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO) {
         PageHelper.startPage(pageQueryDTO.getPage(), pageQueryDTO.getSize());
-        Page<AuditorStandingBookInWork>  pageResult = auditorMapper.getPageQueryStandingBookInWork(pageQueryDTO);
+        Page<AuditorStandingBookInWork> pageResult = auditorMapper.getPageQueryStandingBookInWork(pageQueryDTO);
         long total = pageResult.getTotal();
         List<AuditorStandingBookInWork> records = pageResult.getResult();
         List<Long> recordFactoryIdList = records.stream().map(AuditorStandingBookInWork::getRecordFactoryId).distinct().toList();
@@ -159,22 +161,22 @@ public class AuditorServiceImpl implements AuditorService {
 
         Stream<Auditor> auditorStream = auditor.stream();
 
-        auditorStream=auditorStream.filter(a->recordFactoryIdList.contains(a.getRecordFactoryId()));
+        auditorStream = auditorStream.filter(a -> recordFactoryIdList.contains(a.getRecordFactoryId()));
 
-        if(pageQueryDTO.getAuditorLevel()!=null){
-            auditorStream=auditorStream.filter(a->a.getAuditorLevel()==pageQueryDTO.getAuditorLevel());
+        if (pageQueryDTO.getAuditorLevel() != null) {
+            auditorStream = auditorStream.filter(a -> a.getAuditorLevel() == pageQueryDTO.getAuditorLevel());
         }
 
-        if(!StringUtil.isNullOrEmpty(pageQueryDTO.getEmployeeName())){
-            auditorStream=auditorStream.filter(a->a.getEmployee().getName().contains(pageQueryDTO.getEmployeeName()));
+        if (!StringUtil.isNullOrEmpty(pageQueryDTO.getEmployeeName())) {
+            auditorStream = auditorStream.filter(a -> a.getEmployee().getName().contains(pageQueryDTO.getEmployeeName()));
         }
 
 
         Map<Long, List<Auditor>> auditorMap = auditorStream.collect(Collectors.groupingBy(Auditor::getRecordFactoryId));
-        records.removeIf(r->!auditorMap.containsKey(r.getRecordFactoryId()));
+        records.removeIf(r -> !auditorMap.containsKey(r.getRecordFactoryId()));
 
-        records.forEach(r->r.setAuditors(transUtil.auditorListToVOList(auditorMap.get(r.getRecordFactoryId()))));
-        return new PageResult<>(total,records);
+        records.forEach(r -> r.setAuditors(transUtil.auditorListToVOList(auditorMap.get(r.getRecordFactoryId()))));
+        return new PageResult<>(total, records);
     }
 
     @Override
@@ -185,7 +187,7 @@ public class AuditorServiceImpl implements AuditorService {
 
     @Override
     public AuditorDisplayVO getAuditorByEmployeeId(Long employeeId) {
-        Auditor auditor=auditorMapper.getAuditorByEmployeeId(employeeId);
+        Auditor auditor = auditorMapper.getAuditorByEmployeeId(employeeId);
 
         return transUtil.auditorToVO(auditor);
     }
@@ -193,7 +195,7 @@ public class AuditorServiceImpl implements AuditorService {
     @Override
     public void deleteAuditorByEmployeeId(Long employeeId) {
         Auditor auditor = auditorMapper.getAuditorByEmployeeId(employeeId);
-        if(auditor==null){
+        if (auditor == null) {
             throw new BaseException("审核员不存在！");
         }
         auditorMapper.deleteByEmployeeId(employeeId);
@@ -202,18 +204,31 @@ public class AuditorServiceImpl implements AuditorService {
     @Override
     public void updateAuditorArrangement(Long employeeId, Boolean isArrange) {
         Auditor auditor = auditorMapper.getAuditorByEmployeeId(employeeId);
-        if(auditor==null){
+        if (auditor == null) {
             throw new BaseException("审核员不存在！");
         }
 
-        if(!isArrange){
-            auditorMapper.updateAuditorArrangement(employeeId,isArrange);
+        if (!isArrange) {
+            auditorMapper.updateAuditorArrangement(employeeId, isArrange);
             return;
         }
 
         AuditorStandingBookInWork standingBook = auditorMapper.getStandingBookInWorkByRecordFactoryId(auditor.getRecordFactoryId());
-        long totalAuditorCnt=standingBook.getA()+ standingBook.getSa()+ standingBook.getPa();
+        long totalAuditorCnt = standingBook.getA() + standingBook.getSa() + standingBook.getPa();
 
-        auditorMapper.updateAuditorArrangement(employeeId,isArrange);
+        auditorMapper.updateAuditorArrangement(employeeId, isArrange);
+    }
+
+    @Override
+    public List<AuditorDisplayVO> importAuditors(List<AuditorCreateDTO> createDTOS) {
+        List<String> validateMsg = createDTOS.stream().map(dto -> auditorValidator.auditorCreateValidate(dto)).flatMap(List::stream).toList();
+
+        if(!validateMsg.isEmpty()){
+            throw new BaseException(validateMsg.toString());
+        }
+
+        List<Auditor> auditors = createDTOS.stream().map(dto -> transUtil.auditorCreateToAuditor(dto)).toList();
+        auditorMapper.importAuditors(auditors);
+        return transUtil.auditorListToVOList(auditors);
     }
 }

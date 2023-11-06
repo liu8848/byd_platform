@@ -12,6 +12,7 @@ target/
 *.iml
 *.ipr
 
+
 ### Eclipse ###
 .apt_generated
 .classpath
@@ -38,3 +39,5 @@ build/
 .DS_Store
 /platform-server/src/main/resources/logs/
 /.idea/
+/platform-server/src/main/resources/static/webjars/bootstrap/
+

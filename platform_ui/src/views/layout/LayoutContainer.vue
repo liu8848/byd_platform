@@ -1,10 +1,10 @@
 <template>
-    <div class="common-layout">
+  <div class="common-layout">
     <el-container>
       <el-header height="100px">
         <div style="height: 100px; background-color: #337ecc;">
-            用户:{{ userStore.username }} <br/>
-            token:{{ userStore.token }}
+          用户:{{ userStore.username }} <br/>
+          token:{{ userStore.token }}
         </div>
       </el-header>
       <el-container>
@@ -12,9 +12,9 @@
           <AsideComponent/>
         </el-aside>
         <el-main>
-            <router-view>
+          <router-view>
 
-            </router-view>
+          </router-view>
         </el-main>
       </el-container>
     </el-container>
@@ -23,8 +23,8 @@
 
 <script setup>
 import AsideComponent from '../../components/AsideComponent.vue'
-import{useUserStore} from '@/stores'
+import {useUserStore} from '@/stores'
 
-const userStore=useUserStore()
+const userStore = useUserStore()
 
 </script>

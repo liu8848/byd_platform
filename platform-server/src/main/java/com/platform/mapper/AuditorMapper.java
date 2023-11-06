@@ -41,8 +41,8 @@ public interface AuditorMapper {
     List<AuditorStandingBookInWork> getStandingBookInWork();
 
     @DictHelper(value = {
-            @DictParam(field = "factoryId",targetField = "factoryName",dictType = RedisKeyConstant.FACTORY),
-            @DictParam(field = "departmentId",targetField = "departmentName",dictType = RedisKeyConstant.DEPARTMENT)
+            @DictParam(field = "factoryId", targetField = "factoryName", dictType = RedisKeyConstant.FACTORY),
+            @DictParam(field = "departmentId", targetField = "departmentName", dictType = RedisKeyConstant.DEPARTMENT)
     })
     List<AuditorDisplayVO> getAuditorDisplayVO(Long record_factory_id);
 
@@ -53,4 +53,8 @@ public interface AuditorMapper {
     void deleteByEmployeeId(Long employeeId);
 
     void updateAuditorArrangement(Long employeeId, Boolean isArrange);
+
+
+    @AutoFill(value = OperationType.INSERT)
+    void importAuditors(List<Auditor> auditors);
 }

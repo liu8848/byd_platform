@@ -7,24 +7,24 @@
     <title>添加审核员</title>
 </head>
 <body>
-    <h1>填写信息</h1>
-    <form th:action="@{/mvc/auditor/add}" method="post">
-        <table  class="table">
-            <tr>
-                <td>工号：</td>
-                <td>
-                    <label>
-                        <input type="text" name="employeeId" th:placeholder="输入工号"/>
-                    </label>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <button type="submit">保存</button>
-                </td>
-            </tr>
-        </table>
-    </form>
+<h1>填写信息</h1>
+<form th:action="@{/mvc/auditor/add}" method="post">
+    <table class="table">
+        <tr>
+            <td>工号：</td>
+            <td>
+                <label>
+                    <input type="text" name="employeeId" th:placeholder="输入工号"/>
+                </label>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <button type="submit">保存</button>
+            </td>
+        </tr>
+    </table>
+</form>
 
 </body>
 </html>

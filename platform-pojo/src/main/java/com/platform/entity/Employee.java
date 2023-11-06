@@ -1,7 +1,5 @@
 package com.platform.entity;
 
-import com.platform.enums.Education;
-import com.platform.enums.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,7 +17,7 @@ import java.io.Serializable;
 @EqualsAndHashCode(callSuper = true)
 public class Employee extends BaseEntity implements Serializable {
     @Serial
-    private static final long serialVersionUID=1L;
+    private static final long serialVersionUID = 1L;
 
     private Long id;
     private String name;

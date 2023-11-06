@@ -24,21 +24,21 @@ public class DictionaryController {
 
     @GetMapping("/factory")
     @Operation(summary = "获取工厂列表")
-    public Result<List<Dictionary>> getFactoryDict(){
-        List<Dictionary> factoryDict=dictionaryService.getFactoryDict();
+    public Result<List<Dictionary>> getFactoryDict() {
+        List<Dictionary> factoryDict = dictionaryService.getFactoryDict();
         return Result.success(factoryDict);
     }
 
     @GetMapping("/technology")
     @Operation(summary = "获取专业检查列表")
-    public Result<List<Dictionary>> getTechnologyDict(){
-        List<Dictionary> technologyDict=dictionaryService.getTechnologyDict();
+    public Result<List<Dictionary>> getTechnologyDict() {
+        List<Dictionary> technologyDict = dictionaryService.getTechnologyDict();
         return Result.success(technologyDict);
     }
 
     @GetMapping("/normalDict")
     @Operation(summary = "获取普通字典")
-    public Result<List<Dictionary>> getNormalDict(){
+    public Result<List<Dictionary>> getNormalDict() {
         List<Dictionary> normalDict = dictionaryService.getNormalDict();
         return Result.success(normalDict);
     }

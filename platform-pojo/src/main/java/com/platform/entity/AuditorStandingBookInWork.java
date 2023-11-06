@@ -36,28 +36,28 @@ public class AuditorStandingBookInWork implements Serializable {
     private List<AuditorDisplayVO> auditors;
 
 
-    public static boolean match(Map<Integer, Long> cntMap, int level){
+    public static boolean match(Map<Integer, Long> cntMap, int level) {
 
 
-        switch (level){
+        switch (level) {
             case 5:
-                if((cntMap.getOrDefault(AuditorLevel.SA,0L)>=2)
-                        &&(cntMap.getOrDefault(AuditorLevel.A,0L)+cntMap.getOrDefault(AuditorLevel.PA,0L)>=7))
+                if ((cntMap.getOrDefault(AuditorLevel.SA, 0L) >= 2)
+                        && (cntMap.getOrDefault(AuditorLevel.A, 0L) + cntMap.getOrDefault(AuditorLevel.PA, 0L) >= 7))
                     return true;
                 break;
             case 4:
-                if((cntMap.getOrDefault(AuditorLevel.SA,0L)>=1)
-                        &&(cntMap.getOrDefault(AuditorLevel.A,0L)+cntMap.getOrDefault(AuditorLevel.PA,0L)>=5))
+                if ((cntMap.getOrDefault(AuditorLevel.SA, 0L) >= 1)
+                        && (cntMap.getOrDefault(AuditorLevel.A, 0L) + cntMap.getOrDefault(AuditorLevel.PA, 0L) >= 5))
                     return true;
                 break;
             case 3:
-                if(cntMap.getOrDefault(AuditorLevel.SA,0L)+cntMap.getOrDefault(AuditorLevel.A,0L)>=4)
+                if (cntMap.getOrDefault(AuditorLevel.SA, 0L) + cntMap.getOrDefault(AuditorLevel.A, 0L) >= 4)
                     return true;
                 break;
             case 2, 1:
-                if((cntMap.getOrDefault(AuditorLevel.SA,0L)+cntMap.getOrDefault(AuditorLevel.A,0L)>=2)
-                        &&(cntMap.getOrDefault(AuditorLevel.A,0L)+cntMap.getOrDefault(AuditorLevel.PA,0L)
-                        +cntMap.getOrDefault(AuditorLevel.PA,0L)>=4))
+                if ((cntMap.getOrDefault(AuditorLevel.SA, 0L) + cntMap.getOrDefault(AuditorLevel.A, 0L) >= 2)
+                        && (cntMap.getOrDefault(AuditorLevel.A, 0L) + cntMap.getOrDefault(AuditorLevel.PA, 0L)
+                        + cntMap.getOrDefault(AuditorLevel.PA, 0L) >= 4))
                     return true;
                 break;
             default:

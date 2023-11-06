@@ -1,9 +1,9 @@
 import request from '@/utils/request'
 
-export const getRecordFactoryService=()=>{
+export const getRecordFactoryService = () => {
     return request.get('/dict/factory')
 }
 
-export const getTechnologyDictService=()=>{
+export const getTechnologyDictService = () => {
     return request.get('/dict/technology')
 }

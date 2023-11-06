@@ -21,8 +21,6 @@
     </resultMap>
 
 
-
-
     <select id="countFactoryByBuId" resultType="long">
         select count(bu_id)
         from factory f
@@ -32,7 +30,7 @@
     <select id="getFactoryById" resultMap="factory">
         select *
         from factory f
-        left join BusinessDivision bu on f.bu_id = bu.bu_id
+                 left join BusinessDivision bu on f.bu_id = bu.bu_id
         where f.id = #{id}
     </select>
 
@@ -86,7 +84,9 @@
     </update>
 
     <update id="updateWarnTime">
-        update factory set warn_time=#{time} where id=#{factoryId}
+        update factory
+        set warn_time=#{time}
+        where id = #{factoryId}
     </update>
 
 
