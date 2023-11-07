@@ -7,7 +7,7 @@ import com.platform.constant.RedisKeyConstant;
 import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.entity.Auditor;
 import com.platform.entity.AuditorStandingBookInWork;
-import com.platform.entity.Dictionary;
+import com.platform.commonModel.Dictionary;
 import com.platform.entity.Employee;
 import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
@@ -29,9 +29,9 @@ public class TransUtil {
         //转换工艺列表
         String[] piId = auditor.getTechnology().split(",");
         StringBuilder piName = new StringBuilder();
-        Map<String, Dictionary> piMap = DictUtil.dictMap.get(RedisKeyConstant.PROFESSION_INSPECTION);
+        Map<Long, Dictionary> piMap = DictUtil.dictMap.get(RedisKeyConstant.PROFESSION_INSPECTION);
         for (int i = 0; i < piId.length; i++) {
-            Dictionary dictItem = ((List<Dictionary>) piMap.getOrDefault(piId[i], null)).get(0);
+            Dictionary dictItem = piMap.getOrDefault(piId[i], null);
             piName.append(dictItem == null ? "" : dictItem.getDictName());
             if (i < piId.length - 1) {
                 piName.append("，");
@@ -42,17 +42,17 @@ public class TransUtil {
                 .departmentId(auditor.getEmployee().getDepartmentId())
                 .employeeId(auditor.getEmployeeId())
                 .employeeName(auditor.getEmployee().getName())
-                .gender(DictUtil.getDictName(DictKeyConstant.GENDER, Integer.toString(auditor.getEmployee().getGender())))
-                .grade(DictUtil.getDictName(DictKeyConstant.GRADE, Integer.toString(auditor.getEmployee().getGrade())))
-                .education(DictUtil.getDictName(DictKeyConstant.EDUCATION, Integer.toString(auditor.getEducation())))
-                .auditorLevel(DictUtil.getDictName(DictKeyConstant.AUDITOR_LEVEL, Integer.toString(auditor.getAuditorLevel())))
+                .gender(DictUtil.getDictName(DictKeyConstant.GENDER, (long) auditor.getEmployee().getGender()))
+                .grade(DictUtil.getDictName(DictKeyConstant.GRADE, (long) auditor.getEmployee().getGrade()))
+                .education(DictUtil.getDictName(DictKeyConstant.EDUCATION, (long) auditor.getEducation()))
+                .auditorLevel(DictUtil.getDictName(DictKeyConstant.AUDITOR_LEVEL, (long) auditor.getAuditorLevel()))
                 .email(auditor.getEmployee().getEmail())
                 .phone(auditor.getPhone())
                 .registrationNumber(auditor.getRegistrationNumber())
                 .locationId(auditor.getEmployee().getLocationId())
                 .technologyName(piName.toString())
-                .status(DictUtil.getDictName(DictKeyConstant.WORK_STATUS, Integer.toString(auditor.getEmployee().getStatus())))
-                .type(DictUtil.getDictName(DictKeyConstant.AUDITOR_TYPE, Integer.toString(auditor.getType())))
+                .status(DictUtil.getDictName(DictKeyConstant.WORK_STATUS, (long) auditor.getEmployee().getStatus()))
+                .type(DictUtil.getDictName(DictKeyConstant.AUDITOR_TYPE, (long) auditor.getType()))
                 .arrangement(auditor.getArrangement())
                 .build();
         return vo;
@@ -78,7 +78,7 @@ public class TransUtil {
                 .buId(auditorStandingBookInWork.getBuId())
                 .recordFactoryId(auditorStandingBookInWork.getRecordFactoryId())
                 .levelMatch(auditorStandingBookInWork.getLevelMatch().getStr())
-                .level(DictUtil.getDictName(DictKeyConstant.FACTORY_LEVEL, Integer.toString(auditorStandingBookInWork.getLevel())))
+                .level(DictUtil.getDictName(DictKeyConstant.FACTORY_LEVEL, (long) auditorStandingBookInWork.getLevel()))
                 .sa(auditorStandingBookInWork.getSa())
                 .a(auditorStandingBookInWork.getA())
                 .pa(auditorStandingBookInWork.getPa())
@@ -106,10 +106,10 @@ public class TransUtil {
         EmployeeDisplayVo vo = EmployeeDisplayVo.builder()
                 .employeeId(employee.getId())
                 .employeeName(employee.getName())
-                .grade(DictUtil.getDictName(DictKeyConstant.GRADE, Integer.toString(employee.getGrade())))
-                .education(DictUtil.getDictName(DictKeyConstant.EDUCATION, Integer.toString(employee.getEducation())))
+                .grade(DictUtil.getDictName(DictKeyConstant.GRADE, (long) employee.getGrade()))
+                .education(DictUtil.getDictName(DictKeyConstant.EDUCATION, (long) employee.getEducation()))
                 .email(employee.getEmail())
-                .gender(DictUtil.getDictName(DictKeyConstant.GENDER, Integer.toString(employee.getGender())))
+                .gender(DictUtil.getDictName(DictKeyConstant.GENDER, (long) employee.getGender()))
                 .phone(employee.getPhone())
                 .buId(employee.getDepartment().getFactory().getBu().getBuId())
                 .factoryId(employee.getFactoryId())

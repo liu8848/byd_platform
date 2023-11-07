@@ -1,5 +1,6 @@
 package com.platform.interceptor;
 
+import com.platform.commonModel.LoginData;
 import com.platform.constant.JwtClaimsConstant;
 import com.platform.context.BaseContext;
 import com.platform.exception.BaseException;
@@ -34,7 +35,7 @@ public class JwtTokenAdminInterceptor implements HandlerInterceptor {
         try {
             log.info("jwt校验:{}", token);
             Claims claims = JwtUtil.parseJWT(jwtProperties.getAdminSecretKey(), token);
-            EmployeeLoginVO vo = EmployeeLoginVO.builder()
+            LoginData vo = LoginData.builder()
                     .id(claims.get(JwtClaimsConstant.USER_ID, Long.class))
                     .employeeId(claims.get(JwtClaimsConstant.EMP_ID, Long.class))
                     .name(claims.get(JwtClaimsConstant.NAME, String.class))

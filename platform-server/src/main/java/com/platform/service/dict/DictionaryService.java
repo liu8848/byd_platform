@@ -1,6 +1,6 @@
 package com.platform.service.dict;
 
-import com.platform.entity.Dictionary;
+import com.platform.commonModel.Dictionary;
 
 import java.util.List;
 

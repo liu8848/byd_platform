@@ -1,6 +1,6 @@
 package com.platform.controller;
 
-import com.platform.entity.Dictionary;
+import com.platform.commonModel.Dictionary;
 import com.platform.result.Result;
 import com.platform.service.dict.DictionaryService;
 import io.swagger.v3.oas.annotations.Operation;

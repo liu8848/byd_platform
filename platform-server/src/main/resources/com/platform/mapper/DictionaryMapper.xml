@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.platform.mapper.DictionaryMapper">
-    <select id="getFactory" resultType="com.platform.entity.Dictionary">
+    <select id="getFactory" resultType="com.platform.commonModel.Dictionary">
         select 'FACTORY'  dictId,
                id         dictValue,
                name       dictName,
@@ -10,7 +10,7 @@
         from factory
     </select>
 
-    <select id="getBusinessdivision" resultType="com.platform.entity.Dictionary">
+    <select id="getBusinessdivision" resultType="com.platform.commonModel.Dictionary">
         select 'BUSINESSDIVISION' dictId,
                bu_id              dictValue,
                bu_name            dictName,
@@ -18,7 +18,7 @@
         from BusinessDivision
     </select>
 
-    <select id="getDepartment" resultType="com.platform.entity.Dictionary">
+    <select id="getDepartment" resultType="com.platform.commonModel.Dictionary">
         select 'DEPARTMENT' dictId,
                id           dictValue,
                name         dictName,
@@ -26,7 +26,7 @@
         from department
     </select>
 
-    <select id="getLocation" resultType="com.platform.entity.Dictionary">
+    <select id="getLocation" resultType="com.platform.commonModel.Dictionary">
         select 'LOCATION'     dictId,
                id             dictValue,
                name           dictName,
@@ -34,7 +34,7 @@
         from location
     </select>
 
-    <select id="getProfessionInspection" resultType="com.platform.entity.Dictionary">
+    <select id="getProfessionInspection" resultType="com.platform.commonModel.Dictionary">
         select 'PROFESSION_INSPECTION' dictId,
                pi.id                   dictValue,
                pi.name                 dictName,
@@ -42,7 +42,7 @@
         from ProfessionInspection pi
     </select>
 
-    <select id="getTechnologyDict" resultType="com.platform.entity.Dictionary">
+    <select id="getTechnologyDict" resultType="com.platform.commonModel.Dictionary">
         select 'TECHNOLOGY'   dictId,
                pi.id          dictValue,
                pi.name        dictName,
@@ -50,7 +50,7 @@
         from ProfessionInspection pi
     </select>
 
-    <select id="getNormalDict" resultType="com.platform.entity.Dictionary">
+    <select id="getNormalDict" resultType="com.platform.commonModel.Dictionary">
         select *
         from dictionary
     </select>

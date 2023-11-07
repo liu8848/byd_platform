@@ -1,6 +1,6 @@
 package com.platform.service.dict;
 
-import com.platform.entity.Dictionary;
+import com.platform.commonModel.Dictionary;
 import com.platform.mapper.DictionaryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

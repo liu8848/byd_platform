@@ -229,6 +229,10 @@ public class AuditorServiceImpl implements AuditorService {
 
         List<Auditor> auditors = createDTOS.stream().map(dto -> transUtil.auditorCreateToAuditor(dto)).toList();
         auditorMapper.importAuditors(auditors);
+
+        //更新在职审核员台账
+        auditors.stream().map(Auditor::getRecordFactoryId).distinct().forEach(this::updateOnWorkStandingBook);
+
         return transUtil.auditorListToVOList(auditors);
     }
 }

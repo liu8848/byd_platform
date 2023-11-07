@@ -54,7 +54,7 @@ public class DictTransAspect {
             sourceField.setAccessible(true);
             Object fieldValue = sourceField.get(r);
 
-            String targetValue = DictUtil.getDictName(value.dictType(), fieldValue.toString());
+            String targetValue = DictUtil.getDictName(value.dictType(), (Long) fieldValue);
 
             Field targetField = clazz.getDeclaredField(value.targetField());
             targetField.setAccessible(true);

@@ -1,15 +1,16 @@
 package com.platform.context;
 
-import com.platform.vo.EmployeeLoginVO;
+
+import com.platform.commonModel.LoginData;
 
 public class BaseContext {
-    public static ThreadLocal<EmployeeLoginVO> threadLocal = new ThreadLocal<>();
+    public static ThreadLocal<LoginData> threadLocal = new ThreadLocal<>();
 
-    public static void setThreadLocal(EmployeeLoginVO vo) {
+    public static void setThreadLocal(LoginData vo) {
         threadLocal.set(vo);
     }
 
-    public static EmployeeLoginVO getCurrentId() {
+    public static LoginData getCurrentId() {
         return threadLocal.get();
     }
 

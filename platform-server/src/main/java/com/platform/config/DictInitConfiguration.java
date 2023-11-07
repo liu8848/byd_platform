@@ -1,7 +1,7 @@
 package com.platform.config;
 
 import com.platform.constant.RedisKeyConstant;
-import com.platform.entity.Dictionary;
+import com.platform.commonModel.Dictionary;
 import com.platform.mapper.DictionaryMapper;
 import com.platform.utils.RedisUtil;
 import jakarta.annotation.PostConstruct;
@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -51,7 +52,15 @@ public class DictInitConfiguration {
         Method method = dictionaryMapper.getClass().getMethod(methodName.toString());
         List<Dictionary> dictList = (List<Dictionary>) method.invoke(dictionaryMapper);
         Map<String, Map<Long, List<Dictionary>>> collect = dictList.stream().collect(Collectors.groupingBy(Dictionary::getDictId, Collectors.groupingBy(Dictionary::getDictValue)));
-        redisUtil.hsetAll(key, collect);
+        Map<String,Map<Long,Dictionary>> result=new HashMap<>();
+        for (var entry:collect.entrySet()) {
+            Map<Long,Dictionary> temp=new HashMap<>();
+            for (var t:entry.getValue().entrySet()) {
+                temp.put(t.getKey(),t.getValue().get(0));
+            }
+            result.put(entry.getKey(), temp);
+        }
+        redisUtil.hsetAll(key,result);
 
     }
 }

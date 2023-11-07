@@ -2,6 +2,7 @@ package com.platform.handler;
 
 import com.platform.exception.BaseException;
 import com.platform.result.Result;
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +21,12 @@ public class GlobalExceptionHandler {
     public Result exceptionHandler(HttpMessageNotReadableException ex) {
         log.error("异常信息：{}", ex.getMessage());
         String msg = ex.getMessage();
+        return Result.error(ex.getMessage());
+    }
+
+    @ExceptionHandler
+    public Result validateExceptionHandler(ConstraintViolationException ex){
+        log.error("异常信息：{}",ex.getMessage());
         return Result.error(ex.getMessage());
     }
 }
