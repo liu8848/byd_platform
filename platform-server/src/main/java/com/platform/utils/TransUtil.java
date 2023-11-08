@@ -5,6 +5,7 @@ import com.platform.annotaionExtend.DictParam;
 import com.platform.constant.DictKeyConstant;
 import com.platform.constant.RedisKeyConstant;
 import com.platform.dto.auditors.AuditorCreateDTO;
+import com.platform.dto.employees.EmployeeCreateDTO;
 import com.platform.entity.Auditor;
 import com.platform.entity.AuditorStandingBookInWork;
 import com.platform.commonModel.Dictionary;
@@ -12,10 +13,12 @@ import com.platform.entity.Employee;
 import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
 import com.platform.vo.EmployeeDisplayVo;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 @Component
 public class TransUtil {
@@ -51,7 +54,7 @@ public class TransUtil {
                 .registrationNumber(auditor.getRegistrationNumber())
                 .locationId(auditor.getEmployee().getLocationId())
                 .technologyName(piName.toString())
-                .status(DictUtil.getDictName(DictKeyConstant.WORK_STATUS, (long) auditor.getEmployee().getStatus()))
+                .status(DictUtil.getDictName(DictKeyConstant.WORK_STATUS, (long) auditor.getEmployee().getWorkStatus()))
                 .type(DictUtil.getDictName(DictKeyConstant.AUDITOR_TYPE, (long) auditor.getType()))
                 .arrangement(auditor.getArrangement())
                 .build();
@@ -134,6 +137,16 @@ public class TransUtil {
                 .technology(auditorCreateDTO.getTechnology())
                 .build();
         return auditor;
+    }
+
+
+    public Employee employeeCreateToEmployee(EmployeeCreateDTO employeeCreateDTO){
+        Employee employee = new Employee();
+        BeanUtils.copyProperties(employeeCreateDTO,employee);
+        return employee;
+    }
+    public List<Employee> employeesCreateListToEmployeeList(List<EmployeeCreateDTO> employeeCreateDTOList){
+        return employeeCreateDTOList.stream().map(this::employeeCreateToEmployee).toList();
     }
 
 

@@ -11,6 +11,10 @@ import com.platform.vo.EmployeeDisplayVo;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
+
+import java.util.List;
 
 @Service
 @Slf4j
@@ -28,11 +32,10 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .gender(createDTO.getGender())
                 .education(createDTO.getEducation())
                 .email(createDTO.getEmail())
-                .phone(createDTO.getPhone())
                 .factoryId(createDTO.getFactoryId())
                 .departmentId(createDTO.getDepartmentId())
                 .locationId(createDTO.getLocationId())
-                .status(createDTO.getWorkStatus())
+                .workStatus(createDTO.getWorkStatus())
                 .build();
 
         employeeMapper.insert(employee);
@@ -46,5 +49,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDisplayVo getById(Long id) {
         Employee employee = employeeMapper.getById(id);
         return transUtil.employeeToVO(employee);
+    }
+
+    @Override
+    @Transactional
+    public List<Employee> importEmployee(List<EmployeeCreateDTO> createDTOS) {
+        List<Employee> employees = transUtil.employeesCreateListToEmployeeList(createDTOS);
+        employeeMapper.importEmployee(employees);
+        return employees;
     }
 }

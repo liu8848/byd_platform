@@ -111,7 +111,7 @@ public class AuditorServiceImpl implements AuditorService {
             asibw.setBuId(factory.getBu().getBuId());
         }
         asibw.setLevel(factory.getLevel());
-        List<Auditor> auditors = auditorMapper.getAuditorByRecordFactoryId(recordFactoryId).stream().filter(a -> a.getEmployee().getStatus() == 1).toList();
+        List<Auditor> auditors = auditorMapper.getAuditorByRecordFactoryId(recordFactoryId).stream().filter(a -> a.getEmployee().getWorkStatus() == 1).toList();
 
         Map<Integer, Long> collect = auditors.stream()
                 .collect(

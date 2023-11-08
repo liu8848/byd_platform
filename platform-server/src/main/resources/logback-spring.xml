@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration debug="false">
+<configuration scan="true" debug="false">
+
+    <property name="logging.path" value="./platform-server/src/main/resources/logs"/>
+
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) --- %yellow([%15.15(%thread)]) %cyan(%-40.40(%logger{40})):%msg%n
-            </pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %highlight(%-5level) --- %yellow([%15.15(%thread)]) %cyan(%-40.40(%logger{40})):%msg%n</pattern>
             <charset>UTF-8</charset>
         </encoder>
     </appender>
 
     <appender name="info_log" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <append>true</append>
+<!--        <file>${logging.path}/commonLogs/byd_platform.log</file>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>
-                /home/qzliu/文档/java_project/byd_platform/byd_platform/platform-server/src/main/resources/logs/commonLogs/byd_platform.%d.%i.log
-            </fileNamePattern>
+            <fileNamePattern>${logging.path}/commonLogs/byd_platform_%d{yyyy-MM-dd}_%i.log</fileNamePattern>
             <maxHistory>30</maxHistory>
             <totalSizeCap>20GB</totalSizeCap>
             <maxFileSize>10MB</maxFileSize>
@@ -26,10 +27,9 @@
 
     <appender name="SQL_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <append>true</append>
+<!--        <file>${logging.path}/sqlLogs/sql_log.log</file>-->
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>
-                /home/qzliu/文档/java_project/byd_platform/byd_platform/platform-server/src/main/resources/logs/sqlLogs/sql_log.%d{yyyy-MM-dd}.log
-            </fileNamePattern>
+            <fileNamePattern>${logging.path}/sqlLogs/sql_log.%d{yyyy-MM-dd}.log</fileNamePattern>
             <maxHistory>30</maxHistory>
         </rollingPolicy>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">

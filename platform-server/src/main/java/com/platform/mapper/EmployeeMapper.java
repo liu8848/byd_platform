@@ -17,4 +17,7 @@ public interface EmployeeMapper {
 
     @AutoFill(value = OperationType.INSERT)
     void insert(Employee employee);
+
+    @AutoFill(value = OperationType.INSERT)
+    void importEmployee(List<Employee> employees);
 }

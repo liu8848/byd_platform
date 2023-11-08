@@ -30,7 +30,7 @@ public class Employee extends BaseEntity implements Serializable {
     private String factoryName;
     private Long departmentId;
     private Long locationId;
-    private int status;
+    private int workStatus;
 
     @Schema(description = "所属部门")
     private Department department;

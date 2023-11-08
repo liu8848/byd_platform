@@ -1,5 +1,7 @@
 package com.platform.controller;
 
+import com.alibaba.excel.EasyExcel;
+import com.platform.annotations.EducationValidate;
 import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.auditors.AuditorPageQueryDTO;
 import com.platform.entity.Auditor;
@@ -8,6 +10,7 @@ import com.platform.exception.BaseException;
 import com.platform.result.PageResult;
 import com.platform.result.Result;
 import com.platform.service.AuditorService;
+import com.platform.utils.CustomMergeStrategy;
 import com.platform.utils.ExcelUtil;
 import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
@@ -20,6 +23,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -58,7 +62,8 @@ public class AuditorController {
 
     @PostMapping("/add")
     @Operation(summary = "添加审核员")
-    public Result<Auditor> createAuditor(@RequestBody @Valid AuditorCreateDTO auditorCreateDTO) {
+    public Result<Auditor> createAuditor(@Validated @RequestBody AuditorCreateDTO auditorCreateDTO,
+                                         BindingResult bindingResult) {
         Auditor auditor = auditorService.insert(auditorCreateDTO);
         return Result.success(auditor);
     }
@@ -107,9 +112,13 @@ public class AuditorController {
     @Operation(summary = "导出在职审核员工作台账Excel")
     public void exportStandingBookInWorkExcel(HttpServletResponse response){
         try{
-            ExcelUtil.setExcelResponseProp(response,
-                    "在职审核员台账"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-hh:mm:ss")));
+            String fileName="在职审核员台账"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMdd-hh:mm:ss"));
+            //设置响应头
+            ExcelUtil.setExcelResponseProp(response, fileName);
+
+            //获取导出数据
             List<AuditorStandingBookInWorkVO> standingBookInWork = auditorService.getStandingBookInWork();
+            //将数据平铺
             List<StandingBookAuditorExportVO> exportData=new ArrayList<>();
             for (AuditorStandingBookInWorkVO auditorStandingBookInWorkVO: standingBookInWork) {
                 for (AuditorDisplayVO auditorDisplayVO :auditorStandingBookInWorkVO.getAuditors()) {
@@ -120,8 +129,16 @@ public class AuditorController {
                 }
             }
 
+            log.info("开始写入数据:{}.xlsx",fileName);
+            //将数据写入Excel
+            EasyExcel.write(response.getOutputStream()).head(StandingBookAuditorExportVO.class)
+                    .registerWriteHandler(new CustomMergeStrategy(StandingBookAuditorExportVO.class))
+                    .sheet().doWrite(exportData);
+            log.info("数据写入完成");
         }catch (UnsupportedEncodingException ex){
             throw new BaseException(ex.getMessage());
+        }catch (IOException ex){
+            throw new RuntimeException(ex);
         }
     }
 

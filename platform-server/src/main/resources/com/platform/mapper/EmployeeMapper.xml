@@ -70,9 +70,19 @@
     </select>
 
     <insert id="insert" keyProperty="id" useGeneratedKeys="true">
-        insert into employee(name, grade, gender, education, email, phone, status, factory_id, department_id,
+        insert into employee(name, grade, gender, education, email, phone, work_status, factory_id, department_id,
                              location_id, create_time, create_user, update_time, update_user)
         values (#{name}, #{grade}, #{gender}, #{education}, #{email}, #{phone}, #{workStatus}, #{factoryId},
                 #{departmentId}, #{locationId}, #{createTime}, #{createUser}, #{updateTime}, #{updateUser})
+    </insert>
+
+    <insert id="importEmployee">
+        insert into employee(id,name, grade, gender, education, email, work_status, factory_id, department_id,
+                             location_id, create_time, create_user, update_time, update_user)
+        VALUES
+        <foreach collection="employees" item="item" separator=",">
+            (#{item.id},#{item.name},#{item.grade},#{item.gender},#{item.education},{item.email},#{item.workStatus},#{item.factoryId},#{item.departmentId},
+             #{item.locationId},#{item.createTime},#{item.createUser},#{item.updateTime},#{item.updateUser})
+        </foreach>
     </insert>
 </mapper>

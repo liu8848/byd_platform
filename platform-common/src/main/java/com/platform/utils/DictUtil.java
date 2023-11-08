@@ -41,7 +41,6 @@ public class DictUtil {
         for (var item : hmget.entrySet()) {
             String innerKey = item.getKey().toString();
             HashMap<Long, Dictionary> dictItem = (HashMap<Long, Dictionary>) item.getValue();
-
             HashMap<String,Dictionary> dictItem2=new HashMap<>();
             for (Dictionary dict:dictItem.values()) {
                 dictItem2.put(dict.getDictName(),dict);

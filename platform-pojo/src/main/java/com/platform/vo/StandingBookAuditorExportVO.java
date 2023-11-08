@@ -2,7 +2,9 @@ package com.platform.vo;
 
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.alibaba.excel.annotation.format.DateTimeFormat;
+import com.alibaba.excel.annotation.write.style.ColumnWidth;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.platform.annotations.CollectCustomMerge;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,36 +21,47 @@ public class StandingBookAuditorExportVO {
 
     @ExcelProperty(value = "事业部")
     @Schema(description = "事业部名称")
+    @ColumnWidth(value = 25)
+    @CollectCustomMerge(needMerge = true)
     private String buName;
 
     @ExcelProperty(value = "备案工厂")
     @Schema(description = "备案工厂名称")
+    @ColumnWidth(value = 25)
+    @CollectCustomMerge(needMerge = true,isPK = true)
     private String recordFactoryName;
 
     @ExcelProperty(value = "星级匹配情况")
     @Schema(description = "星级匹配")
+    @CollectCustomMerge(needMerge = true)
     private String levelMatch;
 
     @ExcelProperty(value = "星级")
     @Schema(description = "星级")
+    @CollectCustomMerge(needMerge = true)
     private String level;
 
     @ExcelProperty(value = "SA")
     @Schema(description = "资深审核员人数")
+    @CollectCustomMerge(needMerge = true)
     private long sa;
 
     @ExcelProperty(value = "A")
     @Schema(description = "审核员人数")
+    @CollectCustomMerge(needMerge = true)
     private long a;
 
     @ExcelProperty(value = "PA")
     @Schema(description = "实习审核员人数")
+    @CollectCustomMerge(needMerge = true)
     private long pa;
 
     @Schema(description = "预警时间")
     @ExcelProperty(value = "预警时间")
     @DateTimeFormat("yyyy年MM月")
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+    @CollectCustomMerge(needMerge = true)
+    @ColumnWidth(value = 25)
     private LocalDateTime warnTime;
 
 

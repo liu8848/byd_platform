@@ -1,6 +1,8 @@
 package com.platform.dto.auditors;
 
 import com.alibaba.excel.annotation.ExcelProperty;
+import com.platform.annotations.AuditorLevelValidate;
+import com.platform.annotations.EducationValidate;
 import com.platform.utils.convertors.AuditorLevelConvertor;
 import com.platform.utils.convertors.EducationConvertor;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -34,11 +36,13 @@ public class AuditorCreateDTO implements Serializable {
     @Schema(description = "学历")
     @ExcelProperty(value = "学历",converter = EducationConvertor.class)
     @NotNull(message = "学历不能为空")
+    @EducationValidate
     private int education;
 
     @Schema(description = "审核员等级")
     @ExcelProperty(value = "审核员等级",converter = AuditorLevelConvertor.class)
     @NotNull(message = "审核员等级不能为空")
+    @AuditorLevelValidate
     private int auditorLevel;
 
     @Schema(description = "电话")

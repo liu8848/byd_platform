@@ -1,6 +1,6 @@
 package com.platform.annotations;
 
-import com.platform.validators.EducationValidateValidator;
+import com.platform.validators.GradeValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
 
@@ -10,19 +10,20 @@ import java.lang.annotation.*;
         ElementType.CONSTRUCTOR,ElementType.PARAMETER})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Repeatable(EducationValidate.List.class)
-@Constraint(validatedBy = {EducationValidateValidator.class})
-public @interface EducationValidate {
-    String message() default "学历参数错误";
+@Repeatable(GradeValidate.List.class)
+@Constraint(validatedBy = {GradeValidator.class})
+public @interface GradeValidate {
+    String message() default "员工级别参数错误";
 
     Class<?>[] groups() default {};
 
     Class<? extends Payload>[] payload() default {};
 
-    @Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE,ElementType.CONSTRUCTOR,ElementType.PARAMETER})
+    @Target({ElementType.METHOD,ElementType.ANNOTATION_TYPE,
+            ElementType.CONSTRUCTOR,ElementType.PARAMETER})
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
     public @interface List{
-        EducationValidate[] value();
+        GradeValidate[] value();
     }
 }

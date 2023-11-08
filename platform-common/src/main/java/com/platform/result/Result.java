@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.List;
 
 @Data
 @Schema(description = "相应体数据结构")
@@ -32,6 +33,13 @@ public class Result<T> implements Serializable {
         Result result = new Result();
         result.msg = msg;
         result.code = 0;
+        return result;
+    }
+
+    public static <T> Result<T> errorList(List<String> errMsgList){
+        Result result=new Result();
+        result.code=0;
+        result.data=errMsgList;
         return result;
     }
 }
