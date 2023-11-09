@@ -1,5 +1,6 @@
 package com.platform.mapper;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.github.pagehelper.Page;
 import com.platform.annotaionExtend.AutoFill;
 import com.platform.annotaionExtend.DictHelper;
@@ -16,14 +17,14 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper
-public interface AuditorMapper {
+public interface AuditorMapper extends BaseMapper<Auditor> {
     List<Auditor> getAuditor();
 
     int countAuditorById(long employeeId);
 
 
     @AutoFill(value = OperationType.INSERT)
-    void insert(Auditor auditor);
+    int insert(Auditor auditor);
 
     void deleteAuditorInspectionByEmployeeId(Long employeeId);
 

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.AuditorStandingBookChangeMapper">
+
+    <insert id="insertStandingBookChange" useGeneratedKeys="true" keyProperty="id">
+        insert into auditor_standing_book_change
+        (employee_id, old_bu_id, now_bu_id,old_factory_id,now_factory_id,
+         create_time, create_user, update_time, update_user)
+        VALUES
+        (#{employeeId},#{oldBuId},#{nowBuId},#{oldFactoryId},#{nowFactoryId},
+         #{createTime},#{createUser},#{updateTime},#{updateUser});
+    </insert>
+
+    <select id="getStandingBookChangeList" resultType="com.platform.vo.AuditorStandingBookChangeDisplayVO">
+        select
+            asbc.now_bu_id nowBuId,
+            asbc.old_bu_id oldBuId,
+            asbc.now_factory_id nowFactoryId,
+            asbc.old_factory_id oldFactoryId,
+            a.record_factory_id recordFactoryId,
+            e.department_id departmentId,
+            e.name,
+            e.id employeeId,
+            e.grade,
+            e.gender,
+            e.education,
+            a.auditor_level,
+            e.email,
+            a.phone,
+            a.registration_number,
+            e.location_id,
+            a.technology,
+            e.work_status
+        from auditor_standing_book_change asbc
+        left join employee e on e.id=asbc.id
+        left join auditor a on a.employee_id=asbc.employee_id
+    </select>
+</mapper>

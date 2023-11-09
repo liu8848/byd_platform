@@ -2,6 +2,9 @@ package com.platform.service.impl;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.platform.annotaionExtend.DictHelper;
+import com.platform.annotaionExtend.DictParam;
+import com.platform.constant.DictKeyConstant;
 import com.platform.constant.MessageConstant;
 import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.auditors.AuditorInspectionCreateDTO;
@@ -10,15 +13,13 @@ import com.platform.entity.*;
 import com.platform.enums.LevelMatch;
 import com.platform.exception.BaseException;
 import com.platform.exception.FactoryNotExistException;
-import com.platform.mapper.AuditorMapper;
-import com.platform.mapper.EmployeeMapper;
-import com.platform.mapper.FactoryMapper;
-import com.platform.mapper.ProfessionInspectionMapper;
+import com.platform.mapper.*;
 import com.platform.result.PageResult;
 import com.platform.service.AuditorService;
 import com.platform.utils.TransUtil;
 import com.platform.validators.AuditorValidator;
 import com.platform.vo.AuditorDisplayVO;
+import com.platform.vo.AuditorStandingBookChangeDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +45,12 @@ public class AuditorServiceImpl implements AuditorService {
     @Autowired
     private ProfessionInspectionMapper inspectionMapper;
     @Autowired
+    private AuditorStandingBookChangeMapper standingBookChangeMapper;
+    @Autowired
     private TransUtil transUtil;
     @Autowired
     private AuditorValidator auditorValidator;
+
 
 
     @Override
@@ -234,5 +238,27 @@ public class AuditorServiceImpl implements AuditorService {
         auditors.stream().map(Auditor::getRecordFactoryId).distinct().forEach(this::updateOnWorkStandingBook);
 
         return transUtil.auditorListToVOList(auditors);
+    }
+
+    @Override
+    @DictHelper(value = {
+            @DictParam(field = "nowBuId",targetField = "nowBuName",dictType = DictKeyConstant.BUSINESSDIVISION),
+            @DictParam(field = "oldBuId",targetField = "oldBuName",dictType = DictKeyConstant.BUSINESSDIVISION),
+            @DictParam(field = "nowFactoryId",targetField = "noeFactoryName",dictType = DictKeyConstant.FACTORY),
+            @DictParam(field = "oldFactoryId",targetField = "oldFactoryName",dictType = DictKeyConstant.FACTORY),
+            @DictParam(field = "recordFactoryId",targetField = "recordFactoryName",dictType = DictKeyConstant.FACTORY),
+            @DictParam(field = "departmentId",targetField = "departmentName",dictType = DictKeyConstant.DEPARTMENT),
+            @DictParam(field = "gender",targetField = "genderName",dictType = DictKeyConstant.GENDER),
+            @DictParam(field = "grade",targetField = "gradeName",dictType = DictKeyConstant.GRADE),
+            @DictParam(field = "education",targetField = "educationName",dictType = DictKeyConstant.EDUCATION),
+            @DictParam(field = "auditorLevel",targetField = "auditorLevelName",dictType = DictKeyConstant.AUDITOR_LEVEL),
+            @DictParam(field = "locationId",targetField = "locationName",dictType = DictKeyConstant.LOCATION),
+            @DictParam(field = "workStatus",targetField = "workStatusName",dictType = DictKeyConstant.WORK_STATUS),
+    })
+    public List<AuditorStandingBookChangeDisplayVO> getAuditorStandingBookChange() {
+
+        //获取事业部变动台账
+        List<AuditorStandingBookChangeDisplayVO> auditorStandingBookChangeList=standingBookChangeMapper.getStandingBookChangeList();
+        return auditorStandingBookChangeList;
     }
 }

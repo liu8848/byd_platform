@@ -49,10 +49,13 @@ public class DictTransAspect {
 
     private void trans(Object r, DictParam[] values) throws Throwable {
         for (DictParam value : values) {
+            log.info("--------------------------开始转换：{}----------------------------",value.field());
             Class<?> clazz = r.getClass();
             Field sourceField = clazz.getDeclaredField(value.field());
             sourceField.setAccessible(true);
             Object fieldValue = sourceField.get(r);
+            if (fieldValue==null)
+                continue;
 
             String targetValue = DictUtil.getDictName(value.dictType(), (Long) fieldValue);
 

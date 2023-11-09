@@ -6,6 +6,7 @@ import com.platform.entity.Auditor;
 import com.platform.entity.AuditorStandingBookInWork;
 import com.platform.result.PageResult;
 import com.platform.vo.AuditorDisplayVO;
+import com.platform.vo.AuditorStandingBookChangeDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
 
 import java.util.List;
@@ -30,4 +31,6 @@ public interface AuditorService {
     void updateAuditorArrangement(Long employeeId, Boolean isArrange);
 
     List<AuditorDisplayVO> importAuditors(List<AuditorCreateDTO> createDTOS);
+
+    List<AuditorStandingBookChangeDisplayVO> getAuditorStandingBookChange();
 }

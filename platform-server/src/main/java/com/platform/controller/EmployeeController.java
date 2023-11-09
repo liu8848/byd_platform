@@ -2,10 +2,12 @@ package com.platform.controller;
 
 import com.platform.annotaionExtend.OperationLog;
 import com.platform.dto.employees.EmployeeCreateDTO;
+import com.platform.dto.employees.EmployeeUpdateDTO;
 import com.platform.entity.Employee;
 import com.platform.exception.BaseException;
 import com.platform.mapper.EmployeeMapper;
 import com.platform.result.Result;
+import com.platform.result.UpdateResult;
 import com.platform.service.employee.EmployeeService;
 import com.platform.utils.ExcelUtil;
 import com.platform.vo.EmployeeDisplayVo;
@@ -69,7 +71,15 @@ public class EmployeeController {
         }catch (IOException ex){
             throw new RuntimeException(ex);
         }
-        return null;
+        return Result.success(employees);
+    }
+
+    @PutMapping("/{employeeId}")
+    @Operation(summary = "更新员工信息")
+    public Result<UpdateResult<Employee>> updateEmployee(@PathVariable Long employeeId,
+                                                         @Validated @RequestBody EmployeeUpdateDTO updateDTO){
+        UpdateResult<Employee> employeeUpdateResult = employeeService.updateEmployee(updateDTO);
+        return Result.success(employeeUpdateResult);
     }
 
 }

@@ -10,6 +10,7 @@
         <result column="education" property="education"/>
         <result column="email" property="email"/>
         <result column="phone" property="phone"/>
+        <result column="bu_id" property="buId"/>
         <result column="factory_id" property="factoryId"/>
         <result column="department_id" property="departmentId"/>
         <result column="location_id" property="locationId"/>
@@ -85,4 +86,22 @@
              #{item.locationId},#{item.createTime},#{item.createUser},#{item.updateTime},#{item.updateUser})
         </foreach>
     </insert>
+
+    <update id="updateEmployee" parameterType="com.platform.entity.Employee">
+        update employee
+        <set>
+            <if test="name!=null and name!=''">name=#{name},</if>
+            <if test="grade!=0">grade=#{grade},</if>
+            <if test="education!=0">education=#{education},</if>
+            <if test="email!=null and email!=''">email=#{email},</if>
+            <if test="workStatus!=0">work_status=#{workStatus},</if>
+            <if test="buId!=null and buId!=0">bu_id=#{buId},</if>
+            <if test="factoryId!=null and factoryId!=0">factory_id=#{factoryId},</if>
+            <if test="departmentId!=null and departmentId!=0">department_id=#{departmentId},</if>
+            <if test="locationId!=null and location_id!=0">location_id=#{locationId},</if>
+            update_time=#{updateTime},
+            update_user=#{updateUser}
+        </set>
+        where id=#{id}
+    </update>
 </mapper>

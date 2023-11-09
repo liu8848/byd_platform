@@ -13,6 +13,7 @@ import com.platform.service.AuditorService;
 import com.platform.utils.CustomMergeStrategy;
 import com.platform.utils.ExcelUtil;
 import com.platform.vo.AuditorDisplayVO;
+import com.platform.vo.AuditorStandingBookChangeDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
 import com.platform.vo.StandingBookAuditorExportVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -140,6 +141,14 @@ public class AuditorController {
         }catch (IOException ex){
             throw new RuntimeException(ex);
         }
+    }
+
+
+    @GetMapping("/auditorStandingBookChange/list")
+    @Operation(summary = "获取事业部变动审核员台账")
+    public Result<List<AuditorStandingBookChangeDisplayVO>> getAuditorStandingBookChange(){
+        List<AuditorStandingBookChangeDisplayVO> result=auditorService.getAuditorStandingBookChange();
+        return Result.success(result);
     }
 
 }

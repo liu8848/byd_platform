@@ -22,7 +22,7 @@
             <result column="factory_id" property="factoryId"/>
             <result column="department_id" property="departmentId"/>
             <result column="location_id" property="locationId"/>
-            <result column="status" property="status"/>
+            <result column="work_status" property="workStatus"/>
             <association property="department" javaType="com.platform.entity.Department">
                 <id column="d_id" property="id"/>
                 <result column="d_name" property="name"/>
@@ -75,10 +75,10 @@
                e.factory_id    `employee.factoryId`,
                e.department_id `employee.departmentId`,
                e.location_id   `employee.locationId`,
-               e.status        `employee.status`
+               e.work_status        `employee.work_status`
         from auditor
                  left join employee e on auditor.employee_id = e.id
-        where e.status = 1
+        where e.work_status = 1
     </select>
 
     <insert id="insert" useGeneratedKeys="true" keyProperty="id">
@@ -118,16 +118,16 @@
                f.level f_level,
                bu.bu_id,
                bu.bu_name,
-               inspection_id,
-               pi.name inspection_name,
-               e.status
+#                inspection_id,
+#                pi.name inspection_name,
+               e.work_status
         from auditor a
                  left join employee e on a.employee_id = e.id
                  left join department d on e.department_id = d.id
                  left join factory f on d.factory_id = f.id
                  left join BusinessDivision bu on bu.bu_id = f.bu_id
-                 left join auditor_inspection ai on a.employee_id = ai.employee_id
-                 left join ProfessionInspection pi on pi.id = ai.inspection_id
+#                  left join auditor_inspection ai on a.employee_id = ai.employee_id
+#                  left join ProfessionInspection pi on pi.id = ai.inspection_id
                  left join location l on e.location_id = l.id
         where a.record_factory_id = #{recordFactoryId}
     </select>
