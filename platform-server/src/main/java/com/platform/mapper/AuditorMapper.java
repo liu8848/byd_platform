@@ -12,6 +12,7 @@ import com.platform.entity.Auditor;
 import com.platform.entity.AuditorStandingBookInWork;
 import com.platform.enums.OperationType;
 import com.platform.vo.AuditorDisplayVO;
+import com.platform.vo.AuditorStandingBookOutWorkVO;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
@@ -58,4 +59,9 @@ public interface AuditorMapper extends BaseMapper<Auditor> {
 
     @AutoFill(value = OperationType.INSERT)
     void importAuditors(List<Auditor> auditors);
+
+    @AutoFill(value = OperationType.UPDATE)
+    void updateAuditor(Auditor auditor);
+
+    List<AuditorStandingBookOutWorkVO> getAuditorStandingBookOutWork();
 }

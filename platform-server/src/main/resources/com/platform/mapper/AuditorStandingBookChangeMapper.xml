@@ -36,4 +36,39 @@
         left join employee e on e.id=asbc.id
         left join auditor a on a.employee_id=asbc.employee_id
     </select>
+
+    <select id="queryPageAuditorStandingBookChange"
+            parameterType="com.platform.dto.auditors.AuditorStandingBookChangePageQueryDTO"
+            resultType="com.platform.vo.AuditorStandingBookChangeDisplayVO"
+    >
+        select
+            asbc.now_bu_id nowBuId,
+            asbc.old_bu_id oldBuId,
+            asbc.now_factory_id nowFactoryId,
+            asbc.old_factory_id oldFactoryId,
+            a.record_factory_id recordFactoryId,
+            e.department_id departmentId,
+            e.name employeeName,
+            e.id employeeId,
+            e.grade,
+            e.gender,
+            e.education,
+            a.auditor_level,
+            e.email,
+            a.phone,
+            a.registration_number,
+            e.location_id,
+            a.technology,
+            e.work_status
+        from auditor_standing_book_change asbc
+        left join employee e on e.id=asbc.id
+        left join auditor a on a.employee_id=asbc.employee_id
+        <where>
+            <if test="buId!=null and buId!=0">and now_bu_id=#{buId}</if>
+            <if test="recordFactoryId!=null and recordFactoryId!=0">and record_factory_id=#{recordFactoryId}</if>
+            <if test="employeeId!=null and employeeId!=0">and a.employee_id=#{employeeId}</if>
+            <if test="employeeName!=null">and name like concat('%',#{employeeName},'%')</if>
+            <if test="auditorLevel!=null and auditorLevel!=0">and auditor_level=#{auditorLevel}</if>
+        </where>
+    </select>
 </mapper>

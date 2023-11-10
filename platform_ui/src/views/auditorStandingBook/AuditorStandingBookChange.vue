@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import {ref} from 'vue'
 import {useRouter} from 'vue-router'
-import {standingBookChangeListService} from '@/api/auditor'
+import {standingBookChangeListService,standingBookChangeUpdateService} from '@/api/auditor'
 import { useBaseDataStore } from '@/stores'
 
 const baseDataStore=useBaseDataStore()
@@ -36,7 +36,6 @@ class standingBookChange{
   workStatusName:string
 }
 
-const factoryValue=ref<Option>()
 const factoryOptions=baseDataStore.recordFactoryList
 const query=async()=>{
   console.log('查询开始......')
@@ -73,6 +72,14 @@ const query=async()=>{
   console.log(changeList)
 }
 
+const update=async(employeeId,recordFactoryId)=>{
+  console.log(employeeId+'         '+recordFactoryId)
+  let res=await standingBookChangeUpdateService(employeeId,recordFactoryId)
+  console.log(res)
+  console.log('---------------------刷新页面-----------------------------')
+  await query()
+}
+
 
 </script>
 
@@ -84,7 +91,7 @@ const query=async()=>{
         border style="width: 100%; margin-top: 20px">
       <el-table-column label="操作">
         <template v-slot="scope">
-          <el-button type="primary">确定</el-button>
+          <el-button type="primary" @click="update(scope.row.employeeId,scope.row.recordFactory.dictValue)">确定</el-button>
           <el-button type="danger">删除</el-button>
         </template>
       </el-table-column>

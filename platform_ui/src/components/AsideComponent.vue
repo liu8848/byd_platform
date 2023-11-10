@@ -15,6 +15,7 @@
       </template>
       <el-menu-item index="/auditorStandingBook/inWork">在职审核员台账</el-menu-item>
       <el-menu-item index="/auditorStandingBook/change">事业部变动审核员台账</el-menu-item>
+      <el-menu-item index="/auditorStandingBook/outWork">离职审核员台账</el-menu-item>
     </el-sub-menu>
   </el-menu>
 </template>

@@ -91,10 +91,10 @@
         update employee
         <set>
             <if test="name!=null and name!=''">name=#{name},</if>
-            <if test="grade!=0">grade=#{grade},</if>
-            <if test="education!=0">education=#{education},</if>
+            <if test="grade!=null and grade!=0">grade=#{grade},</if>
+            <if test="education!=null and education!=0">education=#{education},</if>
             <if test="email!=null and email!=''">email=#{email},</if>
-            <if test="workStatus!=0">work_status=#{workStatus},</if>
+            <if test="workStatus !=null and workStatus!=0">work_status=#{workStatus},</if>
             <if test="buId!=null and buId!=0">bu_id=#{buId},</if>
             <if test="factoryId!=null and factoryId!=0">factory_id=#{factoryId},</if>
             <if test="departmentId!=null and departmentId!=0">department_id=#{departmentId},</if>

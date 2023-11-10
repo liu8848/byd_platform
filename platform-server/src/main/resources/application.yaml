@@ -23,11 +23,15 @@ spring:
     cache: false
     suffix: .html
 
-mybatis:
+#mybatis:
+#  configuration:
+#    map-underscore-to-camel-case: true
+#    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+##    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+mybatis-plus:
   configuration:
-    map-underscore-to-camel-case: true
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
 
 
 springdoc:

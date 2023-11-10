@@ -4,7 +4,10 @@ import com.alibaba.excel.EasyExcel;
 import com.platform.annotations.EducationValidate;
 import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.auditors.AuditorPageQueryDTO;
+import com.platform.dto.auditors.AuditorStandingBookChangePageQueryDTO;
+import com.platform.dto.auditors.AuditorUpdateDTO;
 import com.platform.entity.Auditor;
+import com.platform.entity.AuditorStandingBookChange;
 import com.platform.entity.AuditorStandingBookInWork;
 import com.platform.exception.BaseException;
 import com.platform.result.PageResult;
@@ -12,11 +15,11 @@ import com.platform.result.Result;
 import com.platform.service.AuditorService;
 import com.platform.utils.CustomMergeStrategy;
 import com.platform.utils.ExcelUtil;
-import com.platform.vo.AuditorDisplayVO;
-import com.platform.vo.AuditorStandingBookChangeDisplayVO;
-import com.platform.vo.AuditorStandingBookInWorkVO;
-import com.platform.vo.StandingBookAuditorExportVO;
+import com.platform.vo.*;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -149,6 +152,78 @@ public class AuditorController {
     public Result<List<AuditorStandingBookChangeDisplayVO>> getAuditorStandingBookChange(){
         List<AuditorStandingBookChangeDisplayVO> result=auditorService.getAuditorStandingBookChange();
         return Result.success(result);
+    }
+
+    @GetMapping("/auditorStandingBookChange/pageAndCondition")
+    @Operation(summary = "分页条件查询事业部变动审核员台账")
+    @Parameters(
+            {
+                    @Parameter(name = "buId",description = "事业部编号",in = ParameterIn.QUERY),
+                    @Parameter(name = "buName",description = "事业部名称",in = ParameterIn.QUERY),
+                    @Parameter(name = "recordFactoryId",description = "备案工厂编号",in = ParameterIn.QUERY),
+                    @Parameter(name = "recordFactoryName",description = "备案工厂名称",in = ParameterIn.QUERY),
+                    @Parameter(name = "employeeId",description = "工号",in = ParameterIn.QUERY),
+                    @Parameter(name = "employeeId",description = "姓名",in = ParameterIn.QUERY),
+                    @Parameter(name = "auditorLevel",description = "审核员等级",in = ParameterIn.QUERY),
+                    @Parameter(name = "page",description = "页码",in = ParameterIn.QUERY),
+                    @Parameter(name = "size",description = "每页记录数",in = ParameterIn.QUERY)
+            }
+    )
+    public Result<PageResult<AuditorStandingBookChange>> queryAndPageAuditorStandingBookChange
+            (AuditorStandingBookChangePageQueryDTO pageQueryDTO){
+        PageResult<AuditorStandingBookChange> pageResult= auditorService.queryAndPageAuditorStandingBookChange(pageQueryDTO);
+        return null;
+    }
+
+    @PostMapping("/auditorStandingBookChange/{employeeId}")
+    @Operation(summary = "编辑事业部变动审核员台账")
+    @Parameters(
+            {
+                    @Parameter(name = "employeeId", description = "工号", required = true),
+                    @Parameter(name = "recordFactoryId", description = "备案工厂", required = true,in = ParameterIn.QUERY)
+            }
+    )
+    public Result<String> updateAuditorStandingBookChange(@PathVariable Long employeeId,
+                                                          Long recordFactoryId){
+        auditorService.updateAuditorStandingBookChange(employeeId,recordFactoryId);
+        return Result.success("编辑成功");
+    }
+
+    @DeleteMapping("/auditorStandingBookChange/{employeeId}")
+    @Operation(summary = "删除事业部变动审核员台账")
+    public Result<String> deleteAuditorStandingBookChange(@PathVariable Long employeeId){
+        auditorService.deleteAuditorStandingBookChange(employeeId);
+        return Result.success("删除成功");
+    }
+
+    @GetMapping("/auditorStandingBookOutWork/list")
+    @Operation(summary = "离职审核员台账查询")
+    public Result<List<AuditorStandingBookOutWorkVO>> getAuditorStandingBookOutWork(){
+        List<AuditorStandingBookOutWorkVO> result=auditorService.getAuditorStandingBookOutWork();
+        return Result.success(result);
+    }
+
+    @GetMapping("/auditorStandingBookOutWork/list/export")
+    @Operation(summary = "导出离职审核员台账EXCEL")
+    public void exportAuditorStandingBookOutWork(HttpServletResponse response){
+        try{
+            String fileName="离职审核员台账"+ LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddhhmmss"));
+            //设置响应头
+            ExcelUtil.setExcelResponseProp(response, fileName);
+
+            //获取导出数据
+            List<AuditorStandingBookOutWorkVO> result=auditorService.getAuditorStandingBookOutWork();
+
+            log.info("开始写入数据:{}.xlsx",fileName);
+            //将数据写入Excel
+            EasyExcel.write(response.getOutputStream()).head(AuditorStandingBookOutWorkVO.class)
+                    .sheet().doWrite(result);
+            log.info("数据写入完成");
+        }catch (UnsupportedEncodingException ex){
+            throw new BaseException(ex.getMessage());
+        }catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
 }

@@ -234,4 +234,48 @@
         </foreach>
 
     </insert>
+    
+    
+    <update id="updateAuditor" parameterType="com.platform.entity.Auditor">
+        update auditor
+        <set>
+            <if test="recordFactoryId!=null and recordFactoryId!=0">record_factory_id=#{recordFactoryId},</if>
+            <if test="education!=null and education!=0">education=#{education},</if>
+            <if test="auditorLevel!=null and auditorLevel!=0">auditor_level=#{auditorLevel},</if>
+            <if test="phone!=null and phone!=''">phone=#{phone},</if>
+            <if test="registrationNumber!=null and registrationNumber!=''">registration_number=#{registration_number},</if>
+            <if test="technology!=null and technology!=''">technology=#{technology},</if>
+            <if test="type!=null and type!=0">type=#{type},</if>
+            <if test="updateTime!=null">update_time=#{updateTime},</if>
+            <if test="updateUser!=null">update_user=#{updateUser},</if>
+            <if test="arrangement!=null">arragement=#{arragement},</if>
+        </set>
+        where employee_id=#{employeeId}
+
+    </update>
+
+    <select id="getAuditorStandingBookOutWork" resultType="com.platform.vo.AuditorStandingBookOutWorkVO">
+        select
+            e.bu_id,
+            a.record_factory_id,
+            e.factory_id,
+            e.department_id,
+            e.name,
+            a.employee_id,
+            e.grade,
+            e.gender,
+            a.education,
+            a.auditor_level,
+            e.email,
+            e.phone,
+            a.registration_number,
+            a.registration_number,
+            e.location_id,
+            a.technology,
+            e.work_status,
+            e.depart_time
+        from auditor a
+        left join employee e on e.id=a.employee_id
+        where e.work_status=0
+    </select>
 </mapper>

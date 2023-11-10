@@ -35,7 +35,12 @@ const router=createRouter({
                 {
                     path:'/auditorStandingBook/change',
                     component:()=>import('@/views/auditorStandingBook/AuditorStandingBookChange.vue')
+                },
+                {
+                    path: '/auditorStandingBook/outWork',
+                    component:()=>import('@/views/auditorStandingBook/AuditorStandingBookOutWork.vue')
                 }
+
             ]
         }
     ]

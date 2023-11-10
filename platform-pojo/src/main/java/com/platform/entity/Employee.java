@@ -12,6 +12,7 @@ import lombok.experimental.SuperBuilder;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -77,6 +78,10 @@ public class Employee extends BaseEntity implements Serializable {
     @Schema(description = "任职状态")
     @TableField(value = "work_status")
     private Integer workStatus;
+
+    @Schema(description = "离职日期")
+    @TableField(value = "depart_time")
+    private LocalDateTime departTime;
 
     @Schema(description = "所属部门")
     private Department department;

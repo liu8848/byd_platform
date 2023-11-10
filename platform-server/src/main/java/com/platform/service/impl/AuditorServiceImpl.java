@@ -1,5 +1,10 @@
 package com.platform.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.platform.annotaionExtend.DictHelper;
@@ -9,6 +14,7 @@ import com.platform.constant.MessageConstant;
 import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.auditors.AuditorInspectionCreateDTO;
 import com.platform.dto.auditors.AuditorPageQueryDTO;
+import com.platform.dto.auditors.AuditorStandingBookChangePageQueryDTO;
 import com.platform.entity.*;
 import com.platform.enums.LevelMatch;
 import com.platform.exception.BaseException;
@@ -21,6 +27,7 @@ import com.platform.validators.AuditorValidator;
 import com.platform.vo.AuditorDisplayVO;
 import com.platform.vo.AuditorStandingBookChangeDisplayVO;
 import com.platform.vo.AuditorStandingBookInWorkVO;
+import com.platform.vo.AuditorStandingBookOutWorkVO;
 import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -260,5 +267,79 @@ public class AuditorServiceImpl implements AuditorService {
         //获取事业部变动台账
         List<AuditorStandingBookChangeDisplayVO> auditorStandingBookChangeList=standingBookChangeMapper.getStandingBookChangeList();
         return auditorStandingBookChangeList;
+    }
+
+    @Override
+    @Transactional()
+    public void updateAuditorStandingBookChange(Long employeeId, Long recordFactoryId) {
+        try {
+            QueryWrapper<AuditorStandingBookChange> wrapper = new QueryWrapper<>();
+            //查询该变动是否存在
+            AuditorStandingBookChange auditorStandingBookChange = standingBookChangeMapper.selectOne(wrapper.eq("employee_id", employeeId));
+            if (auditorStandingBookChange == null) {
+                throw new BaseException("该变动不存在");
+            }
+            //变更审核员备案工厂
+            Auditor auditorUpdate = Auditor.builder().employeeId(employeeId).recordFactoryId(recordFactoryId).build();
+            auditorMapper.updateAuditor(auditorUpdate);
+
+            //变更员工任职状态
+            Employee employeeUpdate = Employee.builder().id(employeeId).workStatus(1).build();
+            employeeMapper.updateEmployee(employeeUpdate);
+
+            //将变更表中记录删除
+            standingBookChangeMapper.delete(wrapper);
+        }catch (Exception ex){
+            throw new BaseException((ex.getMessage()));
+        }
+
+    }
+
+    @Override
+    @Transactional
+    public void deleteAuditorStandingBookChange(Long employeeId) {
+        try{
+            QueryWrapper<AuditorStandingBookChange> wrapper = new QueryWrapper<>();
+            AuditorStandingBookChange auditorStandingBookChange = standingBookChangeMapper.selectOne(wrapper.eq("employee_id", employeeId));
+            if (auditorStandingBookChange == null) {
+                throw new BaseException("该变动不存在");
+            }
+
+            //删除该条审核员信息
+            QueryWrapper<Auditor> auditorWrapper = new QueryWrapper<>();
+            auditorMapper.delete(auditorWrapper.eq("employee_id",employeeId));
+
+            //删除变更台账中记录
+            standingBookChangeMapper.delete(wrapper);
+        }catch (Exception ex){
+            throw new BaseException(ex.getMessage());
+        }
+    }
+
+    @Override
+    @DictHelper(value = {
+            @DictParam(field = "buId",targetField = "buName",dictType = DictKeyConstant.BUSINESSDIVISION),
+            @DictParam(field = "factoryId",targetField = "factoryName",dictType = DictKeyConstant.FACTORY),
+            @DictParam(field = "recordFactoryId",targetField = "recordFactoryName",dictType = DictKeyConstant.FACTORY),
+            @DictParam(field = "departmentId",targetField = "departmentName",dictType = DictKeyConstant.DEPARTMENT),
+            @DictParam(field = "gender",targetField = "genderName",dictType = DictKeyConstant.GENDER),
+            @DictParam(field = "grade",targetField = "gradeName",dictType = DictKeyConstant.GRADE),
+            @DictParam(field = "education",targetField = "educationName",dictType = DictKeyConstant.EDUCATION),
+            @DictParam(field = "auditorLevel",targetField = "auditorLevelName",dictType = DictKeyConstant.AUDITOR_LEVEL),
+            @DictParam(field = "locationId",targetField = "locationName",dictType = DictKeyConstant.LOCATION),
+            @DictParam(field = "workStatus",targetField = "workStatusName",dictType = DictKeyConstant.WORK_STATUS),
+    })
+    public List<AuditorStandingBookOutWorkVO> getAuditorStandingBookOutWork() {
+        List<AuditorStandingBookOutWorkVO> result= auditorMapper.getAuditorStandingBookOutWork();
+        return result;
+    }
+
+    @Override
+    public PageResult<AuditorStandingBookChange> queryAndPageAuditorStandingBookChange(AuditorStandingBookChangePageQueryDTO pageQueryDTO) {
+        //获取事业部变动表中记录
+        PageHelper.startPage(pageQueryDTO.getPage(), pageQueryDTO.getSize());
+        Page<AuditorStandingBookChangeDisplayVO> pageResult= standingBookChangeMapper.queryPageAuditorStandingBookChange(pageQueryDTO);
+
+        return null;
     }
 }

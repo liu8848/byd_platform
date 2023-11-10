@@ -33,6 +33,6 @@ public class ExcelUtil {
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setCharacterEncoding("utf-8");
         String fileName= URLEncoder.encode(rawFileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
-        response.setHeader("Content-disposition","attachment;filename*=utf-8''" + fileName + ".xlsx");
+        response.setHeader("Content-disposition","attachment;filename*=" + fileName + ".xlsx");
     }
 }
