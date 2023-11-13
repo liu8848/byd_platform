@@ -23,7 +23,7 @@ public class Factory implements Serializable {
     private String name;
 
     @Schema(description = "工厂星级")
-    private int level;
+    private Long level;
 
     @Schema(description = "工厂所属事业部编号")
     private Long buId;

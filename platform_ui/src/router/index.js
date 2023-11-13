@@ -42,6 +42,20 @@ const router=createRouter({
                 }
 
             ]
+        },
+        {
+            path:'/contact',
+            component:()=>import('@/views/layout/LayoutContainer.vue'),
+            children:[
+                {
+                    path:'/contact/factoryContact',
+                    component:()=>import('@/views/contact/factoryContact/FactoryContactList.vue')
+                },
+                {
+                    path: '/contact/factoryContact/add',
+                    component:()=>import('@/views/contact/factoryContact/FactoryContactCreate.vue')
+                }
+            ]
         }
     ]
 })

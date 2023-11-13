@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.FactoryContactMapper">
+    <insert id="createFactoryContact" useGeneratedKeys="true" keyProperty="id">
+        insert into factory_contact(bu_id, record_factory_id, employee_id, create_time, create_user, update_time, update_user)
+        VALUES (#{buId},#{recordFactoryId},#{employeeId},#{createTime},#{createUser},#{updateTime},#{updateUser})
+    </insert>
+
+    <select id="getFactoryContact" resultType="com.platform.vo.factoryContact.FactoryContactVO">
+        select
+            fc.bu_id,
+            fc.record_factory_id,
+            fc.employee_id,
+            e1.name employeeName,
+            e1.phone,
+            e1.email,
+            e2.name createUserName,
+            fc.create_time,
+            e3.name updateUserName,
+            fc.update_time
+        from factory_contact fc
+        left join employee e1 on fc.employee_id = e1.id
+        left join employee e2 on fc.create_user=e2.id
+        left join employee e3 on fc.update_user=e3.id
+    </select>
+</mapper>

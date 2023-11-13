@@ -135,10 +135,10 @@ public class AuditorServiceImpl implements AuditorService {
         asibw.setLevel(factory.getLevel());
 
         if (AuditorStandingBookInWork.match(collect, factory.getLevel())) {
-            asibw.setLevelMatch(LevelMatch.MATCH);
+            asibw.setLevelMatch(LevelMatch.MATCH.getValue());
             asibw.setWarnTime(null);
         } else {
-            asibw.setLevelMatch(LevelMatch.NOT_MATCH);
+            asibw.setLevelMatch(LevelMatch.NOT_MATCH.getValue());
             LocalDateTime now = LocalDateTime.now();
             if (asibw.getWarnTime() == null)
                 asibw.setWarnTime(now);
@@ -162,7 +162,7 @@ public class AuditorServiceImpl implements AuditorService {
     }
 
     @Override
-    public PageResult<AuditorStandingBookInWork> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO) {
+    public PageResult<AuditorStandingBookInWorkVO> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO) {
         PageHelper.startPage(pageQueryDTO.getPage(), pageQueryDTO.getSize());
         Page<AuditorStandingBookInWork> pageResult = auditorMapper.getPageQueryStandingBookInWork(pageQueryDTO);
         long total = pageResult.getTotal();
@@ -187,7 +187,8 @@ public class AuditorServiceImpl implements AuditorService {
         records.removeIf(r -> !auditorMap.containsKey(r.getRecordFactoryId()));
 
         records.forEach(r -> r.setAuditors(transUtil.auditorListToVOList(auditorMap.get(r.getRecordFactoryId()))));
-        return new PageResult<>(total, records);
+        List<AuditorStandingBookInWorkVO> tranList=records.stream().map(r->transUtil.auditorStandingBookInWorkToVO(r)).toList();
+        return new PageResult<>(total, tranList);
     }
 
     @Override
@@ -335,11 +336,13 @@ public class AuditorServiceImpl implements AuditorService {
     }
 
     @Override
-    public PageResult<AuditorStandingBookChange> queryAndPageAuditorStandingBookChange(AuditorStandingBookChangePageQueryDTO pageQueryDTO) {
+    public PageResult<AuditorStandingBookChangeDisplayVO> queryAndPageAuditorStandingBookChange(AuditorStandingBookChangePageQueryDTO pageQueryDTO) {
         //获取事业部变动表中记录
         PageHelper.startPage(pageQueryDTO.getPage(), pageQueryDTO.getSize());
         Page<AuditorStandingBookChangeDisplayVO> pageResult= standingBookChangeMapper.queryPageAuditorStandingBookChange(pageQueryDTO);
 
-        return null;
+        long total = pageResult.getTotal();
+        List<AuditorStandingBookChangeDisplayVO> result = pageResult.getResult();
+        return new  PageResult<AuditorStandingBookChangeDisplayVO>(total,result);
     }
 }

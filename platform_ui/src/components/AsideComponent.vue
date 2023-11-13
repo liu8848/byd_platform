@@ -17,5 +17,12 @@
       <el-menu-item index="/auditorStandingBook/change">事业部变动审核员台账</el-menu-item>
       <el-menu-item index="/auditorStandingBook/outWork">离职审核员台账</el-menu-item>
     </el-sub-menu>
+    <el-sub-menu index="/contact">
+      <template #title>
+        联系人
+      </template>
+      <el-menu-item index="/contact/factoryContact">工厂体系接口人</el-menu-item>
+    </el-sub-menu>
+
   </el-menu>
 </template>

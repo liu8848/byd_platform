@@ -74,20 +74,13 @@ public class TransUtil {
 
     @DictHelper(value = {
             @DictParam(field = "recordFactoryId", targetField = "recordFactoryName", dictType = RedisKeyConstant.FACTORY),
-            @DictParam(field = "buId", targetField = "buName", dictType = RedisKeyConstant.BUSINESSDIVISION)
+            @DictParam(field = "buId", targetField = "buName", dictType = RedisKeyConstant.BUSINESSDIVISION),
+            @DictParam(field = "levelMatch",targetField = "levelMatchName",dictType=DictKeyConstant.LEVEL_MATCH),
+            @DictParam(field = "level",targetField = "levelName",dictType =DictKeyConstant.FACTORY_LEVEL)
     })
     public AuditorStandingBookInWorkVO auditorStandingBookInWorkToVO(AuditorStandingBookInWork auditorStandingBookInWork) {
-        AuditorStandingBookInWorkVO vo = AuditorStandingBookInWorkVO.builder()
-                .buId(auditorStandingBookInWork.getBuId())
-                .recordFactoryId(auditorStandingBookInWork.getRecordFactoryId())
-                .levelMatch(auditorStandingBookInWork.getLevelMatch().getStr())
-                .level(DictUtil.getDictName(DictKeyConstant.FACTORY_LEVEL, (long) auditorStandingBookInWork.getLevel()))
-                .sa(auditorStandingBookInWork.getSa())
-                .a(auditorStandingBookInWork.getA())
-                .pa(auditorStandingBookInWork.getPa())
-                .warnTime(auditorStandingBookInWork.getWarnTime())
-                .auditors(auditorStandingBookInWork.getAuditors())
-                .build();
+        AuditorStandingBookInWorkVO vo = new AuditorStandingBookInWorkVO();
+        BeanUtils.copyProperties(auditorStandingBookInWork,vo);
         return vo;
     }
 
@@ -148,6 +141,7 @@ public class TransUtil {
     public List<Employee> employeesCreateListToEmployeeList(List<EmployeeCreateDTO> employeeCreateDTOList){
         return employeeCreateDTOList.stream().map(this::employeeCreateToEmployee).toList();
     }
+
 
 
 }

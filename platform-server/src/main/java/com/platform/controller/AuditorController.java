@@ -74,8 +74,18 @@ public class AuditorController {
 
     @GetMapping("/pageQuery")
     @Operation(summary = "在职审核员台账分页查询")
-    public Result<PageResult<AuditorStandingBookInWork>> getPageQueryOnWorkAuditor(AuditorPageQueryDTO pageQueryDTO) {
-        PageResult<AuditorStandingBookInWork> result = auditorService.getPageQueryStandingBookInWork(pageQueryDTO);
+    @Parameters({
+            @Parameter(name = "levelMatch",description = "星级匹配情况",in = ParameterIn.QUERY),
+            @Parameter(name = "level",description = "星级",in = ParameterIn.QUERY),
+            @Parameter(name = "buId",description = "事业部",in = ParameterIn.QUERY),
+            @Parameter(name = "recordFactoryId",description = "备案工厂",in = ParameterIn.QUERY),
+            @Parameter(name = "employeeName",description = "姓名",in = ParameterIn.QUERY),
+            @Parameter(name = "auditorLevel",description = "审核员等级",in = ParameterIn.QUERY),
+            @Parameter(name = "page",description = "页码",in = ParameterIn.QUERY),
+            @Parameter(name = "size",description = "每页记录数",in = ParameterIn.QUERY),
+    })
+    public Result<PageResult<AuditorStandingBookInWorkVO>> getPageQueryOnWorkAuditor(AuditorPageQueryDTO pageQueryDTO) {
+        PageResult<AuditorStandingBookInWorkVO> result = auditorService.getPageQueryStandingBookInWork(pageQueryDTO);
         return Result.success(result);
     }
 
@@ -169,10 +179,10 @@ public class AuditorController {
                     @Parameter(name = "size",description = "每页记录数",in = ParameterIn.QUERY)
             }
     )
-    public Result<PageResult<AuditorStandingBookChange>> queryAndPageAuditorStandingBookChange
+    public Result<PageResult<AuditorStandingBookChangeDisplayVO>> queryAndPageAuditorStandingBookChange
             (AuditorStandingBookChangePageQueryDTO pageQueryDTO){
-        PageResult<AuditorStandingBookChange> pageResult= auditorService.queryAndPageAuditorStandingBookChange(pageQueryDTO);
-        return null;
+        PageResult<AuditorStandingBookChangeDisplayVO> pageResult= auditorService.queryAndPageAuditorStandingBookChange(pageQueryDTO);
+        return Result.success(pageResult);
     }
 
     @PostMapping("/auditorStandingBookChange/{employeeId}")

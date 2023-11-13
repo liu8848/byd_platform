@@ -26,4 +26,9 @@ public class DictionaryServiceImpl implements DictionaryService {
     public List<Dictionary> getNormalDict() {
         return dictionaryMapper.getNormalDict();
     }
+
+    @Override
+    public List<Dictionary> geBuList() {
+        return dictionaryMapper.getBusinessdivision();
+    }
 }

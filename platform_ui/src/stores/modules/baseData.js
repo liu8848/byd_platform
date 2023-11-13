@@ -71,13 +71,73 @@ export const useBaseDataStore = defineStore('baseData', () => {
         }
         console.log(recordFactoryList)
     }
+
+    const levelMatchDict=ref([
+        {
+            dictId: 'LEVEL_MATCH',
+            dictName: '符合',
+            dictValue: 1
+        },
+        {
+            dictId: 'LEVEL_MATCH',
+            dictName: '预警',
+            dictValue: 0
+        },
+        {
+            dictId: 'LEVEL_MATCH',
+            dictName: 'NA',
+            dictValue: -1
+        }
+    ])
+
+    const  levelDict=ref([
+        {
+            dictId: 'LEVEL',
+            dictName: '一星',
+            dictValue: 1
+        },
+        {
+            dictId: 'LEVEL',
+            dictName: '二星',
+            dictValue: 2
+        },
+        {
+            dictId: 'LEVEL',
+            dictName: '三星',
+            dictValue: 3
+        },
+        {
+            dictId: 'LEVEL',
+            dictName: '四星',
+            dictValue: 4
+        },
+        {
+            dictId: 'LEVEL',
+            dictName: '五星',
+            dictValue: 5
+        }
+    ])
+
+    const buList=ref([])
+    const setBuList = (res) => {
+        console.log('开始读取事业部列表')
+        buList.value = []
+        for (let i in res) {
+            buList.value.push(res[i])
+        }
+    }
+
     return {
         auditorLevelDict,
         educationDict,
         recordFactoryList,
         setRecordFactoryList,
         technologyList,
-        setTechnologyList
+        setTechnologyList,
+        levelMatchDict,
+        levelDict,
+        buList,
+        setBuList
     }
 }, {
     persist: true

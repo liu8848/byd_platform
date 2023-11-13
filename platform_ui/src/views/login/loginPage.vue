@@ -4,7 +4,11 @@ import {useRouter} from 'vue-router'
 
 import {useBaseDataStore, useUserStore} from '@/stores'
 import {userLoginService} from '@/api/user'
-import {getRecordFactoryService, getTechnologyDictService} from '@/api/basedata'
+import {
+  getRecordFactoryService,
+  getTechnologyDictService,
+  getBuListService
+} from '@/api/basedata'
 
 const router = useRouter()
 const userStore = useUserStore()
@@ -22,10 +26,12 @@ const login = async () => {
 
   const factoryDict = await getRecordFactoryService()
   const technologyDict = await getTechnologyDictService()
+  const buList=await getBuListService()
   baseDataStore.setRecordFactoryList(factoryDict.data.data)
   baseDataStore.setTechnologyList(technologyDict.data.data)
+  baseDataStore.setBuList(buList.data.data)
   console.log('开始登陆...', res)
-  router.push('/')
+  await router.push('/')
 }
 </script>
 

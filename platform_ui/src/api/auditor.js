@@ -3,6 +3,13 @@ import request from '@/utils/request'
 export const standingBookListService=()=>{
     return request.get('/auditor/list')
 }
+export const getStandingBookInWorkPageAndQuery=(form)=>{
+    return request({
+        url:'/auditor/pageQuery',
+        method:'get',
+        params:form
+    })
+}
 
 export const getEmployeeInfoService=(id)=>{
     return request.get('/employee/'+id)

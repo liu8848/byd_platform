@@ -23,7 +23,7 @@ public interface AuditorService {
 
     List<AuditorStandingBookInWorkVO> getStandingBookInWork();
 
-    PageResult<AuditorStandingBookInWork> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO);
+    PageResult<AuditorStandingBookInWorkVO> getPageQueryStandingBookInWork(AuditorPageQueryDTO pageQueryDTO);
 
     List<AuditorDisplayVO> getAuditorAll();
 
@@ -43,5 +43,5 @@ public interface AuditorService {
 
     List<AuditorStandingBookOutWorkVO> getAuditorStandingBookOutWork();
 
-    PageResult<AuditorStandingBookChange> queryAndPageAuditorStandingBookChange(AuditorStandingBookChangePageQueryDTO pageQueryDTO);
+    PageResult<AuditorStandingBookChangeDisplayVO> queryAndPageAuditorStandingBookChange(AuditorStandingBookChangePageQueryDTO pageQueryDTO);
 }

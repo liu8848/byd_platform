@@ -43,4 +43,11 @@ public class DictionaryController {
         return Result.success(normalDict);
     }
 
+    @GetMapping("/buList")
+    @Operation(summary = "获取事业部列表")
+    public Result<List<Dictionary>> getBuLIst(){
+        List<Dictionary> buList=dictionaryService.geBuList();
+        return Result.success(buList);
+    }
+
 }

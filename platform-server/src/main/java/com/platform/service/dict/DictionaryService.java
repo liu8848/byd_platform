@@ -11,4 +11,6 @@ public interface DictionaryService {
     List<Dictionary> getTechnologyDict();
 
     List<Dictionary> getNormalDict();
+
+    List<Dictionary> geBuList();
 }

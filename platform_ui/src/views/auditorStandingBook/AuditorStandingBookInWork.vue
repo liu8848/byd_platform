@@ -1,8 +1,59 @@
 <template>
   <div>
-    <el-divider/>
-    <el-button type="primary" @click="query">查询</el-button>
+    <el-form :model="form" inline>
+      <el-form-item label="星级匹配情况">
+        <el-select v-model="form.levelMatch"
+                   value-key="dictValue">
+          <el-option
+              v-for="item in levelMatchOptions"
+              :key="item.dictValue"
+              :label="item.dictName+'('+item.dictValue+')'"
+              :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="星级">
+        <el-select v-model="form.level"
+                   value-key="dictValue">
+          <el-option
+              v-for="item in levelOption"
+              :key="item.dictValue"
+              :label="item.dictName+'('+item.dictValue+')'"
+              :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="事业部">
+        <el-select v-model="form.buId"
+                   value-key="dictValue">
+          <el-option
+              v-for="item in buOptions"
+              :key="item.dictValue"
+              :label="item.dictName+'('+item.dictValue+')'"
+              :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="备案工厂">
+        <el-select v-model="form.recordFactory"
+                   value-key="dictValue">
+          <el-option
+              v-for="item in factoryOptions"
+              :key="item.dictValue"
+              :label="item.dictName+'('+item.dictValue+')'"
+              :value="item.dictValue"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="姓名">
+        <el-input v-model="form.employeeName"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="query">查询</el-button>
+      </el-form-item>
+    </el-form>
     <el-button type="primary" @click="add">添加</el-button>
+    <el-divider/>
   </div>
   <div>
     <el-table :data="auditors" :span-method="objectSpanMethod" border style="width: 100%; margin-top: 20px">
@@ -40,24 +91,45 @@
               inline-prompt
               active-text="是"
               inactive-text="否"
-              v-model="scope.row.arrangement"/>
+              v-model="scope.row.arrangement"
+          />
         </template>
       </el-table-column>
       <el-table-column prop="status" label="在职状态"/>
       <el-table-column prop="type" label="类型"/>
     </el-table>
   </div>
+  <div class="demo-pagination-block">
+    <el-pagination
+        v-model:current-page="form.page"
+        v-model:page-size="form.size"
+        :page-sizes="[2, 10, 50,100]"
+        :small="false"
+        :disabled="false"
+        :background="false"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="query"
+        @current-change="query"
+    />
+  </div>
 </template>
 
 <script lang="ts" setup>
-import {ref} from 'vue'
+import {ref,reactive} from 'vue'
 
 import {useRouter} from 'vue-router'
-import {standingBookListService} from '@/api/auditor'
+import {standingBookListService,getStandingBookInWorkPageAndQuery} from '@/api/auditor'
 import {TableColumnCtx} from 'element-plus';
+import { useBaseDataStore } from '@/stores'
 
 const router = useRouter()
-
+const baseDataStore=useBaseDataStore()
+const levelMatchOptions=baseDataStore.levelMatchDict
+const levelOption=baseDataStore.levelDict
+const buOptions=baseDataStore.buList
+const factoryOptions=baseDataStore.recordFactoryList
+const total=ref(0)
 
 class Auditor {
   levelMatch: string
@@ -83,8 +155,20 @@ class Auditor {
   technologyName: string;
   arrangement: boolean
   status: string;
-  type: string
+  type: string;
+  hidden:string;
 }
+
+const form=reactive({
+  levelMatch:null,
+  level:null,
+  buId:null,
+  recordFactory:null,
+  employeeName:'',
+  auditorLevel:null,
+  page:0,
+  size:10
+})
 
 interface SpanMethodProps {
   row: Auditor
@@ -153,17 +237,20 @@ const query = async () => {
   console.log('开始查询。。。')
   standingBookList.value = []
   auditors.value = []
-  const res = await standingBookListService()
-  let objs = JSON.parse(JSON.stringify(res.data.data))
+  // const res = await standingBookListService()
+  const res=await getStandingBookInWorkPageAndQuery(form)
+  let result = JSON.parse(JSON.stringify(res.data.data))
+  let objs=result.records
+  total.value=result.total
   console.log(objs)
   for (let i in objs) {
     standingBookList.value.push(objs[i])
     let p = objs[i]['auditors']
     for (let j in p) {
       let au = new Auditor();
-      au.levelMatch = objs[i]['levelMatch']
+      au.levelMatch = objs[i]['levelMatchName']
       au.warnTime = objs[i]['warnTime']
-      au.level = objs[i]['level']
+      au.level = objs[i]['levelName']
       au.SA = objs[i]['sa']
       au.A = objs[i]['a']
       au.PA = objs[i]['pa']
@@ -185,6 +272,7 @@ const query = async () => {
       au.technologyName = p[j].technologyName
       au.status = p[j].status
       au.type = p[j].type
+      au.hidden=p[j].auditorLevel=='SA'?'hidden':'visible'
       auditors.value.push(au)
     }
   }

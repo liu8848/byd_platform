@@ -6,17 +6,17 @@ import lombok.Getter;
 
 @Getter
 public enum LevelMatch {
-    MATCH(1, "符合"),
-    NOT_MATCH(0, "预警"),
-    NA(-1, "NA");
+    MATCH(1L, "符合"),
+    NOT_MATCH(0L, "预警"),
+    NA(-1L, "NA");
 
-    LevelMatch(int val, String str) {
+    LevelMatch(Long val, String str) {
         this.value = val;
         this.str = str;
     }
 
     @JsonValue
     @EnumValue
-    private final int value;
+    private final Long value;
     private final String str;
 }

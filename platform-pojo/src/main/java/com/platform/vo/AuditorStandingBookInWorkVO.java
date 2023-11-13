@@ -34,13 +34,17 @@ public class AuditorStandingBookInWorkVO implements Serializable {
     @Schema(description = "备案工厂名称")
     private String recordFactoryName;
 
+    @Schema(description = "星级匹配编码")
+    private Long levelMatch;
     @ExcelProperty(value = "星级匹配情况")
     @Schema(description = "星级匹配")
-    private String levelMatch;
+    private String levelMatchName;
 
+    @Schema(description = "星级编码")
+    private Long level;
     @ExcelProperty(value = "星级")
     @Schema(description = "星级")
-    private String level;
+    private String levelName;
 
     @ExcelProperty(value = "SA")
     @Schema(description = "资深审核员人数")

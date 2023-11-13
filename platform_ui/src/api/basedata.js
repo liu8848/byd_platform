@@ -7,3 +7,7 @@ export const getRecordFactoryService = () => {
 export const getTechnologyDictService = () => {
     return request.get('/dict/technology')
 }
+
+export const getBuListService=()=>{
+    return request.get('/dict/buList')
+}
