@@ -108,11 +108,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         employeeMapper.updateEmployee(update_e);
 
         UpdateResult<Employee> updateContent;
-        try {
-            updateContent=UpdateResult.getUpdateContent(update_e, old_e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
+        updateContent=UpdateResult.getUpdateContent(update_e, old_e);
         return updateContent;
     }
 }

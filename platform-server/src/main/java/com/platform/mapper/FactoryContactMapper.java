@@ -1,7 +1,10 @@
 package com.platform.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.github.pagehelper.Page;
 import com.platform.annotaionExtend.AutoFill;
+import com.platform.dto.FactoryContact.FactoryContactQueryPageDTO;
+import com.platform.dto.FactoryContact.FactoryContactUpdateDTO;
 import com.platform.entity.FactoryContact;
 import com.platform.enums.OperationType;
 import com.platform.vo.factoryContact.FactoryContactVO;
@@ -16,4 +19,10 @@ public interface FactoryContactMapper extends BaseMapper<FactoryContact> {
     void createFactoryContact(FactoryContact factoryContact);
 
     List<FactoryContactVO> getFactoryContact();
+    FactoryContactVO getFactoryContactByEmployeeId(Long employeeId);
+
+    @AutoFill(value = OperationType.UPDATE)
+    void updateFactoryContact(FactoryContactUpdateDTO newContact);
+
+    Page<FactoryContactVO> getFactoryContactQueryPage(FactoryContactQueryPageDTO queryPageDTO);
 }

@@ -2,6 +2,7 @@ package com.platform.aspects;
 
 import com.platform.annotaionExtend.DictHelper;
 import com.platform.annotaionExtend.DictParam;
+import com.platform.result.PageResult;
 import com.platform.utils.DictUtil;
 import com.platform.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +35,11 @@ public class DictTransAspect {
             if (values == null) {
                 return result;
             }
-            if (result instanceof List) {
+            if (result instanceof PageResult<?>){
+                for (var r : ((PageResult<?>) result).getRecords()) {
+                    trans(r, values);
+                }
+            }else if (result instanceof List) {
                 for (var r : (List<?>) result) {
                     trans(r, values);
                 }

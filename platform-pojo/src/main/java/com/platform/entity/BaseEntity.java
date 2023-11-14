@@ -17,16 +17,16 @@ public class BaseEntity {
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     @TableField("create_time")
-    private LocalDateTime createTime;
+    public LocalDateTime createTime;
 
     @TableField("create_user")
-    private Long createUser;
+    public Long createUser;
 
     @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
     @TableField("update_time")
-    private LocalDateTime updateTime;
+    public LocalDateTime updateTime;
 
     @TableField("update_user")
-    private Long updateUser;
+    public Long updateUser;
 
 }

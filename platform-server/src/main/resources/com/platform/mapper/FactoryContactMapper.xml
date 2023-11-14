@@ -7,6 +7,26 @@
         VALUES (#{buId},#{recordFactoryId},#{employeeId},#{createTime},#{createUser},#{updateTime},#{updateUser})
     </insert>
 
+    <select id="getFactoryContactByEmployeeId" resultType="com.platform.vo.factoryContact.FactoryContactVO">
+        select
+            fc.bu_id,
+            fc.record_factory_id,
+            fc.employee_id,
+            e1.name employeeName,
+            e1.phone,
+            e1.email,
+            e2.name createUserName,
+            e2.id createUserId,
+            fc.create_time,
+            e3.name updateUserName,
+            e3.id updateUserId,
+            fc.update_time
+        from factory_contact fc
+        left join employee e1 on fc.employee_id = e1.id
+        left join employee e2 on fc.create_user=e2.id
+        left join employee e3 on fc.update_user=e3.id
+        where fc.employee_id=#{employeeId}
+    </select>
     <select id="getFactoryContact" resultType="com.platform.vo.factoryContact.FactoryContactVO">
         select
             fc.bu_id,
@@ -16,12 +36,48 @@
             e1.phone,
             e1.email,
             e2.name createUserName,
+            e2.id createUserId,
             fc.create_time,
             e3.name updateUserName,
+            e3.id updateUserId,
             fc.update_time
         from factory_contact fc
         left join employee e1 on fc.employee_id = e1.id
         left join employee e2 on fc.create_user=e2.id
         left join employee e3 on fc.update_user=e3.id
     </select>
+    <select id="getFactoryContactQueryPage" resultType="com.platform.vo.factoryContact.FactoryContactVO">
+        select
+            fc.bu_id,
+            fc.record_factory_id,
+            fc.employee_id,
+            e1.name employeeName,
+            e1.phone,
+            e1.email,
+            e2.name createUserName,
+            e2.id createUserId,
+            fc.create_time,
+            e3.name updateUserName,
+            e3.id updateUserId,
+            fc.update_time
+        from factory_contact fc
+        left join employee e1 on fc.employee_id = e1.id
+        left join employee e2 on fc.create_user=e2.id
+        left join employee e3 on fc.update_user=e3.id
+        <where>
+            <if test="buId!=null and buId!=0">and fc.bu_id=#{buId}</if>
+            <if test="recordFactoryId!=null and recordFactoryId!=0">and fc.record_factory_id=#{recordFactoryId}</if>
+        </where>
+    </select>
+
+    <update id="updateFactoryContact" parameterType="com.platform.dto.FactoryContact.FactoryContactUpdateDTO">
+        update factory_contact
+        <set>
+            <if test="buId!=null">bu_id=#{buId},</if>
+            <if test="recordFactoryId!=null">record_factory_id=#{recordFactoryId},</if>
+            update_user=#{updateUser},
+            update_time=#{updateTime}
+        </set>
+        where employee_id=#{employeeId}
+    </update>
 </mapper>

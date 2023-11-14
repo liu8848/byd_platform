@@ -12,6 +12,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.time.LocalDateTime;
@@ -65,8 +66,9 @@ public class AutoAspect {
             }
         } else if (operationType == OperationType.UPDATE) {
             try {
-                Method setUpdateUser = getClass().getMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
-                Method setUpdateTime = getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
+
+                Method setUpdateUser = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_USER, Long.class);
+                Method setUpdateTime = entity.getClass().getMethod(AutoFillConstant.SET_UPDATE_TIME, LocalDateTime.class);
 
                 setUpdateTime.invoke(entity, now);
                 setUpdateUser.invoke(entity, BaseContext.getCurrentId().getEmployeeId());

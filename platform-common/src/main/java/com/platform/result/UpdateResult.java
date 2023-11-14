@@ -25,18 +25,22 @@ public class UpdateResult<T> implements Serializable {
     @Schema(description = "更新内容")
     private Map<String, Object> newMap;
 
-    public static <T> UpdateResult<T> getUpdateContent(T newObject, T oldObject) throws IllegalAccessException {
+    public static <T,U> UpdateResult<T> getUpdateContent(T newObject, U oldObject)  {
         Map<String, Object> oldO = new HashMap<>();
         Map<String, Object> newO = new HashMap<>();
         Field[] declaredFields = newObject.getClass().getDeclaredFields();
-        for (Field declaredField : declaredFields) {
-            declaredField.setAccessible(true);
-            Object newVal = declaredField.get(newObject);
-            Object oldVal = declaredField.get(oldObject);
-            if (newVal != null && !newVal.equals(oldVal)) {
-                newO.put(declaredField.getName(), newVal);
-                oldO.put(declaredField.getName(), oldVal);
+        try {
+            for (Field declaredField : declaredFields) {
+                declaredField.setAccessible(true);
+                Object newVal = declaredField.get(newObject);
+                Object oldVal = declaredField.get(oldObject);
+                if (newVal != null && !newVal.equals(oldVal)) {
+                    newO.put(declaredField.getName(), newVal);
+                    oldO.put(declaredField.getName(), oldVal);
+                }
             }
+        }catch (IllegalAccessException ex){
+            throw new RuntimeException(ex);
         }
         return new UpdateResult<>("修改成功", oldO, newO);
     }

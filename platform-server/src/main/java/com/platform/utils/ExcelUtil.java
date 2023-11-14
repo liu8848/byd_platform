@@ -3,6 +3,7 @@ package com.platform.utils;
 import com.alibaba.excel.EasyExcel;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+@Component
 @Slf4j
 public class ExcelUtil {
     public static <T> List<T> read(MultipartFile file,Class<T> head)throws IOException{
@@ -35,4 +37,5 @@ public class ExcelUtil {
         String fileName= URLEncoder.encode(rawFileName, StandardCharsets.UTF_8).replaceAll("\\+", "%20");
         response.setHeader("Content-disposition","attachment;filename*=" + fileName + ".xlsx");
     }
+
 }
