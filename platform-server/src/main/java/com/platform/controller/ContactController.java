@@ -1,18 +1,27 @@
 package com.platform.controller;
 
 import com.alibaba.excel.EasyExcel;
+import com.platform.commonModel.Dictionary;
+import com.platform.constant.DictKeyConstant;
 import com.platform.dto.FactoryContact.FactoryContactCreateDTO;
 import com.platform.dto.FactoryContact.FactoryContactQueryPageDTO;
 import com.platform.dto.FactoryContact.FactoryContactUpdateDTO;
 import com.platform.dto.auditors.AuditorCreateDTO;
+import com.platform.dto.businessdivisions.BusinessDivisionPageQueryDTO;
+import com.platform.entity.BusinessDivision;
+import com.platform.entity.Factory;
 import com.platform.entity.FactoryContact;
 import com.platform.result.PageResult;
 import com.platform.result.Result;
 import com.platform.result.UpdateResult;
+import com.platform.service.BusinessDivisionService;
 import com.platform.service.contact.ContactService;
-import com.platform.utils.CustomMergeStrategy;
+import com.platform.service.dict.DictionaryService;
+import com.platform.utils.DictUtil;
 import com.platform.utils.ExcelUtil;
-import com.platform.vo.StandingBookAuditorExportVO;
+import com.platform.utils.excelHandlers.CascadeWriteHandler;
+import com.platform.utils.excelHandlers.SelectedSheetWriteHandler;
+import com.platform.vo.factoryContact.FactoryContactExcelTemplateVO;
 import com.platform.vo.factoryContact.FactoryContactVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -28,8 +37,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/contact")
@@ -40,6 +53,9 @@ public class ContactController {
 
     @Autowired
     private ContactService contactService;
+
+    @Autowired
+    private BusinessDivisionService businessDivisionService;
 
     @PostMapping("/factoryContact/add")
     @Operation(summary = "创建工厂体系接口人")
@@ -117,8 +133,37 @@ public class ContactController {
     @GetMapping("/factoryContact/importTemplate")
     @Operation(summary = "获取工厂体系接口人导入模板")
     public void getFactoryContactTemplate(HttpServletResponse response){
-        List<String> columnNames= Arrays.asList("事业部","备案工厂","姓名","工号");
+        String fileName="工厂体系接口人导入模板";
 
+        try {
+            ExcelUtil.setExcelResponseProp(response,fileName);
+
+            //设置Excel级联下拉框处理数据
+            List<String> parentList = DictUtil.dictMap.get(DictKeyConstant.BUSINESSDIVISION).values().stream().map(Dictionary::getDictName).toList();
+            List<BusinessDivision> buCollection = businessDivisionService.getBUPageByQuery(BusinessDivisionPageQueryDTO.builder().page(0).size(1000).build()).getRecords();
+            Map<String, List<String>> siteMap = buCollection.stream().collect(Collectors.toMap(BusinessDivision::getBuName, item -> item.getFactories().stream().map(Factory::getName).toList()));
+
+            //设置下拉框数据
+            Map<Integer,List<Dictionary>> selectMap=new HashMap<>();
+            List<Dictionary> buList = DictUtil.dictMap.get(DictKeyConstant.BUSINESSDIVISION).values().stream().toList();
+            List<Dictionary> factoryList = DictUtil.dictMap.get(DictKeyConstant.FACTORY).values().stream().toList();
+            selectMap.put(0,buList);
+            selectMap.put(2,factoryList);
+
+
+            //导出模版
+            log.info("----------------开始导出模版-----------------");
+            List<FactoryContactExcelTemplateVO> list=new ArrayList<>();
+            EasyExcel.write(response.getOutputStream())
+                    .head(FactoryContactExcelTemplateVO.class)
+                    .sheet("工厂体系接口人导入模板")
+                    .registerWriteHandler(new CascadeWriteHandler(parentList,siteMap,0,2))
+                    .registerWriteHandler(new SelectedSheetWriteHandler(selectMap))
+                    .doWrite(list);
+            log.info("---------------------模版导出成功------------------");
+        }catch (IOException ex){
+            throw new RuntimeException(ex);
+        }
     }
 
     @PostMapping("factoryContact/import")
@@ -127,7 +172,8 @@ public class ContactController {
                                                              @RequestParam(value = "updateSupport",required = false,defaultValue = "false")
                                                              Boolean updateSupport){
         try {
-            List<AuditorCreateDTO> createDTOS = ExcelUtil.read(file, AuditorCreateDTO.class);
+            List<FactoryContactCreateDTO> createDTOS = ExcelUtil.doReadExcelData(file, FactoryContactCreateDTO.class);
+            System.out.println(createDTOS);
         }catch (IOException ex){
             throw new RuntimeException(ex);
         }

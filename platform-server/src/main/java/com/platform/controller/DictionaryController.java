@@ -50,4 +50,5 @@ public class DictionaryController {
         return Result.success(buList);
     }
 
+
 }

@@ -19,20 +19,27 @@ public class FactoryContactCreateDTO {
     @ExcelProperty(value = "事业部")
     private String buName;
 
-    @ExcelProperty("事业部编号")
-    private WriteCellData<String> id;
-
     @Schema(description = "事业部编号")
-    @ExcelIgnore
+    @ExcelProperty(value = "事业部编号")
     private Long buId;
 
-
-
     @Schema(description = "备案工厂编号")
-    @ExcelProperty(value = "备案工厂")
+    @ExcelProperty(value = "备案工厂编号")
     private Long recordFactoryId;
 
-    @Schema(description = "体系接口人编号")
-    @ExcelProperty(value = "体系接口人")
+    @Schema(description = "体系接口人工号")
+    @ExcelProperty(value = "体系接口人工号")
     private Long employeeId;
+
+    @Schema(description = "体系接口人姓名")
+    @ExcelProperty(value = "体系接口人姓名")
+    private String employeeName;
+
+    @Schema(description = "邮箱")
+    @ExcelProperty(value = "邮箱")
+    private String email;
+
+    @Schema(description = "电话")
+    @ExcelProperty(value = "电话")
+    private String phone;
 }

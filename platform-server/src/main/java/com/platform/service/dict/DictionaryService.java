@@ -13,4 +13,6 @@ public interface DictionaryService {
     List<Dictionary> getNormalDict();
 
     List<Dictionary> geBuList();
+
+
 }

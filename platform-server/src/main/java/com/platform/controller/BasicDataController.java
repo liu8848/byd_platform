@@ -24,6 +24,7 @@ import com.platform.service.ProfessionInspectionService;
 import com.platform.vo.FactoryDisplayVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -65,7 +66,10 @@ public class BasicDataController {
 
     @GetMapping("/businessDivision")
     @Operation(summary = "根据搜索条件分页获取事业部信息")
-    @Parameter(name = "businessDivisionPageQueryDTO", description = "事业部分页搜索模型", in = ParameterIn.QUERY)
+    @Parameters(value = {
+            @Parameter(name = "page",description = "页码",required = true,in = ParameterIn.QUERY),
+            @Parameter(name = "size",description = "每页记录数",required = true,in = ParameterIn.QUERY)
+    })
     public Result<PageResult<BusinessDivision>> getBUPageByQuery(BusinessDivisionPageQueryDTO businessDivisionPageQueryDTO) {
         PageResult<BusinessDivision> buPage = businessDivisionService.getBUPageByQuery(businessDivisionPageQueryDTO);
         return Result.success(buPage);
