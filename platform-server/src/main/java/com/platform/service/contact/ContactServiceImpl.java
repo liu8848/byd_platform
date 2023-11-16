@@ -5,6 +5,7 @@ import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.platform.annotaionExtend.DictHelper;
 import com.platform.annotaionExtend.DictParam;
+import com.platform.aspects.validators.FactoryContactCreateDTOValidate;
 import com.platform.constant.DictKeyConstant;
 import com.platform.constant.MessageConstant;
 import com.platform.dto.FactoryContact.FactoryContactCreateDTO;
@@ -20,13 +21,16 @@ import com.platform.mapper.FactoryContactMapper;
 import com.platform.mapper.FactoryMapper;
 import com.platform.result.PageResult;
 import com.platform.result.UpdateResult;
+import com.platform.validators.FactoryContactValidator;
 import com.platform.vo.factoryContact.FactoryContactVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class ContactServiceImpl implements ContactService{
@@ -36,6 +40,9 @@ public class ContactServiceImpl implements ContactService{
     private FactoryMapper factoryMapper;
     @Autowired
     private EmployeeMapper employeeMapper;
+
+    @Autowired
+    private FactoryContactValidator factoryContactValidator;
 
     @Override
     public FactoryContact createFactoryContact(FactoryContactCreateDTO createDTO) {
@@ -140,6 +147,44 @@ public class ContactServiceImpl implements ContactService{
         long total = pageResult.getTotal();
         List<FactoryContactVO> result = pageResult.getResult();
         return new PageResult<>(total,result);
+    }
+
+    /***
+     * 批量导入工厂体系接口人
+     * @param createDTOS 导入信息
+     * @return 导入的接口人展示信息
+     */
+    @Override
+    @Transactional
+    public List<FactoryContact> createFactoryContactByCollection(List<FactoryContactCreateDTO> createDTOS) {
+        //数据校验
+        Map<String,List<String>> errMap=new HashMap<>();
+        createDTOS.forEach(dto->{
+            List<String> errMsg = factoryContactValidator.isValid(dto);
+            errMap.put(dto.getEmployeeName(),errMsg);
+        });
+        for (List<String> errList:errMap.values()) {
+            if(!errList.isEmpty())
+                throw new BaseException("接口人信息错误");
+        }
+
+        //导入
+        List<FactoryContact> importList = createDTOS.stream().map(dto -> {
+            FactoryContact f = new FactoryContact();
+            f.setRecordFactoryId(dto.getRecordFactoryId());
+            f.setEmployeeId(dto.getEmployeeId());
+            f.setBuId(dto.getBuId());
+            return f;
+        }).toList();
+        factoryContactMapper.importFactoryContact(createDTOS);
+        createDTOS.forEach(dto->{
+            Employee e = new Employee();
+            e.setId(dto.getEmployeeId());
+            e.setPhone(dto.getPhone());
+            e.setEmail(dto.getEmail());
+            employeeMapper.updateEmployee(e);
+        });
+        return importList;
     }
 
 

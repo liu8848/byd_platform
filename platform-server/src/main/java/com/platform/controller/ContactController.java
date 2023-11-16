@@ -6,7 +6,6 @@ import com.platform.constant.DictKeyConstant;
 import com.platform.dto.FactoryContact.FactoryContactCreateDTO;
 import com.platform.dto.FactoryContact.FactoryContactQueryPageDTO;
 import com.platform.dto.FactoryContact.FactoryContactUpdateDTO;
-import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.businessdivisions.BusinessDivisionPageQueryDTO;
 import com.platform.entity.BusinessDivision;
 import com.platform.entity.Factory;
@@ -16,7 +15,6 @@ import com.platform.result.Result;
 import com.platform.result.UpdateResult;
 import com.platform.service.BusinessDivisionService;
 import com.platform.service.contact.ContactService;
-import com.platform.service.dict.DictionaryService;
 import com.platform.utils.DictUtil;
 import com.platform.utils.ExcelUtil;
 import com.platform.utils.excelHandlers.CascadeWriteHandler;
@@ -31,6 +29,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,13 +41,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/contact")
 @Slf4j
 @Tag(name = "联系人相关接口")
 @CrossOrigin
+@Validated
 public class ContactController {
 
     @Autowired
@@ -170,13 +169,10 @@ public class ContactController {
     @Operation(summary = "导入工厂体系接口人")
     public Result<List<FactoryContact>> importFactoryContact(@RequestParam("file")MultipartFile file,
                                                              @RequestParam(value = "updateSupport",required = false,defaultValue = "false")
-                                                             Boolean updateSupport){
-        try {
-            List<FactoryContactCreateDTO> createDTOS = ExcelUtil.doReadExcelData(file, FactoryContactCreateDTO.class);
-            System.out.println(createDTOS);
-        }catch (IOException ex){
-            throw new RuntimeException(ex);
-        }
-        return null;
+                                                             Boolean updateSupport) throws IOException {
+
+        List<FactoryContactCreateDTO> createDTOS = ExcelUtil.doReadExcelData(file, FactoryContactCreateDTO.class);
+        List<FactoryContact> creates=contactService.createFactoryContactByCollection(createDTOS);
+        return Result.success(creates);
     }
 }

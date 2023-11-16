@@ -68,3 +68,6 @@ sky:
     admin-secret-key: itcast
     admin-ttl: 7200000
     admin-token-name: token
+
+upload-path:
+  DEFAULT-PATH: ./platform-server/src/main/resources/upload

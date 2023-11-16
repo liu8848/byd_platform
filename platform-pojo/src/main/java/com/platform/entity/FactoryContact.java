@@ -8,6 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.io.Serializable;
@@ -16,6 +17,7 @@ import java.io.Serializable;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
 @Schema(description = "工厂体系接口人")
 @TableName(value = "factory_contact")
 public class FactoryContact extends BaseEntity implements Serializable {

@@ -6,6 +6,13 @@
         insert into factory_contact(bu_id, record_factory_id, employee_id, create_time, create_user, update_time, update_user)
         VALUES (#{buId},#{recordFactoryId},#{employeeId},#{createTime},#{createUser},#{updateTime},#{updateUser})
     </insert>
+    <insert id="importFactoryContact" useGeneratedKeys="true">
+        insert into factory_contact(bu_id, record_factory_id, employee_id, create_time, create_user, update_time, update_user)
+        VALUES
+            <foreach collection="createDTOS" item="item" separator=",">
+                (#{item.buId},#{item.recordFactoryId},#{item.employeeId},#{item.createTime},#{item.createUser},#{item.updateTime},#{item.updateUser})
+            </foreach>
+    </insert>
 
     <select id="getFactoryContactByEmployeeId" resultType="com.platform.vo.factoryContact.FactoryContactVO">
         select
@@ -80,4 +87,5 @@
         </set>
         where employee_id=#{employeeId}
     </update>
+
 </mapper>

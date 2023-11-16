@@ -1,14 +1,10 @@
 package com.platform.controller;
 
 import com.alibaba.excel.EasyExcel;
-import com.platform.annotations.EducationValidate;
 import com.platform.dto.auditors.AuditorCreateDTO;
 import com.platform.dto.auditors.AuditorPageQueryDTO;
 import com.platform.dto.auditors.AuditorStandingBookChangePageQueryDTO;
-import com.platform.dto.auditors.AuditorUpdateDTO;
 import com.platform.entity.Auditor;
-import com.platform.entity.AuditorStandingBookChange;
-import com.platform.entity.AuditorStandingBookInWork;
 import com.platform.exception.BaseException;
 import com.platform.result.PageResult;
 import com.platform.result.Result;
@@ -21,7 +17,6 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;

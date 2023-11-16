@@ -21,4 +21,5 @@ public interface ContactService {
 
     PageResult<FactoryContactVO> getFactoryContactQueryPage(FactoryContactQueryPageDTO queryPageDTO);
 
+    List<FactoryContact> createFactoryContactByCollection(List<FactoryContactCreateDTO> createDTOS);
 }
