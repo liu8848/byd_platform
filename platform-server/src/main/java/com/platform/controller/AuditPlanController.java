@@ -1,10 +1,14 @@
 package com.platform.controller;
 
 import com.platform.constant.ContentTypeConstant;
+import com.platform.dto.auditPlan.AuditPlanCreateDTO;
+import com.platform.dto.auditPlan.AuditPlanPageQueryDTO;
 import com.platform.entity.AuditPlan;
 import com.platform.exception.BaseException;
+import com.platform.result.PageResult;
 import com.platform.result.Result;
 import com.platform.service.auditPlan.AuditPlanService;
+import com.platform.vo.auditPlan.AuditPlanDisplayVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -16,12 +20,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @Slf4j
@@ -34,9 +41,12 @@ public class AuditPlanController {
 
     @PostMapping("/create")
     @Operation(summary = "创建审核方案")
-    public Result<AuditPlan> createAuditPlan(@RequestParam MultipartFile[] files,
-                                             @RequestBody AuditPlan auditPlan){
-
+    @Parameters(value = {
+            @Parameter(name = "fileName",description = "审核方案名称",required = true,in = ParameterIn.QUERY,schema = @Schema(type = "string")),
+            @Parameter(name = "publishTime",description = "发布时间",required = true,in = ParameterIn.DEFAULT,schema = @Schema(type = "string(date-time)"))
+    })
+    public Result<AuditPlan> createAuditPlan(AuditPlanCreateDTO createDTO,
+                                             @RequestParam("file") MultipartFile[] files){
         //检验上传文件是否符合要求
         if (files==null||files.length<2){
             throw new BaseException("上传文件缺失");
@@ -53,11 +63,36 @@ public class AuditPlanController {
             throw new BaseException("Word文件缺失");
         }
 
-        //开始上传文件
-        auditPlanService.createAuditPlan(fileMap,auditPlan);
+        AuditPlan auditPlan;
+        try {
+            auditPlan=auditPlanService.createAuditPlan(fileMap,createDTO);
+        }catch (IOException e){
+            throw new RuntimeException(e.getMessage());
+        }
 
 
         return Result.success(auditPlan);
+    }
+
+
+    @GetMapping("/queryPage")
+    @Operation(summary = "按条件分页获取审核方案")
+    @Parameters(value = {
+            @Parameter(name = "fileName",description = "方案名称",in = ParameterIn.DEFAULT),
+            @Parameter(name = "startPublishTimeStr",description = "开始发布时间",in = ParameterIn.DEFAULT),
+            @Parameter(name = "endPublishTimeStr",description = "结束发布时间",in =ParameterIn.DEFAULT),
+            @Parameter(name="page",description = "页码",in = ParameterIn.DEFAULT),
+            @Parameter(name = "size",description = "记录数",in=ParameterIn.DEFAULT)
+    })
+    public Result<PageResult<AuditPlanDisplayVO>> getAuditPlanByPlanName(AuditPlanPageQueryDTO pageQueryDTO){
+        if(pageQueryDTO.getStartPublishTimeStr()!=null) {
+            pageQueryDTO.setStartPublishTime(LocalDateTime.parse(pageQueryDTO.getStartPublishTimeStr(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        if (pageQueryDTO.getEndPublishTimeStr()!=null) {
+            pageQueryDTO.setEndPublishTime(LocalDateTime.parse(pageQueryDTO.getEndPublishTimeStr(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        }
+        PageResult<AuditPlanDisplayVO> result=auditPlanService.queryPage(pageQueryDTO);
+        return Result.success(result);
     }
 
 }

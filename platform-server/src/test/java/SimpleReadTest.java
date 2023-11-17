@@ -15,6 +15,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -69,5 +71,13 @@ public class SimpleReadTest {
                 .registerWriteHandler(new CascadeWriteHandler(buList,siteMap, 0, 2))
                 .registerWriteHandler(new SelectedSheetWriteHandler(selectMap))
                 .doWrite(list);
+    }
+
+
+    @Test
+    public void test2(){
+        File file = new File("/home/qzliu/桌面/byd_platform/./platform-server/src/main/resources/upload/AuditPlan/2023-11-17-7c3e04c8-5712-4b6e-b71b-f4c49ab91a76.doc");
+
+        log.info("file is exists :"+file.exists());
     }
 }

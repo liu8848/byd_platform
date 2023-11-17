@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.platform.mapper.AuditPlanMapper">
+    <insert id="create" useGeneratedKeys="true" keyProperty="id">
+        insert into audit_plan(file_name, publish_time, word_name, word_path, pdf_name, pdf_path, create_time, create_user, update_time, update_user)
+        VALUES (#{fileName},#{publishTime},#{wordName},#{wordPath},#{pdfName},#{pdfPath},#{createTime},#{createUser},#{updateTime},#{updateUser})
+    </insert>
+    
+    <select id="queryPageAuditPlan" parameterType="com.platform.dto.auditPlan.AuditPlanPageQueryDTO"
+            resultType="com.platform.vo.auditPlan.AuditPlanDisplayVO">
+        select
+            file_name,
+            publish_time,
+            word_name,
+            word_path,
+            pdf_name,
+            pdf_path,
+            ap.create_user,
+            e1.name createUserName,
+            ap.create_time,
+            ap.update_time,
+            ap.update_user,
+            e2.name updateUserName
+        from audit_plan ap
+        left join employee e1 on ap.create_user=e1.id
+        left join employee e2 on ap.update_user=e2.id
+        <where>
+            <if test="fileName!=null">and file_name like concat('%',#{fileName},'%')</if>
+            <if test="startPublishTime!=null">and publish_time>=#{startPublishTime}</if>
+            <if test="endPublishTime!=null">and #{endPublishTime}>=ap.publish_time</if>
+        </where>
+    </select>
+</mapper>

@@ -36,8 +36,8 @@ public class FileUploadUtils {
     /**
      * 默认上传路径
      */
-    @Value("${upload-path.default-path}")
-    private static String DEFAULT_BASE_FILE="./";
+    @Value("${upload-path.DEFAULT-PATH}")
+    private String DEFAULT_BASE_FILE="./";
 
     /**
      * 按默认配置上传文件
@@ -45,9 +45,9 @@ public class FileUploadUtils {
      * @return 文件名
      * @throws IOException IO错误
      */
-    public static String upload(MultipartFile file) throws IOException{
+    public String upload(MultipartFile file) throws IOException{
         try {
-            return upload(FileUploadUtils.DEFAULT_BASE_FILE,file,MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(DEFAULT_BASE_FILE,file,MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         }catch (Exception e){
             throw new IOException(e.getMessage(),e);
         }
@@ -60,10 +60,10 @@ public class FileUploadUtils {
      * @return 文件名称
      * @throws IOException IO错误
      */
-    public static String upload(String baseDir,MultipartFile file) throws IOException{
+    public  String upload(String baseDir,MultipartFile file) throws IOException{
         try {
             log.info(DEFAULT_BASE_FILE);
-            return upload(baseDir,file,MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(DEFAULT_BASE_FILE+baseDir,file,MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         }catch (Exception e){
             throw new IOException(e.getMessage(),e);
         }
@@ -77,7 +77,7 @@ public class FileUploadUtils {
      * @return 返回上传成功的文件名
      * @throws Exception IO错误
      */
-    public static String upload(String baseDir,MultipartFile file,String[] allowedExtension)throws Exception{
+    public  String upload(String baseDir,MultipartFile file,String[] allowedExtension)throws Exception{
         //合法性校验
         assertAllowed(file,allowedExtension);
         //重命名文件
@@ -130,7 +130,7 @@ public class FileUploadUtils {
      * 文件合法性校验
      *
      * @param file 上传的文件
-     * @return
+     *
      */
     public static void assertAllowed(MultipartFile file, String[] allowedExtension)
             throws Exception {
@@ -157,9 +157,9 @@ public class FileUploadUtils {
 
     /***
      * 判断MIME类型是否允许的MIME累死你个
-     * @param extension
-     * @param allowedExtension
-     * @return
+     * @param extension 文件扩展名
+     * @param allowedExtension 允许传入的文件扩展名
+     * @return 布尔值
      */
     public static boolean isAllowedExtension(String extension,String[] allowedExtension){
         for (String str:allowedExtension){

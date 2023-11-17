@@ -15,6 +15,8 @@ public class UploadServiceImpl implements UploadService {
 
     @Autowired
     private UploadPathProperties pathProperties;
+    @Autowired
+    private FileUploadUtils fileUploadUtils;
     @Override
     public String upload(MultipartFile file, String baseDir) throws Exception {
         String originalFileName=file.getOriginalFilename();
@@ -26,9 +28,9 @@ public class UploadServiceImpl implements UploadService {
 
         String fileLocation=null;
         if(baseDir!=null){
-            fileLocation= FileUploadUtils.upload(baseDir,file);
+            fileLocation= fileUploadUtils.upload(baseDir,file);
         }else {
-            fileLocation=FileUploadUtils.upload(file);
+            fileLocation=fileUploadUtils.upload(file);
         }
         return fileLocation;
     }
