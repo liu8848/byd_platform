@@ -21,7 +21,7 @@ public class AuditPlanDisplayVO implements Serializable {
     private String fileName;
 
     @Schema(description = "发布时间")
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime publishTime;
 
     @Schema(description = "Word文档名称")
@@ -37,7 +37,7 @@ public class AuditPlanDisplayVO implements Serializable {
     private String pdfPath;
 
     @Schema(description = "创建时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime createTime;
 
     @Schema(description = "创建人工号")
@@ -47,7 +47,7 @@ public class AuditPlanDisplayVO implements Serializable {
     private String createUserName;
 
     @Schema(description = "更新时间")
-    @JsonFormat(pattern = "yyyy-MM-dd hh:mm:ss")
+//    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime updateTime;
 
 

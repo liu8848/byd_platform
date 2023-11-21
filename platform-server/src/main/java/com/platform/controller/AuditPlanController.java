@@ -1,5 +1,6 @@
 package com.platform.controller;
 
+
 import com.platform.constant.ContentTypeConstant;
 import com.platform.dto.auditPlan.AuditPlanCreateDTO;
 import com.platform.dto.auditPlan.AuditPlanPageQueryDTO;
@@ -17,11 +18,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.io.Reader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class AuditPlanController {
     @Autowired
     private AuditPlanService auditPlanService;
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "创建审核方案")
     @Parameters(value = {
             @Parameter(name = "fileName",description = "审核方案名称",required = true,in = ParameterIn.QUERY,schema = @Schema(type = "string")),
@@ -79,18 +80,12 @@ public class AuditPlanController {
     @Operation(summary = "按条件分页获取审核方案")
     @Parameters(value = {
             @Parameter(name = "fileName",description = "方案名称",in = ParameterIn.DEFAULT),
-            @Parameter(name = "startPublishTimeStr",description = "开始发布时间",in = ParameterIn.DEFAULT),
-            @Parameter(name = "endPublishTimeStr",description = "结束发布时间",in =ParameterIn.DEFAULT),
+            @Parameter(name = "startPublishTime",description = "开始发布时间",in = ParameterIn.DEFAULT),
+            @Parameter(name = "endPublishTime",description = "结束发布时间",in =ParameterIn.DEFAULT),
             @Parameter(name="page",description = "页码",in = ParameterIn.DEFAULT),
             @Parameter(name = "size",description = "记录数",in=ParameterIn.DEFAULT)
     })
     public Result<PageResult<AuditPlanDisplayVO>> getAuditPlanByPlanName(AuditPlanPageQueryDTO pageQueryDTO){
-        if(pageQueryDTO.getStartPublishTimeStr()!=null) {
-            pageQueryDTO.setStartPublishTime(LocalDateTime.parse(pageQueryDTO.getStartPublishTimeStr(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        }
-        if (pageQueryDTO.getEndPublishTimeStr()!=null) {
-            pageQueryDTO.setEndPublishTime(LocalDateTime.parse(pageQueryDTO.getEndPublishTimeStr(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-        }
         PageResult<AuditPlanDisplayVO> result=auditPlanService.queryPage(pageQueryDTO);
         return Result.success(result);
     }
