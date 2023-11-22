@@ -14,7 +14,9 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
+import com.platform.properties.DateFormatProperties;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
@@ -31,18 +33,8 @@ import java.util.TimeZone;
 @Slf4j
 public class CustomDateHandlerConfig {
 
-    /**
-     * 默认日期时间格式
-     */
-    private static final String DEFAULT_DATE_TIME_FORMAT="yyyy-MM-dd HH:mm:ss";
-    /**
-     * 默认日期格式
-     */
-    private static final String DEFAULT_DATE_FORMAT="yyyy-MM-dd";
-    /**
-     * 默认时间格式
-     */
-    private static  final String DEFAULT_TIME_FORMAT="HH:mm:ss";
+    @Autowired
+    private DateFormatProperties dateFormatProperties;
 
     /**
      * DATE转换器
@@ -67,7 +59,7 @@ public class CustomDateHandlerConfig {
         return new Converter<String, LocalDate>() {
             @Override
             public LocalDate convert(String source) {
-                return LocalDate.parse(source, DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT));
+                return LocalDate.parse(source, DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_DATE_FORMAT()));
             }
         };
     }
@@ -81,7 +73,7 @@ public class CustomDateHandlerConfig {
         return new Converter<String, LocalTime>() {
             @Override
             public LocalTime convert(String source) {
-                return LocalTime.parse(source,DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT));
+                return LocalTime.parse(source,DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_TIME_FORMAT()));
             }
         };
     }
@@ -96,7 +88,7 @@ public class CustomDateHandlerConfig {
             @Override
             public LocalDateTime convert(String source) {
                 log.info("日期格式转换");
-                return LocalDateTime.parse(source,DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT));
+                return LocalDateTime.parse(source,DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_DATE_TIME_FORMAT()));
             }
         };
     }
@@ -112,12 +104,12 @@ public class CustomDateHandlerConfig {
 
         //java8日期 Local系列序列化与反序列化模块
         JavaTimeModule javaTimeModule=new JavaTimeModule();
-        javaTimeModule.addSerializer(LocalDateTime.class,new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
-        javaTimeModule.addSerializer(LocalDate.class,new LocalDateSerializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)));
-        javaTimeModule.addSerializer(LocalTime.class,new LocalTimeSerializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
-        javaTimeModule.addDeserializer(LocalDateTime.class,new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)));
-        javaTimeModule.addDeserializer(LocalDate.class,new LocalDateDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)));
-        javaTimeModule.addDeserializer(LocalTime.class,new LocalTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_TIME_FORMAT)));
+        javaTimeModule.addSerializer(LocalDateTime.class,new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_DATE_TIME_FORMAT())));
+        javaTimeModule.addSerializer(LocalDate.class,new LocalDateSerializer(DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_DATE_FORMAT())));
+        javaTimeModule.addSerializer(LocalTime.class,new LocalTimeSerializer(DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_TIME_FORMAT())));
+        javaTimeModule.addDeserializer(LocalDateTime.class,new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_DATE_TIME_FORMAT())));
+        javaTimeModule.addDeserializer(LocalDate.class,new LocalDateDeserializer(DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_DATE_FORMAT())));
+        javaTimeModule.addDeserializer(LocalTime.class,new LocalTimeDeserializer(DateTimeFormatter.ofPattern(dateFormatProperties.getDEFAULT_TIME_FORMAT())));
 
         objectMapper.registerModule(new ParameterNamesModule())
                 .registerModule(new Jdk8Module())
@@ -136,7 +128,7 @@ public class CustomDateHandlerConfig {
         //制定时区
         objectMapper.setTimeZone(TimeZone.getTimeZone("GMT+8:00"));
 
-        objectMapper.setDateFormat(new SimpleDateFormat(DEFAULT_DATE_TIME_FORMAT));
+        objectMapper.setDateFormat(new SimpleDateFormat(dateFormatProperties.getDEFAULT_DATE_TIME_FORMAT()));
 
         return objectMapper;
     }

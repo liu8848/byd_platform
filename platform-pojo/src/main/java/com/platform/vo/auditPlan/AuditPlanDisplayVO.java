@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 @Schema(description = "审核计划展示数据模型")
 public class AuditPlanDisplayVO implements Serializable {
 
+    @Schema(description = "主键Id")
+    private Long id;
+
     @Schema(description = "文件名称")
     private String fileName;
 

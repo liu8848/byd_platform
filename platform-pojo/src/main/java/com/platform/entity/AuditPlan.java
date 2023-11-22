@@ -22,7 +22,7 @@ public class AuditPlan extends BaseEntity implements Serializable {
 
     @Schema(description = "主键id")
     @TableField(value = "id")
-    private String id;
+    private Long id;
 
     @Schema(description = "文件名称")
     @TableField(value = "file_name")

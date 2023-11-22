@@ -17,6 +17,9 @@ import java.time.LocalDateTime;
 @Schema(description = "审核计划分页查询数据模型")
 public class AuditPlanPageQueryDTO extends BasePageQueryDTO implements Serializable {
 
+    @Schema(description = "主键Id")
+    private Long id;
+
     @Schema(description = "方案名称")
     private String fileName;
 

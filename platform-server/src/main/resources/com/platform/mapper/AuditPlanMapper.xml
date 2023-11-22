@@ -10,6 +10,7 @@
     <select id="queryPageAuditPlan" parameterType="com.platform.dto.auditPlan.AuditPlanPageQueryDTO"
             resultType="com.platform.vo.auditPlan.AuditPlanDisplayVO">
         select
+            ap.id,
             file_name,
             publish_time,
             word_name,
@@ -26,6 +27,7 @@
         left join employee e1 on ap.create_user=e1.id
         left join employee e2 on ap.update_user=e2.id
         <where>
+            <if test="id!=null and id!=0">and ap.id=#{id}</if>
             <if test="fileName!=null">and file_name like concat('%',#{fileName},'%')</if>
             <if test="startPublishTime!=null">and publish_time>=#{startPublishTime}</if>
             <if test="endPublishTime!=null">and #{endPublishTime}>=ap.publish_time</if>

@@ -64,11 +64,14 @@ pagehelper:
   reasonable: true
   support-methods-arguments: true
 
-sky:
+platform-setting:
   jwt:
     admin-secret-key: itcast
     admin-ttl: 7200000
     admin-token-name: token
-
-upload-path:
-  DEFAULT-PATH: ./platform-server/src/main/resources/upload
+  upload-path:
+    default-path: ./platform-server/src/main/resources/upload
+  date-format:
+    default-date-time-format: yyyy-MM-dd HH:mm:ss
+    default-date-format: yyyy-MM-dd
+    default-time-format: HH:mm:ss

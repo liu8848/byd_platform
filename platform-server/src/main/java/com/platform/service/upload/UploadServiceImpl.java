@@ -2,7 +2,7 @@ package com.platform.service.upload;
 
 import com.platform.exception.BaseException;
 import com.platform.properties.UploadPathProperties;
-import com.platform.utils.FileUploadUtils;
+import com.platform.utils.files.FileUploadUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;

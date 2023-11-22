@@ -1,6 +1,7 @@
-package com.platform.utils;
+package com.platform.utils.files;
 
 import com.mysql.cj.util.StringUtils;
+import com.platform.utils.MimeTypeUtils;
 import lombok.Data;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -36,7 +37,7 @@ public class FileUploadUtils {
     /**
      * 默认上传路径
      */
-    @Value("${upload-path.DEFAULT-PATH}")
+    @Value("${platform-setting.upload-path.default-path}")
     private String DEFAULT_BASE_FILE="./";
 
     /**
@@ -47,7 +48,7 @@ public class FileUploadUtils {
      */
     public String upload(MultipartFile file) throws IOException{
         try {
-            return upload(DEFAULT_BASE_FILE,file,MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
+            return upload(DEFAULT_BASE_FILE,file, MimeTypeUtils.DEFAULT_ALLOWED_EXTENSION);
         }catch (Exception e){
             throw new IOException(e.getMessage(),e);
         }

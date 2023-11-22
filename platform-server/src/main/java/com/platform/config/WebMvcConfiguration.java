@@ -9,7 +9,6 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
 import com.platform.interceptor.JwtTokenAdminInterceptor;
-import com.platform.utils.JacksonObjectMapper;
 import jakarta.annotation.Resource;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -86,8 +85,12 @@ public class WebMvcConfiguration extends WebMvcConfigurationSupport {
              */
             if(converter instanceof MappingJackson2HttpMessageConverter){
                 ObjectMapper mapper = ((MappingJackson2HttpMessageConverter) converter).getObjectMapper();
+
+                //接收到未知属性不报异常
                 mapper.configure(FAIL_ON_UNKNOWN_PROPERTIES, false);
+                //反序列化时，属性不存在的兼容处理
                 mapper.getDeserializationConfig().withoutFeatures(FAIL_ON_UNKNOWN_PROPERTIES);
+                //日期系列的序列化与反序列化模块
                 SimpleModule simpleModule = new SimpleModule()
                         .addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)))
                         .addDeserializer(LocalDate.class, new LocalDateDeserializer(DateTimeFormatter.ofPattern(DEFAULT_DATE_FORMAT)))
