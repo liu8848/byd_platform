@@ -37,15 +37,15 @@ public class AuditPlan extends BaseEntity implements Serializable {
     @TableField(value = "word_name")
     private String wordName;
 
-    @Schema(description = "word文档路径")
-    @TableField(value = "word_path")
-    private String wordPath;
+    @Schema(description = "word文档标识")
+    @TableField(value = "word_uuid")
+    private String wordUuid;
 
     @Schema(description = "pdf文档名称")
     @TableField(value = "pdf_name")
     private String pdfName;
 
-    @Schema(description = "pdf文档路径")
-    @TableField(value = "pdf_path")
-    private String pdfPath;
+    @Schema(description = "pdf文档标识")
+    @TableField(value = "pdf_uuid")
+    private String pdfUuid;
 }

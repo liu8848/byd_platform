@@ -30,14 +30,14 @@ public class AuditPlanDisplayVO implements Serializable {
     @Schema(description = "Word文档名称")
     private String wordName;
 
-    @Schema(description = "Word文档存放路径")
-    private String wordPath;
+    @Schema(description = "Word文档存放标识")
+    private String wordUuid;
 
     @Schema(description = "pdf文档名称")
     private String pdfName;
 
-    @Schema(description = "pdf文档存放路径")
-    private String pdfPath;
+    @Schema(description = "pdf文档存放标识")
+    private String pdfUuid;
 
     @Schema(description = "创建时间")
 //    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

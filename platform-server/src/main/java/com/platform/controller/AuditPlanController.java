@@ -6,6 +6,7 @@ import com.platform.dto.auditPlan.AuditPlanCreateDTO;
 import com.platform.dto.auditPlan.AuditPlanPageQueryDTO;
 import com.platform.dto.auditPlan.AuditPlanUpdateDTO;
 import com.platform.entity.AuditPlan;
+import com.platform.entity.UploadFile;
 import com.platform.exception.BaseException;
 import com.platform.result.PageResult;
 import com.platform.result.Result;
@@ -17,18 +18,16 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 @RestController
 @Slf4j
@@ -39,19 +38,18 @@ public class AuditPlanController {
     @Autowired
     private AuditPlanService auditPlanService;
 
-    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+
+    @PostMapping(value = "/create")
     @Operation(summary = "创建审核方案")
-    @Parameters(value = {
-            @Parameter(name = "fileName",description = "审核方案名称",required = true,in = ParameterIn.QUERY),
-            @Parameter(name = "publishTime",description = "发布时间",required = true,in = ParameterIn.DEFAULT,example = "yyyy-MM-dd HH:mm:ss")
-    })
-    public Result<AuditPlan> createAuditPlan(AuditPlanCreateDTO createDTO,
-                                             @RequestParam("file") MultipartFile[] files){
+    public Result<AuditPlan> createAuditPlan(AuditPlanCreateDTO createDTO){
         //检验上传文件是否符合要求
-        if (files==null||files.length<2){
-            throw new BaseException("上传文件缺失");
+        if(createDTO.getWordFile().isEmpty()||createDTO.getPdfFile().isEmpty()){
+            throw new BaseException("上传文件缺失，必须包含word与pdf文档");
         }
-        Map<String, List<MultipartFile>> fileMap = Arrays.stream(files).collect(Collectors.groupingBy(MultipartFile::getContentType));
+        Map<String, MultipartFile> fileMap=new HashMap<>();
+        fileMap.put(createDTO.getWordFile().getContentType(),createDTO.getWordFile());
+        fileMap.put(createDTO.getPdfFile().getContentType(), createDTO.getPdfFile());
+
         Set<String> key = fileMap.keySet();
         if (key.size()<2){
             throw new BaseException("文件必须包含Word与PDF");
@@ -105,6 +103,15 @@ public class AuditPlanController {
     public Result<UpdateResult<AuditPlan>> updateAuditPlan(@PathVariable Long id,
                                                            AuditPlanUpdateDTO updateDTO){
         UpdateResult<AuditPlan> updateResult=auditPlanService.updateAuditPlan(id,updateDTO);
+        return Result.success(updateResult);
+    }
+
+    @GetMapping("/download")
+    @Operation(summary = "下载审核方案文档")
+    public Result<String> downloadAuditPlan(String uuid,
+                                            String fileName,
+                                            HttpServletResponse response){
+        auditPlanService.download(uuid,fileName,response);
         return null;
     }
 

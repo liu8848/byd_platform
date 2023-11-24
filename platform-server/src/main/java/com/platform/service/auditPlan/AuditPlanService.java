@@ -4,10 +4,12 @@ import com.platform.dto.auditPlan.AuditPlanCreateDTO;
 import com.platform.dto.auditPlan.AuditPlanPageQueryDTO;
 import com.platform.dto.auditPlan.AuditPlanUpdateDTO;
 import com.platform.entity.AuditPlan;
+import com.platform.entity.UploadFile;
 import com.platform.result.PageResult;
 import com.platform.result.Result;
 import com.platform.result.UpdateResult;
 import com.platform.vo.auditPlan.AuditPlanDisplayVO;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -15,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 public interface AuditPlanService {
-    AuditPlan createAuditPlan(Map<String, List<MultipartFile>> fileMap, AuditPlanCreateDTO createDTO) throws IOException;
+    AuditPlan createAuditPlan(Map<String, MultipartFile> fileMap, AuditPlanCreateDTO createDTO) throws IOException;
 
     PageResult<AuditPlanDisplayVO> queryPage(AuditPlanPageQueryDTO pageQueryDTO);
 
@@ -24,4 +26,6 @@ public interface AuditPlanService {
     void deleteById(Long id);
 
     UpdateResult<AuditPlan> updateAuditPlan(Long id, AuditPlanUpdateDTO updateDTO);
+
+    void download(String uuid, String fileName,HttpServletResponse response);
 }

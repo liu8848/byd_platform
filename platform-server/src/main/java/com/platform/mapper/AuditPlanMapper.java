@@ -17,4 +17,7 @@ public interface AuditPlanMapper extends BaseMapper<AuditPlan> {
     void create(AuditPlan auditPlan);
 
     Page<AuditPlanDisplayVO> queryPageAuditPlan(AuditPlanPageQueryDTO pageQueryDTO);
+
+    @AutoFill(value = OperationType.UPDATE)
+    void updateAuditPlan(AuditPlan newA);
 }

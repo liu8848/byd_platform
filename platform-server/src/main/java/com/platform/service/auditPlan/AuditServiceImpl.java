@@ -1,9 +1,7 @@
 package com.platform.service.auditPlan;
 
-import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.lang.UUID;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.platform.constant.ContentTypeConstant;
@@ -12,14 +10,17 @@ import com.platform.dto.auditPlan.AuditPlanCreateDTO;
 import com.platform.dto.auditPlan.AuditPlanPageQueryDTO;
 import com.platform.dto.auditPlan.AuditPlanUpdateDTO;
 import com.platform.entity.AuditPlan;
+import com.platform.entity.UploadFile;
 import com.platform.exception.BaseException;
 import com.platform.exception.QueryNotFoundException;
 import com.platform.mapper.AuditPlanMapper;
+import com.platform.mapper.UploadFileMapper;
 import com.platform.result.PageResult;
 import com.platform.result.UpdateResult;
 import com.platform.utils.files.FileUploadUtils;
 import com.platform.utils.files.FileUtils;
 import com.platform.vo.auditPlan.AuditPlanDisplayVO;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +29,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,8 @@ public class AuditServiceImpl implements AuditPlanService{
     private AuditPlanMapper auditPlanMapper;
     @Autowired
     private FileUploadUtils fileUploadUtils;
+    @Autowired
+    private UploadFileMapper uploadFileMapper;
 
     /***
      * 创建审核方案
@@ -49,7 +52,7 @@ public class AuditServiceImpl implements AuditPlanService{
      * @throws IOException IO错误
      */
     @Override
-    public AuditPlan createAuditPlan(Map<String, List<MultipartFile>> fileMap, AuditPlanCreateDTO createDTO) throws IOException {
+    public AuditPlan createAuditPlan(Map<String, MultipartFile> fileMap, AuditPlanCreateDTO createDTO) throws IOException {
         //查询是否存在该审核方案
         QueryWrapper<AuditPlan> wrapper = new QueryWrapper<>();
         wrapper.eq("file_name",createDTO.getFileName());
@@ -61,29 +64,38 @@ public class AuditServiceImpl implements AuditPlanService{
         //创建上传对象AuditPlan
         AuditPlan auditPlan = new AuditPlan();
         BeanUtils.copyProperties(createDTO,auditPlan);
-        auditPlan.setPublishTime(LocalDateTime.parse(createDTO.getPublishTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+//        auditPlan.setPublishTime(LocalDateTime.parse(createDTO.getPublishTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
         //处理Word文件
+        UploadFile wordUploadFile = new UploadFile();
         MultipartFile wordFile = (fileMap.getOrDefault(ContentTypeConstant.DOC_CONTENT_TYPE, null) == null ?
-                fileMap.get(ContentTypeConstant.DOCX_CONTENT_TYPE) : fileMap.get(ContentTypeConstant.DOC_CONTENT_TYPE)).get(0);
+                fileMap.get(ContentTypeConstant.DOCX_CONTENT_TYPE) : fileMap.get(ContentTypeConstant.DOC_CONTENT_TYPE));
         String wordName = wordFile.getOriginalFilename();
-        String wordPath = fileUploadUtils.upload(FilePathConstant.AUDIT_PLAN, wordFile);
-        auditPlan.setWordPath(wordPath);
+        String wordFilePath = fileUploadUtils.upload(FilePathConstant.AUDIT_PLAN, wordFile);
+        String wordUuid= UUID.randomUUID().toString();
+        wordUploadFile.setFilePath(wordFilePath);
+        wordUploadFile.setUuid(wordUuid);
         auditPlan.setWordName(wordName);
+        auditPlan.setWordUuid(wordUuid);
 
         //处理PDF文件
-        List<MultipartFile> files = fileMap.getOrDefault(ContentTypeConstant.PDF_CONTENT_TYPE, null);
-        if (files==null){
+        UploadFile pdfUploadFile = new UploadFile();
+        MultipartFile pdfFile = fileMap.getOrDefault(ContentTypeConstant.PDF_CONTENT_TYPE, null);
+        if (pdfFile==null){
             throw new IOException("文件丢失");
         }
-        MultipartFile pdfFile = files.get(0);
         String pdfName = pdfFile.getOriginalFilename();
         String pdfPath = fileUploadUtils.upload(FilePathConstant.AUDIT_PLAN, pdfFile);
+        String pdfUuid=UUID.randomUUID().toString();
+        pdfUploadFile.setUuid(pdfUuid);
+        pdfUploadFile.setFilePath(pdfPath);
         auditPlan.setPdfName(pdfName);
-        auditPlan.setPdfPath(pdfPath);
+        auditPlan.setPdfUuid(pdfUuid);
 
         //数据库添加审核方案记录
         auditPlanMapper.create(auditPlan);
+        uploadFileMapper.insert(wordUploadFile);
+        uploadFileMapper.insert(pdfUploadFile);
 
         return auditPlan;
     }
@@ -140,8 +152,10 @@ public class AuditServiceImpl implements AuditPlanService{
             throw new BaseException(ex.getMessage());
         }
         //删除对应文件
-        FileUtils.deleteFile(auditPlan.getPdfPath());
-        FileUtils.deleteFile(auditPlan.getWordPath());
+        UploadFile wordUploadFile = uploadFileMapper.selectOne(new QueryWrapper<UploadFile>().eq("uuid", auditPlan.getWordUuid()));
+        UploadFile pdfUploadFile = uploadFileMapper.selectOne(new QueryWrapper<UploadFile>().eq("uuid", auditPlan.getPdfUuid()));
+        FileUtils.deleteFile(wordUploadFile.getFilePath());
+        FileUtils.deleteFile(pdfUploadFile.getFilePath());
     }
 
     /***
@@ -169,21 +183,32 @@ public class AuditServiceImpl implements AuditPlanService{
         MultipartFile pdfFile = updateDTO.getPdfFile();
         String newWordPath = null;
         String newPdfPath=null;
+        UploadFile wordUploadFile = null;
+        UploadFile pdfUploadFile=null;
         try {
             if(!wordFile.isEmpty()){
+                wordUploadFile = uploadFileMapper.selectOne(new QueryWrapper<UploadFile>().eq("uuid", oldA.getWordUuid()));
                 newA.setWordName(wordFile.getOriginalFilename());
                 newWordPath=fileUploadUtils.upload(FilePathConstant.AUDIT_PLAN,wordFile);
-                newA.setWordPath(newWordPath);
+
+                String newWordUuid=UUID.randomUUID().toString();
+                wordUploadFile.setUuid(newWordUuid);
+                wordUploadFile.setFilePath(newWordPath);
+                newA.setWordUuid(newWordUuid);
             }
             if (!pdfFile.isEmpty()){
+                pdfUploadFile=uploadFileMapper.selectOne(new QueryWrapper<UploadFile>().eq("uuid",oldA.getPdfUuid()));
                 newA.setPdfName(pdfFile.getOriginalFilename());
                 newPdfPath=fileUploadUtils.upload(FilePathConstant.AUDIT_PLAN,pdfFile);
-                newA.setPdfPath(newPdfPath);
+                String newPdfUuid=UUID.randomUUID().toString();
+
+                pdfUploadFile.setUuid(newPdfUuid);
+                pdfUploadFile.setFilePath(newPdfPath);
+                newA.setPdfUuid(newPdfUuid);
             }
 
-            LambdaUpdateWrapper<AuditPlan> updateWrapper = new LambdaUpdateWrapper<>();
-
-
+            //更新记录
+            auditPlanMapper.updateAuditPlan(newA);
 
         }catch (IOException e){
             throw new RuntimeException(e);
@@ -196,7 +221,36 @@ public class AuditServiceImpl implements AuditPlanService{
             }
         }
 
+        //删除旧文件
+        if(!ObjectUtils.isEmpty(newWordPath)) {
+            FileUtils.deleteFile(wordUploadFile.getFilePath());
+        }
+        if(!ObjectUtils.isEmpty(newPdfPath)){
+            FileUtils.deleteFile(pdfUploadFile.getFilePath());
+        }
+        return UpdateResult.getUpdateContent(newA, oldA);
+    }
 
-        return null;
+    @Override
+    public void download(String uuid,String fileName,HttpServletResponse response) {
+        //获取文件信息
+        UploadFile file = uploadFileMapper.selectOne(new QueryWrapper<UploadFile>().eq("uuid", uuid));
+
+        if(file==null){
+            throw new BaseException("文件不存在");
+        }
+
+        //设置响应头
+        response.setHeader("content-type","application/octet-stream");
+        response.setContentType("application/octet-stream");
+        response.setHeader("Content-Disposition","attachment;filename="+
+                URLEncoder.encode(fileName, StandardCharsets.UTF_8));
+
+        //传输文件
+        try {
+            FileUtils.writeBytes(file.getFilePath(),response.getOutputStream());
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
     }
 }
