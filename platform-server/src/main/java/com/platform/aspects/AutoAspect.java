@@ -1,15 +1,20 @@
 package com.platform.aspects;
 
+import cn.hutool.extra.spring.SpringUtil;
 import com.platform.annotaionExtend.AutoFill;
+import com.platform.annotaionExtend.FieldNameFill;
 import com.platform.constant.AutoFillConstant;
 import com.platform.context.BaseContext;
+import com.platform.enums.FieldType;
 import com.platform.enums.OperationType;
+import com.platform.mapper.EmployeeMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.ObjectUtils;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
-import org.aspectj.lang.annotation.Pointcut;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Field;
@@ -22,9 +27,17 @@ import java.util.List;
 @Component
 @Slf4j
 public class AutoAspect {
+
+    @Autowired
+    private EmployeeMapper employeeMapper;
+
     @Pointcut("@annotation(com.platform.annotaionExtend.AutoFill)")
     public void autoFillPointCut() {
     }
+
+    @Pointcut("@annotation(com.platform.annotaionExtend.FieldNameFill)")
+    public void FieldNameFill(){}
+
 
     @Before("autoFillPointCut()")
     public void autoFill(JoinPoint joinPoint) {
@@ -47,6 +60,28 @@ public class AutoAspect {
         }else {
             fillField(entity,operationType,now);
         }
+    }
+
+    @Around("FieldNameFill()")
+    public Object fieldNameFill(ProceedingJoinPoint joinPoint){
+        log.info("填充字段信息");
+        MethodSignature signature = (MethodSignature) joinPoint.getSignature();
+        FieldNameFill autoFill = signature.getMethod().getAnnotation(FieldNameFill.class);
+        FieldType fieldType = autoFill.value();
+        try {
+            Object result = joinPoint.proceed();
+            if(result instanceof List<?>){
+                for (var e:(List<?>)result) {
+                    fieldNameFill(e,fieldType);
+                }
+            }else {
+                fieldNameFill(result,fieldType);
+            }
+            return result;
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     private void fillField(Object entity, OperationType operationType, LocalDateTime now) {
@@ -77,4 +112,40 @@ public class AutoAspect {
             }
         }
     }
+
+    private void fieldNameFill(Object entity,FieldType fieldType){
+        try{
+            Class<?> entityClass = entity.getClass();
+            Field createUserName = entityClass.getDeclaredField("createUserName");
+            Field updateUserName = entityClass.getDeclaredField("updateUserName");
+            createUserName.setAccessible(true);
+            updateUserName.setAccessible(true);
+
+
+            //获取对象中的修改人和创建人工号
+            Field createUserField = entityClass.getDeclaredField("createUser");
+            Field updateUserField= entityClass.getDeclaredField("updateUser");
+            createUserField.setAccessible(true);
+            updateUserField.setAccessible(true);
+            Long createUserId=(Long) createUserField.get(entity);
+            Long updateUserId=(Long) updateUserField.get(entity);
+            String createUserNameStr=null;
+            String updateUserNameStr=null;
+            if(createUserId!=null){
+                createUserNameStr=employeeMapper.getById(createUserId).getName();
+            }
+            if (updateUserId!=null) {
+                updateUserNameStr = employeeMapper.getById(updateUserId).getName();
+            }
+
+            //填充字段
+            createUserName.set(entity, ObjectUtils.isEmpty(createUserNameStr)?"":createUserNameStr);
+            updateUserName.set(entity,ObjectUtils.isEmpty(updateUserNameStr)?"":updateUserNameStr);
+
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+    }
+
 }

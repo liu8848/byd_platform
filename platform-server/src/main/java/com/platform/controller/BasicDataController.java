@@ -1,6 +1,8 @@
 package com.platform.controller;
 
 import com.platform.constant.MessageConstant;
+import com.platform.dto.auditModule.AuditModuleCreateOrUpdateDTO;
+import com.platform.dto.auditModule.AuditModuleQueryPageDTO;
 import com.platform.dto.businessdivisions.BusinessDivisionCreateDTO;
 import com.platform.dto.businessdivisions.BusinessDivisionPageQueryDTO;
 import com.platform.dto.businessdivisions.BusinessDivisionUpdateDTO;
@@ -10,6 +12,7 @@ import com.platform.dto.factories.FactoryUpdateDTO;
 import com.platform.dto.professionInspections.ProfessionInspectionCreateDTO;
 import com.platform.dto.professionInspections.ProfessionInspectionPageQueryDTO;
 import com.platform.dto.professionInspections.ProfessionInspectionUpdateDTO;
+import com.platform.entity.AuditModule;
 import com.platform.entity.BusinessDivision;
 import com.platform.entity.Factory;
 import com.platform.entity.ProfessionInspection;
@@ -21,7 +24,9 @@ import com.platform.result.UpdateResult;
 import com.platform.service.BusinessDivisionService;
 import com.platform.service.FactoryService;
 import com.platform.service.ProfessionInspectionService;
+import com.platform.service.auditModule.AuditModuleService;
 import com.platform.vo.FactoryDisplayVO;
+import com.platform.vo.auditModule.AuditModuleVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -29,6 +34,7 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Delete;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -47,6 +53,8 @@ public class BasicDataController {
     private FactoryService factoryService;
     @Autowired
     private ProfessionInspectionService professionInspectionService;
+    @Autowired
+    private AuditModuleService auditModuleService;
 
     @PostMapping("/businessDivision")
     @Operation(summary = "添加事业部")
@@ -197,5 +205,50 @@ public class BasicDataController {
         List<ProfessionInspection> professionInspectionList = professionInspectionService.insertByCollection(createDTOList);
         return Result.success(professionInspectionList);
     }
+
+
+    @PostMapping("/auditModule/create")
+    @Operation(summary = "创建审核模块")
+    public Result<AuditModule> createAuditModule(@RequestBody AuditModuleCreateOrUpdateDTO createDTO){
+        AuditModule auditModule=auditModuleService.createAuditModule(createDTO);
+        return Result.success(auditModule);
+    }
+
+    @GetMapping("auditModule/{id}")
+    @Operation(summary = "按主键id检索审核模块")
+    public Result<AuditModuleVO> getAuditModuleById(@PathVariable Long id){
+        AuditModuleVO vo=auditModuleService.getAuditModuleById(id);
+        return Result.success(vo);
+    }
+
+    @GetMapping("auditModule/queryPage")
+    @Operation(summary = "分页检索审核模块")
+    @Parameters(value = {
+            @Parameter(name="moduleName",description = "审核模块名称",required = false,in=ParameterIn.QUERY),
+            @Parameter(name = "id",description = "主键id",required = false,in = ParameterIn.QUERY),
+            @Parameter(name = "page",description = "页码",in=ParameterIn.QUERY),
+            @Parameter(name="size",description = "每页记录数",in=ParameterIn.QUERY)
+    })
+    public Result<PageResult<AuditModuleVO>> getAuditModuleQueryPage(AuditModuleQueryPageDTO queryPageDTO){
+        PageResult<AuditModuleVO> result=auditModuleService.getAuditModuleQueryPage(queryPageDTO);
+        return Result.success(result);
+    }
+
+    @PutMapping("auditModule/{id}")
+    @Operation(summary = "修改审核模块信息")
+    public Result<UpdateResult<AuditModule>> updateAuditModule(@RequestBody AuditModuleCreateOrUpdateDTO updateDTO,
+                                                               @PathVariable Long id){
+        updateDTO.setId(id);
+        UpdateResult<AuditModule> updateResult=auditModuleService.updateAuditModule(updateDTO);
+        return Result.success(updateResult);
+    }
+
+    @DeleteMapping("auditModule/{id}")
+    @Operation(summary = "删除审核模块")
+    public Result<AuditModule> deleteAuditModule(@PathVariable Long id){
+        AuditModule auditModule=auditModuleService.deleteAuditModule(id);
+        return Result.success(auditModule);
+    }
+
 
 }
